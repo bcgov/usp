@@ -34,8 +34,6 @@ objects:
         dockerStrategy:
           dockerfilePath: ./Dockerfile
           env:
-            - name: "TEST_ARG"
-              value: "hi there"
             - name: USER_ID
               value: ${OC_USER_ID}
         type: Docker
