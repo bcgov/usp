@@ -24,6 +24,8 @@ endef
 define BUILD_TAG
 "latest-dev"
 endef
+endif
+
 ifeq ($(GIT_LOCAL_BRANCH),test)
 define OC_USER_ID
 "1009370000"
@@ -34,6 +36,7 @@ endef
 define BUILD_TAG
 "latest-test"
 endef
+
 else
 define OC_USER_ID
 "1009380000"
