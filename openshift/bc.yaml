@@ -1,0 +1,119 @@
+#run oc process -f bc.yaml -p NAME=tbtb-yeaf IMAGE_TAG=latest OC_REPO_SECRET_USER=user-at-github | oc apply -f -
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: ${NAME}
+  labels:
+    buildconfig: ${NAME}
+objects:
+  - apiVersion: v1
+    kind: BuildConfig
+    spec:
+      serviceAccountName: ${LICENSE_PLATE}-vault
+      failedBuildsHistoryLimit: 5
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${NAME}:${IMAGE_TAG}
+      postCommit: {}
+      resources:
+        requests:
+          cpu: 2
+          memory: 8Gi
+        limits:
+          cpu: 4
+          memory: 16Gi
+      runPolicy: Serial
+      source:
+        git:
+          ref: ${REPO_BRANCH}
+          uri: ${REPO_NAME}
+        type: Git
+      strategy:
+        dockerStrategy:
+          dockerfilePath: ./Dockerfile
+          env:
+            - name: "TEST_ARG"
+              value: "hi there"
+            - name: USER_ID
+              value: ${OC_USER_ID}
+        type: Docker
+      successfulBuildsHistoryLimit: 5
+    metadata:
+      labels:
+        build: ${NAME}
+        buildconfig: ${NAME}
+        build-branch: ${REPO_BRANCH}
+      name: ${NAME}
+      namespace: ${BUILD_NAMESPACE}
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-secret-helloworld: ${LICENSE_PLATE}-${LICENSE_BRANCH}/helloworld
+        vault.hashicorp.com/agent-inject-template-helloworld: |
+          {{- with secret "${LICENSE_PLATE}-${LICENSE_BRANCH}/helloworld" }}
+          export dev_database_host="{{ .Data.data.dev_database_host }}"
+          export dev_database_name="{{ .Data.data.dev_database_name }}"
+          {{- end }}
+        vault.hashicorp.com/agent-inject-token: 'true'
+        vault.hashicorp.com/agent-pre-populate-only: 'true'
+        vault.hashicorp.com/auth-path: auth/k8s-silver
+        vault.hashicorp.com/namespace: platform-services
+        vault.hashicorp.com/role: ${LICENSE_PLATE}-nonprod
+  - apiVersion: v1
+    kind: ImageStream
+    spec:
+      lookupPolicy:
+        local: false
+    metadata:
+      generation: 1
+      labels:
+        build: ${NAME}
+        buildconfig: ${NAME}
+        build-branch: ${REPO_BRANCH}
+        image-stream: ${NAME}
+        image-stream-tag: ${IMAGE_TAG}
+      name: ${NAME}
+parameters:
+  - name: NAME
+    required: true
+    description: some desc for this component
+  - name: BUILD_NAMESPACE
+    required: true
+    description: some desc for this component
+  - name: IMAGE_TAG
+    required: true
+    description: some line to describe the image_tag_x parameter
+  - name: REPO_NAME
+    required: true
+    description: some line to describe the image_tag_x parameter
+  - name: REPO_BRANCH
+    required: true
+    description: some line to describe the image_tag_x parameter
+  - name: OC_USER_ID
+    required: true
+    description: openshift env default user_id
+  - name: LICENSE_PLATE
+    required: true
+  - name: LICENSE_BRANCH
+    required: true
+
+  - name: LABEL_NAME
+    required: false
+#  - name: IMAGE_TAG
+#    required: false
+  - name: NAMESPACE
+    required: false
+
+  - name: CPU_REQUESTS
+    required: true
+  - name: CPU_LIMITS
+    required: true
+  - name: MEM_REQUESTS
+    required: true
+  - name: MEM_LIMITS
+    required: true
+  - name: MIN_REPLICAS
+    required: true
+  - name: MAX_REPLICAS
+    required: true

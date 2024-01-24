@@ -1,0 +1,217 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+objects:
+  - apiVersion: v1
+    kind: Service
+    spec:
+      ports:
+        - name: 8080-tcp
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+        - name: 8443-tcp
+          port: 8443
+          protocol: TCP
+          targetPort: 8443
+      selector:
+        deploymentconfig: ${NAME}
+      sessionAffinity: None
+    metadata:
+      name: ${NAME}
+      labels:
+        deploymentconfig: ${NAME}
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: ${NAME}
+      labels:
+        deploymentconfig: ${NAME}
+        app.kubernetes.io/part-of: ${LABEL_NAME}
+
+    spec:
+      triggers:
+        - type: "ConfigChange"
+        - type: "ImageChange"
+          imageChangeParams:
+            automatic: true
+            from:
+              kind: "ImageStreamTag"
+              name: ${NAME}:${IMAGE_TAG}
+              namespace: ${BUILD_NAMESPACE}
+            containerNames:
+              - ${NAME}
+      replicas: ${{MIN_REPLICAS}}
+      revisionHistoryLimit: 5
+      selector:
+        deploymentconfig: ${NAME}
+      strategy:
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            deploymentconfig: ${NAME}
+            deploy-branch: ${REPO_BRANCH}
+          annotations:
+            vault.hashicorp.com/agent-inject: 'true'
+            vault.hashicorp.com/agent-inject-token: 'true'
+            vault.hashicorp.com/agent-pre-populate-only: 'true'
+            vault.hashicorp.com/auth-path: auth/k8s-silver
+            vault.hashicorp.com/namespace: platform-services
+            vault.hashicorp.com/role: ${LICENSE_PLATE}-${LICENSE_BRANCH}
+            vault.hashicorp.com/agent-inject-secret-secrets.env: ${LICENSE_PLATE}-${LICENSE_BRANCH}/secrets.env
+            vault.hashicorp.com/agent-inject-template-secrets.env: |
+              {{- with secret "${LICENSE_PLATE}-${LICENSE_BRANCH}/secrets.env" }}
+              {{- range $k, $v := .Data.data }}
+              {{ $k }}={{ $v }}{{ end -}}
+              {{- end  }}
+        spec:
+          serviceAccountName: ${LICENSE_PLATE}-vault
+          volumes:
+            - name: site-data-volume
+              configMap:
+                name: subpath-env
+          containers:
+            - image: >-
+                image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
+              volumeMounts:
+                - name: site-data-volume
+                  mountPath: /var/site_data
+              imagePullPolicy: Always
+              name: ${NAME}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+                - containerPort: 8443
+                  protocol: TCP
+              resources:
+                limits:
+                  cpu: ${CPU_LIMITS}
+                  memory: ${MEM_LIMITS}
+                requests:
+                  cpu: ${CPU_REQUESTS}
+                  memory: ${MEM_REQUESTS}
+              livenessProbe:
+                exec:
+                  command:
+                  - /bin/sh
+                  - -c
+                  - /var/www/html/probe-check.sh
+                initialDelaySeconds: 1000
+                periodSeconds: 15
+                timeoutSeconds: 5
+                successThreshold: 1
+                failureThreshold: 3
+              env:
+              - name: "ENV_ARG"
+                value: "hi there"
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    spec:
+      host: ${NAME}-${NAMESPACE}.apps.silver.devops.gov.bc.ca
+      port:
+        targetPort: 8080-tcp
+      to:
+        kind: Service
+        name: ${NAME}
+        weight: 100
+      wildcardPolicy: None
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+    metadata:
+      name: ${NAME}
+      labels:
+        deploymentconfig: ${NAME}
+      annotations:
+        haproxy.router.openshift.io/ip_whitelist: 142.22.0.0/12 142.32.0.0/12 142.35.0.0/12
+  - apiVersion: autoscaling.k8s.io/v1
+    kind: VerticalPodAutoscaler
+    metadata:
+      name: ${NAME}
+      labels:
+        deploymentconfig: ${NAME}
+    spec:
+      targetRef:
+        kind: DeploymentConfig
+        name: ${NAME}
+        apiVersion: apps.openshift.io/v1
+      updatePolicy:
+        updateMode: "Off"
+  - apiVersion: autoscaling/v1
+    kind: HorizontalPodAutoscaler
+    metadata:
+      labels:
+        deploymentconfig: ${NAME}
+      name: ${NAME}
+    spec:
+      scaleTargetRef:
+        apiVersion: apps.openshift.io/v1
+        kind: DeploymentConfig
+        name: ${NAME}
+      minReplicas: ${{MIN_REPLICAS}}
+      maxReplicas: ${{MAX_REPLICAS}}
+      metrics:
+        - type: Resource
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 80
+
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: ${NAME}-allow-external
+      spec:
+        podSelector:
+          matchLabels:
+            deploymentconfig: ${NAME}
+        ingress:
+          - ports:
+            - protocol: TCP
+              port: 8080
+            - protocol: TCP
+              port: 80
+            - protocol: TCP
+              port: 443
+        policyTypes:
+          - Ingress
+parameters:
+  - name: OC_USER_ID
+    required: false
+  - name: NAME
+    required: true
+    description: some desc for this component
+  - name: NAMESPACE
+    required: true
+    description: some line to describe the image_tag_x parameter
+  - name: LABEL_NAME
+    required: true
+    description: some desc for this component
+  - name: IMAGE_TAG
+    required: true
+    description: some line to describe the image_tag_x parameter
+  - name: LICENSE_PLATE
+    required: true
+  - name: LICENSE_BRANCH
+    required: true
+  - name: BUILD_NAMESPACE
+    required: true
+    description: some line to describe the image_tag_x parameter
+  - name: REPO_BRANCH
+    required: true
+    description: some line to describe the image_tag_x parameter
+  - name: REPO_NAME
+    required: false
+  - name: CPU_REQUESTS
+    required: true
+  - name: CPU_LIMITS
+    required: true
+  - name: MEM_REQUESTS
+    required: true
+  - name: MEM_LIMITS
+    required: true
+  - name: MIN_REPLICAS
+    required: true
+  - name: MAX_REPLICAS
+    required: true
