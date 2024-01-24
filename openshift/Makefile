@@ -27,7 +27,7 @@ endef
 
 else ifeq ($(GIT_LOCAL_BRANCH),test)
 define OC_USER_ID
-"1009370000"
+"1004030000"
 endef
 define PARAM_FILE
 "test.env"

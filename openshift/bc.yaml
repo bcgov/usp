@@ -19,11 +19,11 @@ objects:
       postCommit: {}
       resources:
         requests:
-          cpu: 2
-          memory: 8Gi
+          cpu: CPU_REQUESTS
+          memory: MEMORY_REQUESTS
         limits:
-          cpu: 4
-          memory: 16Gi
+          cpu: CPU_LIMITS
+          memory: MEMORY_LIMITS
       runPolicy: Serial
       source:
         git:
