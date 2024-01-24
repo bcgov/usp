@@ -20,6 +20,8 @@ ENV APACHE_SERVER_NAME=__default__
 
 WORKDIR /
 
+RUN whoami
+
 RUN apt-get -y update --fix-missing \
     && apt-get update && apt-get install -y --no-install-recommends apt-utils \
 #php setup, install extensions, setup configs \
@@ -85,6 +87,8 @@ RUN a2enmod remoteip \
         /etc/apache2/conf-available/security.conf \
 # Enable apache modules
   && a2enmod rewrite headers
+
+
 
 # Install NPM
 RUN apt-get install -y ca-certificates gnupg \
