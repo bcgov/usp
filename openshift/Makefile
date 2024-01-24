@@ -13,7 +13,7 @@ export SOURCE_REPOSITORY_BRANCH := $(or $(SOURCE_REPOSITORY_BRANCH), dev)
 export BACKUP_POSTGRESQL_APP_NAME := $(or $(BACKUP_POSTGRESQL_APP_NAME), usp-patroni-backup)
 export BACKUP_CONFIGMAP_NAME := $(or $(BACKUP_CONFIGMAP_NAME), usp-patroni-backup-conf)
 
-#if
+##if
 ifeq ($(GIT_LOCAL_BRANCH),dev)
 define OC_USER_ID
 "1009370000"
