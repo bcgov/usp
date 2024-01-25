@@ -20,7 +20,6 @@ ENV APACHE_SERVER_NAME=__default__
 
 WORKDIR /
 
-RUN whoami
 
 RUN apt-get -y update --fix-missing \
     && apt-get update && apt-get install -y --no-install-recommends apt-utils \
@@ -147,7 +146,7 @@ RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage boot
     && chmod 764 /var/www/html/artisan \
 #Error: EACCES: permission denied, open '/var/www/html/public/mix-manifest.json' \
     && cd /var/www/html/public && chmod 766 mix-manifest.json \
-    && mkdir /.npm && chown -R ${USER_ID}:0 "/.npm" \
+    && mkdir /.npm && mkdir /.npm/_cache && chown -R ${USER_ID}:0 "/.npm" \
 #Writing to directory /.config/psysh is not allowed.
     && mkdir -p /.config/psysh && chown -R ${USER_ID}:root /.config && chmod -R 755 /.config \
     && mkdir -p /.composer && chown -R ${USER_ID}:root /.composer && chmod -R 755 /.composer \
