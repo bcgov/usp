@@ -1,4 +1,21 @@
 const mix = require('laravel-mix');
+const fs = require('fs');
+const path = require('path');
+
+// Define the path to your Laravel Modules directory
+const modulesPath = path.join(__dirname, 'Modules');
+
+// Loop through module directories
+fs.readdirSync(modulesPath).forEach(moduleName => {
+    const modulePath = path.join(modulesPath, moduleName);
+
+    // Check if the module has a 'Resources/css/app.css' file
+    const cssPath = path.join(modulePath, 'Resources/assets/css/app.css');
+    if (fs.existsSync(cssPath)) {
+        // Compile the CSS file into a module-specific output directory
+        mix.postCss(cssPath, 'public/css');
+    }
+});
 
 /*
  |--------------------------------------------------------------------------

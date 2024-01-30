@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+nav ul.navbar-nav a{
+    text-decoration: none;
+    line-height: 32px;
+}
+nav ul.navbar-nav a:hover{
+    color: white;
+}
+.border-indigo-400 {
+    --tw-border-opacity: 1;
+    border-color: white;
+}
+.navlink-active{
+    color: white !important;
+}
+
+.btn{
+    box-shadow: none !important;
+}
+.font-light {
+    font-weight: 200;
+}
+.navbar-collapse {
+    visibility: visible !important;
+}
+.accordion-item .collapse {
+    visibility: visible !important;
+}
+
+.navbar .collapse.show {
+    visibility: initial;
+}

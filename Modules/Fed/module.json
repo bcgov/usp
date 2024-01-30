@@ -1,0 +1,11 @@
+{
+    "name": "Fed",
+    "alias": "fed",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Fed\\App\\Providers\\FedServiceProvider"
+    ],
+    "files": []
+}

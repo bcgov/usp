@@ -22,20 +22,14 @@ return new class extends Migration
 
         // Insert default records
         DB::table('roles')->insert(['name' => 'Super Admin']);
-        DB::table('roles')->insert(['name' => 'VSS Admin']);
-        DB::table('roles')->insert(['name' => 'YEAF Admin']);
-        DB::table('roles')->insert(['name' => 'TWP Admin']);
-        DB::table('roles')->insert(['name' => 'NEB Admin']);
+        DB::table('roles')->insert(['name' => 'Ministry Admin']);
+        DB::table('roles')->insert(['name' => 'Institute Admin']);
 
-        DB::table('roles')->insert(['name' => 'VSS User']);
-        DB::table('roles')->insert(['name' => 'YEAF User']);
-        DB::table('roles')->insert(['name' => 'TWP User']);
-        DB::table('roles')->insert(['name' => 'NEB User']);
+        DB::table('roles')->insert(['name' => 'Ministry User']);
+        DB::table('roles')->insert(['name' => 'Institute User']);
 
-        DB::table('roles')->insert(['name' => 'VSS Guest']);
-        DB::table('roles')->insert(['name' => 'YEAF Guest']);
-        DB::table('roles')->insert(['name' => 'TWP Guest']);
-        DB::table('roles')->insert(['name' => 'NEB Guest']);
+        DB::table('roles')->insert(['name' => 'Ministry Guest']);
+        DB::table('roles')->insert(['name' => 'Institute Guest']);
 
     }
 

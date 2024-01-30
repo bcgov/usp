@@ -164,41 +164,6 @@ objects:
             resources:
               requests:
                 storage: ${PVC_SIZE}
-  #porter for EDW
-  - apiVersion: porter.devops.gov.bc.ca/v1alpha1
-    kind: TransportServerClaim
-    metadata:
-      name: ${PATRONI_NAME}-porter
-      finalizers:
-        - porter.devops.gov.bc.ca/finalizer
-      labels:
-        app: ${PATRONI_NAME}-porter
-    spec:
-      monitor:
-        interval: 10
-        timeout: 10
-        type: tcp
-      service: ${PATRONI_NAME}-master
-      servicePort: 5432
-
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: ${PATRONI_NAME}-porter-network-policy
-      labels:
-        app: ${PATRONI_NAME}-porter-network-policy
-    spec:
-      podSelector:
-        matchLabels:
-          statefulset.kubernetes.io/pod-name: ${PATRONI_NAME}-0
-      ingress:
-        - from:
-            - namespaceSelector:
-                matchLabels:
-                  network.openshift.io/policy-group: ingress
-      policyTypes:
-        - Ingress
-  # End of porter setup
 parameters:
   - name: PATRONI_NAME
     value: usp-patroni
@@ -230,7 +195,7 @@ parameters:
   - name: MEMORY_LIMIT
     description: Maximum amount of memory the container can use.
     displayName: Memory Limit
-    value: 1Gi
+    value: 500Mi
   - name: BUILD_NAMESPACE
     description: |
       The OpenShift Namespace where the patroni and postgresql
@@ -245,7 +210,7 @@ parameters:
     description:
       The size of the persistent volume to create.
     displayName: Persistent Volume Size
-    value: 2Gi
+    value: 500Mi
   - name: STORAGE_CLASS
     value: netapp-file-standard
   - name: IMAGE_REGISTRY

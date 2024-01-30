@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/ministry",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Ministry\\": "",
+            "Modules\\Ministry\\App\\": "app/",
+            "Modules\\Ministry\\Database\\Factories\\": "database/factories/",
+            "Modules\\Ministry\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Ministry\\Tests\\": "tests/"
+        }
+    }
+}
