@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('attestations', function (Blueprint $table) {
             $table->id();
-
             $table->string('guid', 32)->index()->unique();
 
             $table->string('institution_guid', 32);
