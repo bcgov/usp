@@ -19,10 +19,10 @@ objects:
       postCommit: {}
       resources:
         requests:
-          cpu: ${CPU_REQUESTS}
+          cpu: ${BUILD_CPU_REQUESTS}
           memory: ${MEM_REQUESTS}
         limits:
-          cpu: ${CPU_LIMITS}
+          cpu: ${BUILD_CPU_LIMITS}
           memory: ${MEM_LIMITS}
       runPolicy: Serial
       source:
@@ -103,9 +103,9 @@ parameters:
   - name: NAMESPACE
     required: false
 
-  - name: CPU_REQUESTS
+  - name: BUILD_CPU_REQUESTS
     required: true
-  - name: CPU_LIMITS
+  - name: BUILD_CPU_LIMITS
     required: true
   - name: MEM_REQUESTS
     required: true
