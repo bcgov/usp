@@ -98,8 +98,6 @@ parameters:
 
   - name: LABEL_NAME
     required: false
-#  - name: IMAGE_TAG
-#    required: false
   - name: NAMESPACE
     required: false
 
@@ -115,3 +113,7 @@ parameters:
     required: true
   - name: MAX_REPLICAS
     required: true
+  - name: CPU_REQUESTS
+    required: false
+  - name: CPU_LIMITS
+    required: false
