@@ -11,26 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('institution_staff', function (Blueprint $table) {
+        Schema::create('programs', function (Blueprint $table) {
             $table->id();
-
             $table->string('guid', 32)->index()->unique();
-            $table->string('user_guid', 32);
-            $table->foreign('user_guid')->references('guid')->on('users')
-                ->onDelete('cascade');
 
             $table->string('institution_guid', 32);
             $table->foreign('institution_guid')->references('guid')->on('institutions')
                 ->onDelete('cascade');
 
-            $table->string('bceid_business_guid');
-            $table->string('bceid_user_guid');
-            $table->string('bceid_user_id');
-            $table->string('bceid_user_name')->nullable();
-            $table->string('bceid_user_email')->nullable();
-
-            $table->string('status')->default('pending')->nullable();
-            $table->string('last_touch_by_user_guid')->nullable();
+            $table->string('name');
+            $table->string('noc_id')->nullable()->comment('national occupation code');
+            $table->string('inst_status')->comment('institution status set by inst.: active, inactive');
+            $table->string('ministry_status')->nullable()->comment('status set by the ministry');
 
             $table->softDeletes();
             $table->timestamps();
@@ -42,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('institution_staff');
+        Schema::dropIfExists('programs');
     }
 };

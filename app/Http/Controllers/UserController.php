@@ -40,7 +40,7 @@ class UserController extends Controller
     public function bceidLogin(Request $request)
     {
         $provider = new Keycloak([
-            'authServerUrl' => env('KEYCLOAK_SERVER_URL'),
+            'authServerUrl' => env('KEYCLOAK_BCEID_SERVER_URL'),
             'realm' => env('KEYCLOAK_REALM'),
             'clientId' => env('KEYCLOAK_BCEID_CLIENT_ID'),
             'clientSecret' => env('KEYCLOAK_BCEID_CLIENT_SECRET'),
@@ -57,12 +57,15 @@ class UserController extends Controller
             // If we don't have an authorization code then get one
             $authUrl = $provider->getAuthorizationUrl();
             $request->session()->put('oauth2state', $provider->getState());
+            \Log::info('$authUrl: ' . $authUrl);
+            \Log::info('$provider->getState(): ' . $provider->getState());
 
             return Redirect::to($authUrl);
 
             // Check given state against previously stored one to mitigate CSRF attack
         } elseif (! $request->has('state') || ($request->state !== $request->session()->get('oauth2state'))) {
             $request->session()->forget('oauth2state');
+            \Log::info('messed up state ' . $request->state . " !== " . $request->session()->get('oauth2state'));
 
             //Invalid state, make sure HTTP sessions are enabled
             return Inertia::render('Auth/Login', [
@@ -89,6 +92,8 @@ class UserController extends Controller
                 // We got an access token, let's now get the user's details
                 $provider_user = $provider->getResourceOwner($token);
                 $provider_user = $provider_user->toArray();
+                \Log::info('We got a token: ' . $token);
+                \Log::info('$provider_user: ' . json_encode($provider_user));
             } catch (\Exception $e) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
@@ -102,7 +107,7 @@ class UserController extends Controller
                 $user = User::where('idir_user_guid', 'ilike', $provider_user['idir_user_guid'])->first();
             }
             if($type === Role::Institution_GUEST){
-                $user = User::where('bceid_user_guid', 'ilike', $provider_user['bceid_business_guid'])->first();
+                $user = User::where('bceid_user_guid', 'ilike', $provider_user['bceid_user_guid'])->first();
             }
 
             //if it is a new IDIR user, register the user first
@@ -196,7 +201,7 @@ class UserController extends Controller
     private function newUser($provider_user, $type)
     {
         $user = new User();
-        $user->guid = Str::uuid();
+        $user->guid = Str::orderedUuid()->getHex();
         $user->first_name = $provider_user['given_name'];
         $user->last_name = $provider_user['family_name'];
         $user->email = $provider_user['email'];

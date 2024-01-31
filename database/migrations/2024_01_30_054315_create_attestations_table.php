@@ -11,25 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('institution_staff', function (Blueprint $table) {
+        Schema::create('attestations', function (Blueprint $table) {
             $table->id();
 
             $table->string('guid', 32)->index()->unique();
-            $table->string('user_guid', 32);
-            $table->foreign('user_guid')->references('guid')->on('users')
-                ->onDelete('cascade');
 
             $table->string('institution_guid', 32);
             $table->foreign('institution_guid')->references('guid')->on('institutions')
                 ->onDelete('cascade');
+            $table->string('cap_guid', 32);
+            $table->foreign('cap_guid')->references('guid')->on('caps')
+                ->onDelete('cascade');
 
-            $table->string('bceid_business_guid');
-            $table->string('bceid_user_guid');
-            $table->string('bceid_user_id');
-            $table->string('bceid_user_name')->nullable();
-            $table->string('bceid_user_email')->nullable();
+            $table->string('student_name');
+            $table->string('student_id_number');
+            $table->string('student_dob');
+            $table->string('status')->default('new');
+            $table->date('expiry_date')->default(now()->addDays(30));
 
-            $table->string('status')->default('pending')->nullable();
+            $table->string('created_by_user_guid')->nullable();
             $table->string('last_touch_by_user_guid')->nullable();
 
             $table->softDeletes();
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('institution_staff');
+        Schema::dropIfExists('attestations');
     }
 };

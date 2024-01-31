@@ -13,19 +13,24 @@ return new class extends Migration
     {
         Schema::create('institutions', function (Blueprint $table) {
             $table->id();
-            $table->uuid('guid')->index()->unique();
+            $table->string('guid', 32)->index()->unique();
             $table->string('dli')->nullable();
             $table->string('name');
-            $table->string('address')->nullable();
+            $table->string('legal_name')->nullable();
+            $table->string('address1')->nullable();
+            $table->string('address2')->nullable();
+            $table->string('primary_contact');
             $table->string('primary_email');
-            $table->string('secondary_email')->nullable();
-            $table->string('phone_number')->nullable();
+            $table->string('city')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('province', 3)->nullable();
             $table->boolean('public')->default(false);
             $table->boolean('active_status')->default(false);
             $table->string('standing_status')->nullable();
 
             $table->string('api_id')->nullable();
             $table->string('api_key')->nullable();
+            $table->string('last_touch_by_user_guid')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

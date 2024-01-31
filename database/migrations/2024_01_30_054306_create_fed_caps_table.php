@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('fed_caps', function (Blueprint $table) {
             $table->id();
-            $table->string('guid', 32)->index()->unique();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->boolean('disabled')->default(false);
 
-            $table->string('email');
-            $table->string('password');
-            $table->string('idir_user_guid')->nullable();
-            $table->string('bceid_user_guid')->nullable();
+            $table->string('guid', 32)->index()->unique();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->integer('total_attestations');
+
+            $table->string('status')->default('active')->comment('active|completed|cancelled');
+            $table->text('comment')->nullable();
+            $table->string('last_touch_by_user_guid')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('fed_caps');
     }
 };

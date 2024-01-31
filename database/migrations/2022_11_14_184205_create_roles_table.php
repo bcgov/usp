@@ -23,13 +23,13 @@ return new class extends Migration
         // Insert default records
         DB::table('roles')->insert(['name' => 'Super Admin']);
         DB::table('roles')->insert(['name' => 'Ministry Admin']);
-        DB::table('roles')->insert(['name' => 'Institute Admin']);
+        DB::table('roles')->insert(['name' => 'Institution Admin']);
 
         DB::table('roles')->insert(['name' => 'Ministry User']);
-        DB::table('roles')->insert(['name' => 'Institute User']);
+        DB::table('roles')->insert(['name' => 'Institution User']);
 
         DB::table('roles')->insert(['name' => 'Ministry Guest']);
-        DB::table('roles')->insert(['name' => 'Institute Guest']);
+        DB::table('roles')->insert(['name' => 'Institution Guest']);
 
     }
 

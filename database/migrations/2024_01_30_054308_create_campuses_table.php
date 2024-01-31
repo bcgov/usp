@@ -11,20 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attestations', function (Blueprint $table) {
+        Schema::create('campuses', function (Blueprint $table) {
             $table->id();
 
-            $table->uuid('guid')->index();
+            $table->string('guid', 32)->index()->unique();
 
-            $table->uuid('institution_guid');
+            $table->string('institution_guid', 32);
             $table->foreign('institution_guid')->references('guid')->on('institutions')
                 ->onDelete('cascade');
-            $table->string('program_year', 10);
-            $table->string('student_name');
-            $table->string('student_id_number');
-            $table->string('student_dob');
-            $table->string('status')->default('new');
-            $table->date('expiry_date')->default(now()->addDays(30));
+
+            $table->string('name');
+            $table->string('inst_status')->comment('institution status set by inst.: active, inactive');
+            $table->string('ministry_status')->nullable()->comment('status set by the ministry');
 
             $table->softDeletes();
             $table->timestamps();
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attestations');
+        Schema::dropIfExists('campuses');
     }
 };
