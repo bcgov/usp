@@ -34,7 +34,7 @@
                                         </thead>
                                         <tbody>
                                         <tr v-for="(row, i) in results.data">
-                                            <td><Link :href="'/ministry/fed_caps/' + row.guid">{{ row.start_date }}</Link></td>
+                                            <td><Link :href="'/ministry/fed_caps/' + row.id">{{ row.start_date }}</Link></td>
                                             <td>{{ row.end_date }}</td>
                                             <td>{{ row.total_attestations}}</td>
                                             <td>
