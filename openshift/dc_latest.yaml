@@ -219,3 +219,7 @@ parameters:
     required: false
   - name: BUILD_CPU_LIMITS
     required: false
+  - name: BUILD_MEM_REQUESTS
+    required: false
+  - name: BUILD_MEM_LIMITS
+    required: false

@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.2-apache
 ARG DEBIAN_VERSION=20.04
 ARG APACHE_OPENIDC_VERSION=2.4.10
 ARG TZ=America/Vancouver
