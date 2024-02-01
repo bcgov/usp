@@ -37,9 +37,9 @@ class InstitutionStoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'guid' => 'required|unique:institutions,guid',
             'dli' => 'required|unique:institutions,dli',
             'name' => 'required|unique:institutions,name',
-            'guid' => 'required',
             'legal_name' => 'nullable',
             'address1' => 'required',
             'address2' => 'nullable',

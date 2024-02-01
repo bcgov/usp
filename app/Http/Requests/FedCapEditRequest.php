@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FedCap;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class FedCapEditRequest extends FormRequest
 {
@@ -11,7 +13,8 @@ class FedCapEditRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $fedCap = FedCap::find($this->id);
+        return $this->user()->can('update', $fedCap);
     }
 
     /**
@@ -22,7 +25,26 @@ class FedCapEditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'required',
+            'guid' => 'required',
+            'start_date' => 'required|unique:fed_caps,start_date,'.$this->id,
+            'end_date' => 'required|unique:fed_caps,end_date,'.$this->id,
+            'status' => 'required|in:Active,Completed,Cancelled',
+            'total_attestations' => 'required|numeric',
+            'comment' => 'nullable',
+            'last_touch_by_user_guid' => 'required:exists,users,guid',
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'last_touch_by_user_guid' => $this->user()->guid,
+        ]);
     }
 }

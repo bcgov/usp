@@ -17,8 +17,8 @@
         <th scope="col">
             <a href="#" @click="switchSort('total_attestations')">
                 <span># Attestations</span>
-                <em v-if="sortClmn === 'total_attestations' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-down"></em>
+                <em v-if="sortClmn === 'total_attestations' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
+                <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">

@@ -87,8 +87,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newInstForm.processing">Create
-                Institution
+            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newInstForm.processing">
+                Create Institution
             </button>
         </div>
         <FormSubmitAlert :form-state="newInstForm.formState" :success-msg="newInstForm.formSuccessMsg"

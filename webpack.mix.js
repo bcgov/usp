@@ -10,7 +10,7 @@ fs.readdirSync(modulesPath).forEach(moduleName => {
     const modulePath = path.join(modulesPath, moduleName);
 
     // Check if the module has a 'Resources/css/app.css' file
-    const cssPath = path.join(modulePath, 'Resources/assets/css/app.css');
+    const cssPath = path.join(modulePath, 'resources/assets/css/app.css');
     if (fs.existsSync(cssPath)) {
         // Compile the CSS file into a module-specific output directory
         mix.postCss(cssPath, 'public/css');

@@ -24,7 +24,7 @@
                         <div class="card mb-3">
                             <div class="card-header">
                                 Federal Caps
-                                <Link :href="'/ministry/fed_caps/new'" class="btn btn-sm btn-success float-end">New Cap</Link>
+                                <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newFedCapModal">New Federal Cap</button>
                             </div>
                             <div class="card-body">
                                 <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">
@@ -52,6 +52,19 @@
                     </div>
                 </div>
             </div>
+
+
+        <div class="modal modal-lg fade" id="newFedCapModal" tabindex="-1" aria-labelledby="newFedCapModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newFedCapModalLabel">Add New Federal Cap</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <FedCapCreate :newFedCap="newFedCap"></FedCapCreate>
+                </div>
+            </div>
+        </div>
     </AuthenticatedLayout>
 
 </template>
@@ -59,16 +72,18 @@
 import AuthenticatedLayout from '../Layouts/Authenticated.vue';
 import InstitutionSearchBox from '../Components/InstitutionSearch.vue';
 import FedCapsHeader from '../Components/FedCapsHeader.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import FedCapCreate from '../Components/FedCapCreate.vue';
 import Pagination from "@/Components/Pagination";
+import { Head, Link } from '@inertiajs/vue3';
 
 export default {
-    name: 'Institutions',
+    name: 'FedCaps',
     components: {
-        AuthenticatedLayout, InstitutionSearchBox, FedCapsHeader, Head, Link, Pagination
+        AuthenticatedLayout, InstitutionSearchBox, FedCapsHeader, Head, Link, Pagination, FedCapCreate
     },
     props: {
-        results: Object
+        results: Object,
+        newFedCap: Object|null
     }
 }
 </script>

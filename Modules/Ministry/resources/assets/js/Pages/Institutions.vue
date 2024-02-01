@@ -83,12 +83,6 @@ export default {
     props: {
         results: Object,
         newInst: Object|null
-    },
-    mounted() {
-
-    },
-    methods: {
-
     }
 }
 </script>
