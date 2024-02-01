@@ -37,8 +37,9 @@ RUN apt-get -y update --fix-missing \
     && sed -ri -e 's!expose_php = On!expose_php = Off!g' $PHP_INI_DIR/php.ini-production \
     && sed -ri -e 's!ServerTokens OS!ServerTokens Prod!g' /etc/apache2/conf-available/security.conf \
     && sed -ri -e 's!ServerSignature On!ServerSignature Off!g' /etc/apache2/conf-available/security.conf \
-    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
-    && apt-get install -yq zlib1g-dev g++ libicu-dev libpq-dev git nano netcat-traditional curl apache2 dialog locate libcurl4 libcurl3-dev psmisc \
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+RUN apt-get install -yq zlib1g-dev g++ libicu-dev libpq-dev git nano netcat-traditional curl apache2 dialog locate libcurl4 libcurl3-dev psmisc \
 	libfreetype6-dev \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
@@ -50,9 +51,10 @@ RUN apt-get -y update --fix-missing \
     && docker-php-ext-enable apcu \
     && docker-php-ext-install intl opcache\
     && docker-php-ext-configure zip \
-    && docker-php-ext-install zip \
+    && docker-php-ext-install zip
+
 # Install Postgre PDO
-    && apt-get install -y libonig-dev \
+RUN apt-get install -y libonig-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql pgsql && docker-php-ext-install curl  \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/  \
