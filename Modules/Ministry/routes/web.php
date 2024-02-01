@@ -28,5 +28,6 @@ Route::prefix('ministry')->group(function () {
         Route::post('/institutions', [InstitutionController::class, 'store'])->name('institutions.store');
 
         Route::get('/fed_caps', [FedCapController::class, 'index'])->name('fed_caps.index');
+        Route::post('/fed_caps', [FedCapController::class, 'store'])->name('fed_caps.store');
     });
 });

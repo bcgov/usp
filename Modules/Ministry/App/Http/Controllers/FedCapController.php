@@ -4,6 +4,7 @@ namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\FedCap;
+use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -33,9 +34,13 @@ class FedCapController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(InstitutionStoreRequest $request): \Inertia\Response
     {
-        //
+        $institution = Institution::create($request->validated());
+        $institutions = $this->paginateInst();
+
+        return Inertia::render('Ministry::Institutions', ['page' => 'details', 'results' => $institutions,
+            'newInst' => $institution]);
     }
 
     /**
