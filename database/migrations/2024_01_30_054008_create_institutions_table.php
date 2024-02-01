@@ -27,7 +27,6 @@ return new class extends Migration
             $table->boolean('public')->default(false);
             $table->boolean('active_status')->default(false);
             $table->string('standing_status')->nullable();
-
             $table->string('api_id')->nullable();
             $table->string('api_key')->nullable();
             $table->string('last_touch_by_user_guid')->nullable();

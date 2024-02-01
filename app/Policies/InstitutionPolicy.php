@@ -13,7 +13,8 @@ class InstitutionPolicy
 
     public function before(User $user, $ability)
     {
-        return $user->hasRole(Role::SUPER_ADMIN);
+        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+        return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
     /**
@@ -37,7 +38,7 @@ class InstitutionPolicy
      */
     public function create(User $user): bool
     {
-        $rolesToCheck = [Role::SUPER_ADMIN, Role::Ministry_ADMIN, Role::Ministry_USER];
+        $rolesToCheck = [Role::Ministry_USER];
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -46,7 +47,7 @@ class InstitutionPolicy
      */
     public function update(User $user, Institution $model): bool
     {
-        $rolesToCheck = [Role::SUPER_ADMIN, Role::Ministry_ADMIN, Role::Ministry_USER, Role::Institution_ADMIN];
+        $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN];
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -55,8 +56,7 @@ class InstitutionPolicy
      */
     public function delete(User $user, Institution $model): bool
     {
-        $rolesToCheck = [Role::SUPER_ADMIN, Role::Ministry_ADMIN];
-        return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
+        //
     }
 
     /**

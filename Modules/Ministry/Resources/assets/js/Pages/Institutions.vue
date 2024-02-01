@@ -24,7 +24,7 @@
                         <div class="card mb-3">
                             <div class="card-header">
                                 Institutions
-<!--                                <Link :href="'/vss/cases/create'" class="btn btn-sm btn-success float-end">New Case</Link>-->
+                                <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newInstModal">New Institution</button>
                             </div>
                             <div class="card-body">
                                 <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">
@@ -34,7 +34,7 @@
                                         </thead>
                                         <tbody>
                                         <tr v-for="(row, i) in results.data">
-                                            <td><Link :href="'/ministry/institutions/show/' + row.id">{{ row.dli }}</Link></td>
+                                            <td><Link :href="'/ministry/institutions/' + row.id">{{ row.dli }}</Link></td>
                                             <td>{{ row.name }}</td>
                                             <td>
                                                 <span v-if="row.active_status" class="badge rounded-pill text-bg-success">Active</span>
@@ -52,6 +52,18 @@
                     </div>
                 </div>
             </div>
+
+        <div class="modal modal-lg fade" id="newInstModal" tabindex="-1" aria-labelledby="newInstModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newInstModalLabel">Add New Institution</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <InstitutionCreate :newInst="newInst"></InstitutionCreate>
+                </div>
+            </div>
+        </div>
     </AuthenticatedLayout>
 
 </template>
@@ -59,16 +71,24 @@
 import AuthenticatedLayout from '../Layouts/Authenticated.vue';
 import InstitutionSearchBox from '../Components/InstitutionSearch.vue';
 import InstitutionsHeader from '../Components/InstitutionsHeader.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import InstitutionCreate from '../Components/InstitutionCreate.vue';
 import Pagination from "@/Components/Pagination";
+import { Link, Head } from '@inertiajs/vue3';
 
 export default {
     name: 'Institutions',
     components: {
-        AuthenticatedLayout, InstitutionSearchBox, InstitutionsHeader, Head, Link, Pagination
+        AuthenticatedLayout, InstitutionSearchBox, InstitutionsHeader, Head, Link, Pagination, InstitutionCreate
     },
     props: {
-        results: Object
+        results: Object,
+        newInst: Object|null
+    },
+    mounted() {
+
+    },
+    methods: {
+
     }
 }
 </script>

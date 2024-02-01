@@ -6,7 +6,7 @@ use App\Models\Institution;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-class InstitutionEditRequest extends FormRequest
+class InstitutionStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,10 +15,7 @@ class InstitutionEditRequest extends FormRequest
      */
     public function authorize()
     {
-        $institution = Institution::find($this->id);
-        // Check if the authenticated user has the necessary permissions to edit the institution.
-        // You can access the authenticated user using the Auth facade or $this->user() method.
-        return $this->user()->can('update', $institution);
+        return $this->user()->can('create', Institution::class);
     }
 
     /**
@@ -40,10 +37,9 @@ class InstitutionEditRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required',
+            'dli' => 'required|unique:institutions,dli',
+            'name' => 'required|unique:institutions,name',
             'guid' => 'required',
-            'dli' => 'required|unique:institutions,dli,'.$this->id,
-            'name' => 'required|unique:institutions,name,'.$this->id,
             'legal_name' => 'nullable',
             'address1' => 'required',
             'address2' => 'nullable',
@@ -69,6 +65,7 @@ class InstitutionEditRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
+            'guid' => Str::orderedUuid()->getHex(),
             'active_status' => $this->toBoolean($this->active_status),
             'public' => $this->toBoolean($this->public),
             'last_touch_by_user_guid' => $this->user()->guid,

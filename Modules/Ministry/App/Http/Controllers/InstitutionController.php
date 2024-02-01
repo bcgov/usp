@@ -4,6 +4,7 @@ namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionEditRequest;
+use App\Http\Requests\InstitutionStoreRequest;
 use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,19 +25,15 @@ class InstitutionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('ministry::create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(InstitutionStoreRequest $request): \Inertia\Response
     {
-        //
+        $institution = Institution::create($request->validated());
+        $institutions = $this->paginateInst();
+
+        return Inertia::render('Ministry::Institutions', ['page' => 'details', 'results' => $institutions,
+            'newInst' => $institution]);
     }
 
     /**
@@ -48,25 +45,13 @@ class InstitutionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('ministry::edit');
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(InstitutionEditRequest $request): RedirectResponse
     {
-        // Redirect or return a response
         Institution::where('id', $request->id)->update($request->validated());
-        $institution = Institution::find($request->id);
 
-        return Redirect::route('ministry.institutions.show', [$institution->id]);
-
-//        return Inertia::render('Ministry::Institution', ['page' => 'details', 'results' => $institution]);
+        return Redirect::route('ministry.institutions.show', [$request->id]);
     }
 
     /**

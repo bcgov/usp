@@ -127,7 +127,7 @@ export default {
         submitForm: function ()
         {
             this.editForm.formState = null;
-            this.editForm.put('/ministry/institutions/update', {
+            this.editForm.put('/ministry/institutions', {
                 onSuccess: () => {
                     this.editForm.formState = true;
                 },
