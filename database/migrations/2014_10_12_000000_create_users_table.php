@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('idir_user_guid')->nullable();
             $table->string('bceid_user_guid')->nullable();
+            $table->string('bceid_business_guid')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

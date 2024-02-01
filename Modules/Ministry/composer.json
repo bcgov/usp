@@ -1,10 +1,10 @@
 {
-    "name": "nwidart/ministry",
+    "name": "usp/ministry",
     "description": "",
     "authors": [
         {
-            "name": "Nicolas Widart",
-            "email": "n.widart@gmail.com"
+            "name": "Kal Marsh",
+            "email": "kal.marsh@gov.bc.ca"
         }
     ],
     "extra": {
@@ -17,15 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Ministry\\": "",
-            "Modules\\Ministry\\App\\": "app/",
-            "Modules\\Ministry\\Database\\Factories\\": "database/factories/",
-            "Modules\\Ministry\\Database\\Seeders\\": "database/seeders/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Modules\\Ministry\\Tests\\": "tests/"
+            "Modules\\Ministry\\": ""
         }
     }
 }

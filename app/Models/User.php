@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = ['guid', 'first_name', 'last_name', 'disabled', 'email', 'password',
-        'idir_user_guid', 'bceid_user_guid', ];
+        'idir_user_guid', 'bceid_user_guid', 'bceid_business_guid', ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -25,21 +25,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = ['password'];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        $this->connection = "pgsql";
-    }
 
     /**
      * The roles that belong to the user.

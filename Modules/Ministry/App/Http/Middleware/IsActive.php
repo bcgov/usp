@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class MinistryActive
+class IsActive
 {
     /**
      * Handle an incoming request.
@@ -26,20 +26,20 @@ class MinistryActive
         }
 
         $user = Auth::user();
-        if ($user->disabled || is_null($user->idir_user_guid)) {
+        //if the user is disabled or has neither idir/bceid
+        if ($user->disabled || (is_null($user->idir_user_guid) && is_null($user->bceid_user_guid))) {
             Auth::logout();
 
             return redirect()->route('login');
         }
 
-        //active user must have at least a Ministry User role
+        //active user must have at least a TWP User role
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Ministry_ADMIN) && ! $user->hasRole(Role::Ministry_USER)) {
             if (! $user->hasRole(Role::Ministry_GUEST)) {
                 $role = Role::where('name', Role::Ministry_GUEST)->first();
                 $user->roles()->attach($role);
             }
-
-            return Inertia::render('Auth/Login', [
+            return Inertia::render('Home', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact Ministry Admin to grant you access.',

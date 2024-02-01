@@ -3,18 +3,23 @@
 namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\FedCap;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
-class MinistryController extends Controller
+class FedCapController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('ministry::index');
+        $fedCaps = $this->paginateInst();
+
+        return Inertia::render('Ministry::FedCaps', ['status' => true, 'results' => $fedCaps]);
     }
 
     /**
@@ -63,5 +68,29 @@ class MinistryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    private function paginateInst()
+    {
+        $fedCaps = new FedCap();
+
+        if (request()->filter_status !== null) {
+            $fedCaps = $fedCaps->where('status', request()->filter_status);
+        }
+        if (request()->filter_sd !== null) {
+            $fedCaps = $fedCaps->where('start_date', request()->filter_sd);
+        }
+        if (request()->filter_ed !== null) {
+            $fedCaps = $fedCaps->where('end_date', request()->filter_ed);
+        }
+
+        if (request()->sort !== null) {
+            $fedCaps = $fedCaps->orderBy(request()->sort, request()->direction);
+        } else {
+            $fedCaps = $fedCaps->orderBy('created_at', 'desc');
+        }
+
+        return $fedCaps->paginate(25)->onEachSide(1)->appends(request()->query());
     }
 }

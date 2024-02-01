@@ -7,5 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class InstitutionStaff extends Model
 {
-    use HasFactory;
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class, 'institution_guid', 'guid');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_guid', 'guid');
+    }
 }

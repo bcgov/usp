@@ -7,5 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class FedCap extends Model
 {
-    use HasFactory;
+    public function caps()
+    {
+        return $this->hasMany(Cap::class, 'fed_cap_guid', 'guid');
+    }
 }

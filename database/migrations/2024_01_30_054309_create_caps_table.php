@@ -24,6 +24,8 @@ return new class extends Migration
             $table->foreign('institution_guid')->references('guid')->on('institutions')
                 ->onDelete('cascade');
 
+            $table->date('start_date');
+            $table->date('end_date');
             $table->integer('total_attestations');
 
             $table->string('program_guid', 32)->nullable();
@@ -32,7 +34,7 @@ return new class extends Migration
             //updated is for when the staff trigger relocation of attestations from one institution to another
             //both the to/from institutions old cap tables will be switched to status=updated
             //both the to/from institutions new cap tables will have the same guid as the old records
-            $table->string('status')->default('active')->comment('active|completed|updated');
+            $table->string('status')->default('active')->comment('active|pending|expired|completed|updated');
             $table->text('comment')->nullable();
             $table->string('last_touch_by_user_guid')->nullable();
 
