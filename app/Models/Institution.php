@@ -31,6 +31,10 @@ class Institution extends Model
     {
         return $this->hasMany(Cap::class, 'institution_guid', 'guid');
     }
+    public function activeCaps()
+    {
+        return $this->hasMany(Cap::class, 'institution_guid', 'guid')->active();
+    }
     public function staff()
     {
         return $this->hasMany(InstitutionStaff::class, 'institution_guid', 'guid');
@@ -41,4 +45,14 @@ class Institution extends Model
             'institution_guid', 'guid', 'guid', 'user_guid');
     }
 
+    /**
+     * Scope a query to only include admin users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('active_status', true);
+    }
 }

@@ -38,4 +38,15 @@ class Cap extends Model
     {
         return $this->hasMany(Attestation::class, 'cap_guid', 'guid');
     }
+
+    /**
+     * Scope a query to only include admin users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'Active');
+    }
 }

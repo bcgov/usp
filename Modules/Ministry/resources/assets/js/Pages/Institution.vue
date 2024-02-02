@@ -23,7 +23,7 @@
                     <div class="col-md-9">
                         <InstitutionDetails v-if="page === 'details'" :results="results"></InstitutionDetails>
                         <InstitutionCaps v-if="page === 'caps'" :results="results" :fedCaps="fedCaps"></InstitutionCaps>
-<!--                        <InstitutionStaff v-if="page === 'staff'" :results="results"></InstitutionStaff>-->
+                        <InstitutionStaff v-if="page === 'staff'" :results="results"></InstitutionStaff>
                     </div>
                 </div>
             </div>
@@ -36,12 +36,13 @@ import { Head, Link } from '@inertiajs/vue3';
 import InstitutionMenu from "../Components/InstitutionMenu";
 import InstitutionDetails from "../Components/InstitutionDetails";
 import InstitutionCaps from "../Components/InstitutionCaps";
+import InstitutionStaff from "../Components/InstitutionStaff";
 
 export default {
     name: 'Institution',
     components: {
         InstitutionMenu,
-        AuthenticatedLayout, Head, Link, InstitutionDetails, InstitutionCaps
+        AuthenticatedLayout, Head, Link, InstitutionDetails, InstitutionCaps, InstitutionStaff
     },
     props: {
         results: Object,

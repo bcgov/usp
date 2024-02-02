@@ -22,10 +22,6 @@
                         </div>
                     </div>
                     <div class="col-md-8 mt-3">
-                        <MaintenanceReferralSources v-if="page === 'referral-source'" :results="results"></MaintenanceReferralSources>
-                        <MaintenanceAreas v-if="page === 'area-of-audit'" :results="results"></MaintenanceAreas>
-                        <MaintenanceSanctionTypes v-if="page === 'sanction-type'" :results="results"></MaintenanceSanctionTypes>
-                        <MaintenanceNatureOffences v-if="page === 'nature-offence'" :results="results"></MaintenanceNatureOffences>
                         <MaintenanceSchools v-if="page === 'school'" :results="results"></MaintenanceSchools>
 
                         <MaintenanceStaff v-if="page === 'staff'" :results="results"></MaintenanceStaff>

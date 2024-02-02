@@ -1,5 +1,7 @@
 <?php
 
+use Modules\Ministry\App\Http\Controllers\AttestationController;
+use Modules\Ministry\App\Http\Controllers\InstitutionStaffController;
 use Illuminate\Support\Facades\Route;
 use Modules\Ministry\App\Http\Controllers\CapController;
 use Modules\Ministry\App\Http\Controllers\FedCapController;
@@ -35,6 +37,12 @@ Route::prefix('ministry')->group(function () {
 
         Route::put('/caps', [CapController::class, 'update'])->name('caps.update');
         Route::post('/caps', [CapController::class, 'store'])->name('caps.store');
+
+        Route::put('/institution_staff', [InstitutionStaffController::class, 'update'])->name('institution_staff.update');
+
+        Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
+        Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
+        Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 
     });
 });

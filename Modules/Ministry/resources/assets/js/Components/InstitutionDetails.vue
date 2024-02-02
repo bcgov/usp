@@ -72,8 +72,9 @@
                 <div class="col-md-4">
                     <Label for="inputStandingStatus" class="form-label" value="Status - in good standing?" />
                     <Select class="form-select" id="inputStandingStatus" v-model="editForm.standing_status">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
+                        <option value=""></option>
+                        <option value="On Probation">On Probation</option>
+                        <option value="Pending Approval">Pending Approval</option>
                     </Select>
                 </div>
 

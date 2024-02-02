@@ -11,7 +11,7 @@ nav.navbar {
         <div class="container-fluid">
             <Link class="navbar-brand" href="/ministry/institutions">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-lg-inline">USPA - Undergraduate Student Permit Attestation</span>
+                <span class="d-none d-lg-inline">USPA - Undergraduate Study Permit Attestation</span>
             </Link>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
@@ -29,6 +29,13 @@ nav.navbar {
                         </NavLink>
                     </li>
                     <li class="nav-item">
+                        <NavLink class="nav-link" href="/ministry/attestations"
+                                 :class="{ 'active': $page.url.indexOf('/attestation') > -1 ||
+                            $page.url.indexOf('/attestation') > -1 }">
+                            Attestations
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
                         <NavLink class="nav-link" href="/ministry/fed_caps"
                                  :class="{ 'active': $page.url.indexOf('/fed_caps') > -1 ||
                             $page.url.indexOf('/fed_caps') > -1 }">
@@ -43,31 +50,6 @@ nav.navbar {
                         </NavLink>
                     </li>
 
-<!--                    <li class="nav-item">-->
-<!--                        <NavLink class="nav-link" href="/neb/restrictions"-->
-<!--                                 :class="{ 'active': $page.url.indexOf('/restrictions') > -1 }">-->
-<!--                            Restrictions-->
-<!--                        </NavLink>-->
-<!--                    </li>-->
-
-<!--                    <li class="nav-item">-->
-<!--                        <NavLink class="nav-link" href="/neb/programs"-->
-<!--                                 :class="{ 'active': $page.url.indexOf('/neb/programs') > -1 }">-->
-<!--                            NEB Programs-->
-<!--                        </NavLink>-->
-<!--                    </li>-->
-<!--                    <li class="nav-item">-->
-<!--                        <NavLink class="nav-link" href="/neb/sfas-programs"-->
-<!--                                 :class="{ 'active': $page.url.indexOf('/sfas-programs') > -1 }">-->
-<!--                            SFAS Programs-->
-<!--                        </NavLink>-->
-<!--                    </li>-->
-<!--                    <li v-if="isAdmin" class="nav-item">-->
-<!--                        <NavLink class="nav-link" href="/neb/staff"-->
-<!--                                 :class="{ 'active': $page.url.indexOf('/staff') > -1 }">-->
-<!--                            Staff-->
-<!--                        </NavLink>-->
-<!--                    </li>-->
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
                                  data-bs-toggle="dropdown" aria-expanded="false">
@@ -123,7 +105,6 @@ export default {
         if(this.$attrs.auth.user.roles != undefined){
             for(let i=0; i<this.$attrs.auth.user.roles.length; i++)
             {
-                //console.log(this.$attrs.auth.user.roles[i].name.indexOf('Admin'));
                 if(this.$attrs.auth.user.roles[i].name.indexOf('Admin') > -1)
                 {
                     this.isAdmin = true;

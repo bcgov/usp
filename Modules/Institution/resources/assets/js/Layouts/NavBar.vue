@@ -9,9 +9,9 @@ nav.navbar {
 <template>
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow">
         <div class="container-fluid">
-            <Link class="navbar-brand" href="/neb/dashboard">
+            <Link class="navbar-brand" href="/ministry/institutions">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-lg-inline">NEB - Nurses Education Bursary </span>
+                <span class="d-none d-lg-inline">USPA - Undergraduate Study Permit Attestation</span>
             </Link>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
@@ -22,47 +22,60 @@ nav.navbar {
                 <ul class="navbar-nav flex-row flex-wrap ms-md-auto" style="--bs-scroll-height: 100px;">
 
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/neb/dashboard"
-                                 :class="{ 'active': $page.url.indexOf('/dashboard') > -1 ||
-                            $page.url.indexOf('/bursary-period') > -1 }">
-                            Bursary Periods
+                        <NavLink class="nav-link" href="/ministry/institutions"
+                                 :class="{ 'active': $page.url.indexOf('/institution') > -1 ||
+                            $page.url.indexOf('/institution') > -1 }">
+                            Institutions
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/ministry/fed_caps"
+                                 :class="{ 'active': $page.url.indexOf('/fed_caps') > -1 ||
+                            $page.url.indexOf('/fed_caps') > -1 }">
+                            Federal Caps
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/ministry/maintenance"
+                                 :class="{ 'active': $page.url.indexOf('/maintenance') > -1 ||
+                            $page.url.indexOf('/maintenance') > -1 }">
+                            Maintenance
                         </NavLink>
                     </li>
 
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/neb/restrictions"
-                                 :class="{ 'active': $page.url.indexOf('/restrictions') > -1 }">
-                            Restrictions
-                        </NavLink>
-                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <NavLink class="nav-link" href="/neb/restrictions"-->
+<!--                                 :class="{ 'active': $page.url.indexOf('/restrictions') > -1 }">-->
+<!--                            Restrictions-->
+<!--                        </NavLink>-->
+<!--                    </li>-->
 
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/neb/programs"
-                                 :class="{ 'active': $page.url.indexOf('/neb/programs') > -1 }">
-                            NEB Programs
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/neb/sfas-programs"
-                                 :class="{ 'active': $page.url.indexOf('/sfas-programs') > -1 }">
-                            SFAS Programs
-                        </NavLink>
-                    </li>
-                    <li v-if="isAdmin" class="nav-item">
-                        <NavLink class="nav-link" href="/neb/staff"
-                                 :class="{ 'active': $page.url.indexOf('/staff') > -1 }">
-                            Staff
-                        </NavLink>
-                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <NavLink class="nav-link" href="/neb/programs"-->
+<!--                                 :class="{ 'active': $page.url.indexOf('/neb/programs') > -1 }">-->
+<!--                            NEB Programs-->
+<!--                        </NavLink>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <NavLink class="nav-link" href="/neb/sfas-programs"-->
+<!--                                 :class="{ 'active': $page.url.indexOf('/sfas-programs') > -1 }">-->
+<!--                            SFAS Programs-->
+<!--                        </NavLink>-->
+<!--                    </li>-->
+<!--                    <li v-if="isAdmin" class="nav-item">-->
+<!--                        <NavLink class="nav-link" href="/neb/staff"-->
+<!--                                 :class="{ 'active': $page.url.indexOf('/staff') > -1 }">-->
+<!--                            Staff-->
+<!--                        </NavLink>-->
+<!--                    </li>-->
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
                                  data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ $page.props.auth.user.user_id }}
-
+                            {{ $attrs.auth.user.first_name }}
                         </NavLink>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
                             <li class="dropdown-item px-4">
-                                <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
+                                <div class="font-medium text-sm text-gray-500">{{ $attrs.auth.user.email }}</div>
                             </li>
                             <li>
                                 <hr class="dropdown-divider">
