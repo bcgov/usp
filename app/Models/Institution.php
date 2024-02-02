@@ -27,6 +27,10 @@ class Institution extends Model
     {
         return $this->hasMany(Attestation::class, 'institution_guid', 'guid');
     }
+    public function caps()
+    {
+        return $this->hasMany(Cap::class, 'institution_guid', 'guid');
+    }
     public function staff()
     {
         return $this->hasMany(InstitutionStaff::class, 'institution_guid', 'guid');

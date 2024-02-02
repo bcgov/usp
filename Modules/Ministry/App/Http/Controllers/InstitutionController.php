@@ -5,6 +5,7 @@ namespace Modules\Ministry\App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionEditRequest;
 use App\Http\Requests\InstitutionStoreRequest;
+use App\Models\FedCap;
 use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,7 +42,10 @@ class InstitutionController extends Controller
      */
     public function show(Institution $institution, $page = 'details')
     {
-        return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution]);
+        $institution = Institution::where('id', $institution->id)->with(['caps', 'staff'])->first();
+        $fedCaps = FedCap::active()->get();
+        return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
+            'fedCaps' => $fedCaps]);
     }
 
     /**

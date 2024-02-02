@@ -29,7 +29,7 @@
 
                 <div class="col-12">
                     <Label for="inputComment" class="form-label" value="Comment"/>
-                    <textarea class="form-control" id="inputComment" v-model="newFedCapForm.comment"></textarea>
+                    <textarea class="form-control" id="inputComment" v-model="newFedCapForm.comment" rows="3"></textarea>
                 </div>
 
                 <div v-if="newFedCapForm.errors != undefined" class="row">

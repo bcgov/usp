@@ -60,7 +60,7 @@
                         <h5 class="modal-title" id="newInstModalLabel">Add New Institution</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <InstitutionCreate :newInst="newInst"></InstitutionCreate>
+                    <InstitutionCreate :newInst="newInst" />
                 </div>
             </div>
         </div>

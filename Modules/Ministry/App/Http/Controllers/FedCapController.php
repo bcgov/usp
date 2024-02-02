@@ -3,6 +3,7 @@
 namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FedCapEditRequest;
 use App\Http\Requests\FedCapStoreRequest;
 use App\Models\FedCap;
 use App\Models\Institution;
@@ -10,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class FedCapController extends Controller
@@ -46,9 +48,9 @@ class FedCapController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show(FedCap $fedCap, $page = 'details')
     {
-        return view('ministry::show');
+        return Inertia::render('Ministry::FedCap', ['page' => $page, 'results' => $fedCap]);
     }
 
     /**
@@ -62,9 +64,11 @@ class FedCapController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(FedCapEditRequest $request): RedirectResponse
     {
-        //
+        FedCap::where('id', $request->id)->update($request->validated());
+
+        return Redirect::route('ministry.fed_caps.show', [$request->id]);
     }
 
     /**

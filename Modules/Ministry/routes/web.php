@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Ministry\App\Http\Controllers\CapController;
 use Modules\Ministry\App\Http\Controllers\FedCapController;
 use Modules\Ministry\App\Http\Controllers\InstitutionController;
 
@@ -28,6 +29,12 @@ Route::prefix('ministry')->group(function () {
         Route::post('/institutions', [InstitutionController::class, 'store'])->name('institutions.store');
 
         Route::get('/fed_caps', [FedCapController::class, 'index'])->name('fed_caps.index');
+        Route::get('/fed_caps/{fedCap}/{page?}', [FedCapController::class, 'show'])->name('fed_caps.show');
+        Route::put('/fed_caps', [FedCapController::class, 'update'])->name('fed_caps.update');
         Route::post('/fed_caps', [FedCapController::class, 'store'])->name('fed_caps.store');
+
+        Route::put('/caps', [CapController::class, 'update'])->name('caps.update');
+        Route::post('/caps', [CapController::class, 'store'])->name('caps.store');
+
     });
 });

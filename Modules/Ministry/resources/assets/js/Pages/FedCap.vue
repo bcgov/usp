@@ -4,7 +4,7 @@
 }
 </style>
 <template>
-    <Head title="Institution" />
+    <Head title="Federal Cap" />
 
     <AuthenticatedLayout v-bind="$attrs">
 
@@ -13,15 +13,15 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-header">
-                                Institution Menu
+                                Federal Cap Menu
                             </div>
                             <div class="card-body">
-                                <InstitutionMenu :page="page" :id="results.id" />
+                                <FedCapMenu :page="page" :id="results.id" />
                             </div>
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <InstitutionDetails v-if="page === 'details'" :results="results"></InstitutionDetails>
+                        <FedCapDetails v-if="page === 'details'" :results="results"></FedCapDetails>
 <!--                        <InstitutionCaps v-if="page === 'area-of-audit'" :results="results"></InstitutionCaps>-->
 <!--                        <InstitutionStaff v-if="page === 'sanction-type'" :results="results"></InstitutionStaff>-->
                     </div>
@@ -33,16 +33,16 @@
 <script>
 import AuthenticatedLayout from '../Layouts/Authenticated.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import InstitutionMenu from "../Components/InstitutionMenu";
-import InstitutionDetails from "../Components/InstitutionDetails";
+import FedCapMenu from "../Components/FedCapMenu";
+import FedCapDetails from "../Components/FedCapDetails";
 // import MaintenanceStaff from "../Components/MaintenanceStaff";
 // import MaintenanceStaffEdit from "../Components/MaintenanceStaffEdit";
 
 export default {
-    name: 'Institution',
+    name: 'FedCap',
     components: {
-        InstitutionMenu,
-        AuthenticatedLayout, Head, Link, InstitutionDetails
+        FedCapMenu,
+        AuthenticatedLayout, Head, Link, FedCapDetails
     },
     props: {
         results: Object,
