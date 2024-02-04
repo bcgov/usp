@@ -103,14 +103,17 @@ class UserController extends Controller
             }
 
             $user = null;
+            $failMsg = null;
             if($type === Role::Ministry_GUEST){
                 $user = User::where('idir_user_guid', 'ilike', $provider_user['idir_user_guid'])->first();
+                $failMsg = 'Please contact Ministry Admin to grant you access.';
             }
             if($type === Role::Institution_GUEST){
                 $user = User::where('bceid_user_guid', 'ilike', $provider_user['bceid_user_guid'])->first();
+                $failMsg = 'Please contact Institution Admin to grant you access.';
             }
 
-            //if it is a new IDIR user, register the user first
+            //if it is a new IDIR or BCeID user, register the user first
             if (is_null($user)) {
                 $this->newUser($provider_user, $type);
 
@@ -127,6 +130,16 @@ class UserController extends Controller
                     'hasAccess' => false,
                     'status' => 'Access denied. Please contact Admin.',
                 ]);
+            } else {
+                //check if the user is a guest
+                $rolesToCheck = [Role::Ministry_GUEST, Role::Institution_GUEST];
+                if($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()){
+                    return Inertia::render('Auth/Login', [
+                        'loginAttempt' => true,
+                        'hasAccess' => false,
+                        'status' => $failMsg,
+                    ]);
+                }
             }
 
             //else the user has access

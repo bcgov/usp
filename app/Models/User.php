@@ -31,7 +31,23 @@ class User extends Authenticatable
      */
     public function roles()
     {
-        return $this->belongsToMany('App\Models\Role', 'role_user');
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    public function institutionStaff()
+    {
+        return $this->belongsTo(InstitutionStaff::class, 'guid', 'user_guid');
+    }
+
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class, 'user_guid', 'guid');
+    }
+
+    public function getInstitutionAttribute()
+    {
+        if(is_null($this->institutionStaff)) return null;
+        return $this->institutionStaff->institution;
     }
 
     /**

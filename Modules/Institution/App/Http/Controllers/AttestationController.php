@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Ministry\App\Http\Controllers;
+namespace Modules\Institution\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttestationStoreRequest;
@@ -25,9 +25,9 @@ class AttestationController extends Controller
     public function index()
     {
         $attestations = $this->paginateAtte();
-        $institutions = Institution::active()->with('activeCaps')->get();
-        return Inertia::render('Ministry::Attestations', ['status' => true, 'results' => $attestations,
-            'institutions' => $institutions]);
+        $institution = $this->user()->institution;
+        return Inertia::render('Institution::Attestations', ['status' => true, 'results' => $attestations,
+            'institution' => $institution]);
     }
 
     /**

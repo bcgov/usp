@@ -14,11 +14,6 @@ use Modules\Institution\App\Http\Controllers\InstitutionController;
 |
 */
 
-//Route::group([], function () {
-//    Route::resource('institution', InstitutionController::class)->names('institution');
-//});
-
-
 Route::prefix('institution')->group(function () {
     Route::group(
         [

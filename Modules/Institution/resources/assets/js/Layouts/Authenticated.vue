@@ -1,9 +1,7 @@
 <template>
     <div>
-        <div v-if="$attrs.auth.isAdmin == false || $attrs.auth.disabled == true" class="card text-center">
-            <h2 class="card-body">You are not authorized.</h2>
-        </div>
-        <div v-else class="min-h-screen bg-gray-100">
+
+        <div class="min-h-screen bg-gray-100">
             <NavBar v-bind="$attrs" />
 
             <main>
@@ -21,11 +19,12 @@
 
             </main>
         </div>
+
     </div>
 </template>
 <script>
 import { ref } from 'vue';
-import NavBar from "../Layouts/NavBar";
+import NavBar from "./NavBar";
 
 export default {
     name: 'Authenticated',
@@ -41,7 +40,7 @@ export default {
         }
     },
     methods: {
-        emitSearch: function (data) {
+        emitSearch: function (data){
             this.$emit('search', data);
         }
     },
