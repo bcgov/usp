@@ -24,10 +24,8 @@
                 <div class="col-md-3">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editForm.status">
-                        <option></option>
-                        <option value="Active">Active</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
+                        <option value=""></option>
+                        <option v-for="stat in $attrs.utils['Federal Cap Status']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
 

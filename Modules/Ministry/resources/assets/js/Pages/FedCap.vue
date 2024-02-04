@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <FedCapDetails v-if="page === 'details'" :results="results"></FedCapDetails>
+                        <FedCapDetails v-bind="$attrs" v-if="page === 'details'" :results="results"></FedCapDetails>
 <!--                        <InstitutionCaps v-if="page === 'area-of-audit'" :results="results"></InstitutionCaps>-->
 <!--                        <InstitutionStaff v-if="page === 'sanction-type'" :results="results"></InstitutionStaff>-->
                     </div>

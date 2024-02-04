@@ -13,9 +13,8 @@
                 <div class="col-md-4">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.status">
-                        <option></option>
-                        <option value="Active">Active</option>
-                        <option value="Pending">Pending</option>
+                        <option value=""></option>
+                        <option v-for="stat in $attrs.utils['Institution Cap Status']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">

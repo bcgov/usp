@@ -21,9 +21,9 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <InstitutionDetails v-if="page === 'details'" :results="results"></InstitutionDetails>
-                        <InstitutionCaps v-if="page === 'caps'" :results="results" :fedCaps="fedCaps"></InstitutionCaps>
-                        <InstitutionStaff v-if="page === 'staff'" :results="results"></InstitutionStaff>
+                        <InstitutionDetails v-bind="$attrs" v-if="page === 'details'" :results="results"></InstitutionDetails>
+                        <InstitutionCaps v-bind="$attrs" v-if="page === 'caps'" :results="results" :fedCaps="fedCaps"></InstitutionCaps>
+                        <InstitutionStaff v-bind="$attrs" v-if="page === 'staff'" :results="results"></InstitutionStaff>
                     </div>
                 </div>
             </div>

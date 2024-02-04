@@ -37,19 +37,8 @@
                 <div class="col-md-4">
                     <Label for="inputProvince" class="form-label" value="Province"/>
                     <Select class="form-select" id="inputProvince" v-model="newInstForm.province">
-                        <option value="AB">AB</option>
-                        <option value="BC">BC</option>
-                        <option value="MB">MB</option>
-                        <option value="NB">NB</option>
-                        <option value="NL">NL</option>
-                        <option value="NS">NS</option>
-                        <option value="NT">NT</option>
-                        <option value="NU">NU</option>
-                        <option value="ON">ON</option>
-                        <option value="PE">PE</option>
-                        <option value="QC">QC</option>
-                        <option value="SK">SK</option>
-                        <option value="YT">YT</option>
+                        <option></option>
+                        <option v-for="prov in $attrs.utils['Provinces']" :value="prov.field_name">{{ prov.field_name }}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
@@ -69,8 +58,8 @@
                 <div class="col-md-4">
                     <Label for="inputStandingStatus" class="form-label" value="Status - in good standing?"/>
                     <Select class="form-select" id="inputStandingStatus" v-model="newInstForm.standing_status">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
+                        <option value=""></option>
+                        <option v-for="restr in $attrs.utils['Institution Restriction']" :value="restr.field_name">{{ restr.field_name }}</option>
                     </Select>
                 </div>
 
@@ -151,7 +140,6 @@ export default {
             });
         }
     },
-
     mounted() {
         this.newInstForm = useForm(this.newInstFormData);
     }

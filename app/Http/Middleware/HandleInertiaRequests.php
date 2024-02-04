@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Util;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -39,6 +40,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'roles' => is_null($request->user()) ? null : $request->user()->roles,
             ],
+            'utils' => Util::getSortedUtils(),
             'ziggy' => function () {
                 return (new Ziggy)->toArray();
             },

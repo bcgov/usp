@@ -43,9 +43,9 @@ nav.navbar {
                         </NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/ministry/maintenance"
-                                 :class="{ 'active': $page.url.indexOf('/maintenance') > -1 ||
-                            $page.url.indexOf('/maintenance') > -1 }">
+                        <NavLink class="nav-link" href="/ministry/maintenance/staff"
+                                 :class="{ 'active': $page.url.indexOf('maintenance') > -1 ||
+                            $page.url.indexOf('maintenance') > -1 }">
                             Maintenance
                         </NavLink>
                     </li>

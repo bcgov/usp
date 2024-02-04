@@ -89,22 +89,20 @@
     <footer>
         <table>
             <tr>
-                <td style="width: 25%;">Ministry of Post-Secondary Education and Future Skills</td>
-                <td style="width: 20%;">StudentAid BC</td>
+                <td style="width: 25%;">{{ $utils['Ministry Name'][0]->field_name }}</td>
+                <td style="width: 20%;">{{ $utils['Ministry Branch'][0]->field_name }}</td>
                 <td style="width: 30%;">
                     Mailing Address:<br/>
-                    PO Box 9173 Stn Prov Govt<br/>
-                    Victoria BC V8W 9H7<br/>
-                    (250) 387-6100<br/>
-                    1-800-561-1818 (Toll-free in Canada/USA)<br/>
-                    1-800-561-1818 (B.C. Lower Mainland)<br/>
+                    {!! $utils['Ministry Mailing Address'][0]->field_name !!}<br/>
+                    {{ $utils['Ministry Tele Victoria'][0]->field_name }}<br/>
+                    {{ $utils['Ministry Tele Toll-free'][0]->field_name }} (Toll-free in Canada/USA)<br/>
+                    {{ $utils['Ministry Tele Toll-free'][0]->field_name }} (B.C. Lower Mainland)<br/>
                 </td>
                 <td style="width: 25%;">
                     Courier Address:<br/>
-                    4th Fl, 835 Humboldt St<br/>
-                    Victoria BC V8W 9H2<br/>
-                    Fax: (250) 387-4858<br/>
-                    Toll-free Fax: 1-866-312-3322
+                    {!! $utils['Ministry Courier Address'][0]->field_name !!}<br/>
+                    Fax: {{ $utils['Ministry Fax'][0]->field_name }}<br/>
+                    Toll-free Fax: {{ $utils['Ministry Fax Toll-free'][0]->field_name }}
                 </td>
             </tr>
         </table>

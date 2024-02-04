@@ -13,23 +13,21 @@
                             <th scope="col">First Name</th>
                             <th scope="col">Last Name</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Start Date</th>
                             <th scope="col">Type of Access</th>
                             <th scope="col">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(row, i) in results">
-                            <td>
-                                <Link :href="'/vss/maintenance/staff/' + row.id">{{ row.user_id }}</Link>
-                            </td>
+                            <th scope="row">
+                                <Link :href="'/ministry/maintenance/staff/' + row.id">{{ row.user_id }}</Link>
+                            </th>
                             <td>{{ row.first_name }}</td>
                             <td>{{ row.last_name}}</td>
                             <td>{{ row.email }}</td>
-                            <td>{{ row.start_date }}</td>
                             <td>
                                 <template v-for="role in row.roles">
-                                    <div v-if="role.name.indexOf('VSS') === 0">{{ role.name }}</div>
+                                    <div v-if="role.name.indexOf('LFP') === 0">{{ role.name }}</div>
                                 </template>
                             </td>
                             <td>
@@ -62,12 +60,6 @@ export default {
         return {
         }
     },
-    methods: {
-    },
-    watch: {
-    },
-    computed: {
-    }
 }
 
 </script>

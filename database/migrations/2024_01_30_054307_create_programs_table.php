@@ -19,10 +19,13 @@ return new class extends Migration
             $table->foreign('institution_guid')->references('guid')->on('institutions')
                 ->onDelete('cascade');
 
-            $table->string('name');
-            $table->string('noc_id')->nullable()->comment('national occupation code');
-            $table->string('inst_status')->comment('institution status set by inst.: active, inactive');
-            $table->string('ministry_status')->nullable()->comment('status set by the ministry');
+            $table->string('program_name');
+            $table->string('program_type');
+            $table->string('noc_code')->nullable()->comment('national occupation code. NOC codes are used by training institutes');
+            $table->string('cip_code')->nullable()->comment('granting institutions use CIP codes to categorize programs');
+            $table->string('status')->comment('institution status set by inst.: active, inactive');
+            $table->string('restrictions')->nullable()->comment('status set by the ministry');
+            $table->string('last_touch_by_user_guid')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

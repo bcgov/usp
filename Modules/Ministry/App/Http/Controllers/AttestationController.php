@@ -9,6 +9,7 @@ use App\Http\Requests\InstitutionStoreRequest;
 use App\Models\Attestation;
 use App\Models\FedCap;
 use App\Models\Institution;
+use App\Models\Util;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,7 +77,8 @@ class AttestationController extends Controller
         $attestation = Attestation::where('id', $attestation->id)->with('institution')->first();
         $now_d = date('Y-m-d');
         $now_t = date('H:m:i');
-        $pdf = PDF::loadView('ministry::pdf', compact('attestation', 'now_d', 'now_t'));
+        $utils = Util::getSortedUtils();
+        $pdf = PDF::loadView('ministry::pdf', compact('attestation', 'now_d', 'now_t', 'utils'));
 
         return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
     }

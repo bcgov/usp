@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('idir_user_guid')->nullable();
             $table->string('bceid_user_guid')->nullable();
             $table->string('bceid_business_guid')->nullable();
+            $table->string('last_touch_by_user_guid', 32)->nullable();
 
             $table->softDeletes();
             $table->timestamps();

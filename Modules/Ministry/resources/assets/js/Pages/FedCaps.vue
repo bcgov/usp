@@ -61,7 +61,7 @@
                         <h5 class="modal-title" id="newFedCapModalLabel">Add New Federal Cap</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <FedCapCreate :newFedCap="newFedCap"></FedCapCreate>
+                    <FedCapCreate v-bind="$attrs" :newFedCap="newFedCap"></FedCapCreate>
                 </div>
             </div>
         </div>

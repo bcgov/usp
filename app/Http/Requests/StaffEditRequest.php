@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Models\InstitutionStaff;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class InstitutionStaffEditRequest extends FormRequest
+class StaffEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,8 +14,8 @@ class InstitutionStaffEditRequest extends FormRequest
      */
     public function authorize()
     {
-        $institutionStaff = InstitutionStaff::find($this->id);
-        return $this->user()->can('update', $institutionStaff);
+        $staff = User::find($this->id);
+        return $this->user()->can('update', $staff);
     }
 
     /**
@@ -26,6 +26,8 @@ class InstitutionStaffEditRequest extends FormRequest
     public function messages()
     {
         return [
+            'disabled.*' => 'Status field is not valid.',
+            'access_type.*' => 'Access Type field is not valid.',
         ];
     }
 
@@ -37,9 +39,8 @@ class InstitutionStaffEditRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required',
-            'guid' => 'required',
-            'status' => 'required|in:Active,Inactive,pending',
+            'access_type' => 'required|in:A,U,G',
+            'disabled' => 'required|boolean',
             'last_touch_by_user_guid' => 'required:exists,users,guid',
         ];
     }

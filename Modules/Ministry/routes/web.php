@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Ministry\App\Http\Controllers\CapController;
 use Modules\Ministry\App\Http\Controllers\FedCapController;
 use Modules\Ministry\App\Http\Controllers\InstitutionController;
+use Modules\Ministry\App\Http\Controllers\MaintenanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,5 +45,18 @@ Route::prefix('ministry')->group(function () {
         Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
         Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 
+        Route::group([
+                'middleware' => ['ministry_admin'],
+                'prefix' => 'maintenance',
+                'as' => 'ministry.',
+            ], function () {
+            Route::get('/staff', [MaintenanceController::class, 'staffList'])->name('staff.list');
+            Route::get('/staff/{user}', [MaintenanceController::class, 'staffShow'])->name('staff.show');
+            Route::post('/staff/{user}', [MaintenanceController::class, 'staffEdit'])->name('staff.edit');
+            Route::get('/utils', [MaintenanceController::class, 'utilList'])->name('utils.list');
+            Route::put('/utils/{util}', [MaintenanceController::class, 'utilUpdate'])->name('utils.update');
+            Route::post('/utils', [MaintenanceController::class, 'utilStore'])->name('utils.store');
+
+        });
     });
 });
