@@ -21,6 +21,16 @@ return new class extends Migration
 
             $table->string('program_name');
             $table->string('program_type');
+            $table->string('credential')->nullable();
+            $table->float('total_duration_hrs')->default(0)->nullable();
+            $table->float('total_duration_weeks')->default(0)->nullable();
+            $table->float('tuition_domestic')->default(0)->nullable();
+            $table->float('tuition_international')->default(0)->nullable();
+            $table->boolean('work_experience_required')->default(false)->nullable();
+            $table->boolean('delivery_in_class')->default(false)->nullable();
+            $table->boolean('delivery_distance')->default(false)->nullable();
+            $table->boolean('delivery_combined')->default(false)->nullable();
+
             $table->string('noc_code')->nullable()->comment('national occupation code. NOC codes are used by training institutes');
             $table->string('cip_code')->nullable()->comment('granting institutions use CIP codes to categorize programs');
             $table->string('status')->comment('institution status set by inst.: active, inactive');

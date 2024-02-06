@@ -22,9 +22,19 @@ return new class extends Migration
             $table->foreign('cap_guid')->references('guid')->on('caps')
                 ->onDelete('cascade');
 
-            $table->string('student_name');
-            $table->string('student_id_number');
-            $table->string('student_dob');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('id_number');
+            $table->string('dob');
+            $table->string('address1');
+            $table->string('address2')->nullable();
+            $table->string('email')->nullable();
+            $table->string('city')->nullable();
+            $table->string('zip_code')->nullable();
+            $table->string('province')->nullable();
+            $table->string('country');
+
+
             $table->string('status')->default('new');
             $table->date('expiry_date')->default(now()->addDays(30));
 

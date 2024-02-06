@@ -1,8 +1,3 @@
-<style scoped>
-[type='checkbox']:checked, [type='radio']:checked {
-    background-size: initial;
-}
-</style>
 <template>
     <Head title="Attestations" />
 
@@ -37,11 +32,13 @@
                                             <td><Link :href="'/ministry/attestations/' + row.id">{{ row.student_name }}</Link></td>
                                             <td>{{ row.student_id_number }}</td>
                                             <td>{{ row.student_dob }}</td>
+                                            <td><Link :href="'/ministry/institutions/' + row.institution.id">{{ row.institution.name }}</Link></td>
                                             <td>
-                                                <Select @change="updateTrigger($event, i)" :key="row.id" class="form-select form-select-sm" aria-label="Status of the attestation">
-                                                    <option value="Issued" :selected="row.status === 'Issued'">Issued</option>
-                                                    <option value="Approved" :selected="row.status === 'Approved'">Approved</option>
-                                                    <option value="Denied" :selected="row.status === 'Denied'">Denied</option>
+                                                <div v-if="editStatusIndex !== i">{{ row.status }} <button @click="editStatus(i)" type="button" class="btn btn-link btn-sm"><i class="bi bi-pencil"></i></button></div>
+                                                <Select v-if="editStatusIndex === i" @change="updateTrigger($event, i)" :key="row.id" class="form-select form-select-sm" aria-label="Status of the attestation">
+                                                    <option v-for="stat in $attrs.utils['Attestation Status']"
+                                                            :selected="row.status === stat.field_name"
+                                                            :value="stat.field_name">{{ stat.field_name }}</option>
                                                 </Select>
                                             </td>
                                             <td>{{ row.expiry_date }}</td>
@@ -50,7 +47,7 @@
                                                 <a :href="'/ministry/attestations/download/' + row.id" class="btn btn-sm btn-outline-secondary">
                                                     <i class="bi bi-box-arrow-down"></i>
                                                 </a>
-                                                <button v-if="row.updated" @click="updateStatus($event, i)"
+                                                <button v-if="editStatusIndex === i" @click="updateStatus($event, i)"
                                                         type="button" class="ms-1 btn btn-sm btn-warning">
                                                     confirm?
                                                 </button>
@@ -110,11 +107,15 @@ export default {
     data() {
         return {
             newAtteForm: null,
-            attestationList: ''
+            attestationList: '',
+            editStatusIndex: '',
         }
     },
 
     methods: {
+        editStatus: function (index) {
+            this.editStatusIndex = index;
+        },
         formatDate: function (value) {
             if(value !== undefined && value !== ''){
                 let date = value.split("T");
@@ -146,7 +147,7 @@ export default {
                 });
             }else {
                 this.attestationList[index].status = this.results.data[index].status;
-                console.log("NOOO");
+                this.editStatusIndex = '';
             }
             console.log(check);
 

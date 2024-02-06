@@ -9,7 +9,7 @@ nav.navbar {
 <template>
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow">
         <div class="container-fluid">
-            <Link class="navbar-brand" href="/ministry/institutions">
+            <Link class="navbar-brand" href="/institution">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
                 <span class="d-none d-lg-inline">USPA - Undergraduate Study Permit Attestation</span>
             </Link>
@@ -22,31 +22,31 @@ nav.navbar {
                 <ul class="navbar-nav flex-row flex-wrap ms-md-auto" style="--bs-scroll-height: 100px;">
 
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/ministry/institutions"
+                        <NavLink class="nav-link" href="/institution"
                                  :class="{ 'active': $page.url.indexOf('/institution') > -1 ||
                             $page.url.indexOf('/institution') > -1 }">
-                            Institutions
+                            Dashboard
                         </NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/ministry/attestations"
+                        <NavLink class="nav-link" href="/institution/attestations"
                                  :class="{ 'active': $page.url.indexOf('/attestation') > -1 ||
                             $page.url.indexOf('/attestation') > -1 }">
                             Attestations
                         </NavLink>
                     </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/ministry/fed_caps"
-                                 :class="{ 'active': $page.url.indexOf('/fed_caps') > -1 ||
-                            $page.url.indexOf('/fed_caps') > -1 }">
-                            Federal Caps
+                    <li v-if="isAdmin" class="nav-item">
+                        <NavLink class="nav-link" href="/institution/account"
+                                 :class="{ 'active': $page.url.indexOf('/account') > -1 ||
+                            $page.url.indexOf('/account') > -1 }">
+                            Account Information
                         </NavLink>
                     </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/ministry/maintenance/staff"
-                                 :class="{ 'active': $page.url.indexOf('maintenance') > -1 ||
-                            $page.url.indexOf('maintenance') > -1 }">
-                            Maintenance
+                    <li v-if="isAdmin" class="nav-item">
+                        <NavLink class="nav-link" href="/institution/staff"
+                                 :class="{ 'active': $page.url.indexOf('staff') > -1 ||
+                            $page.url.indexOf('staff') > -1 }">
+                            Staff
                         </NavLink>
                     </li>
 

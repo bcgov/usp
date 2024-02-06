@@ -1,40 +1,40 @@
 <template>
-    <form v-if="editStaffForm != null" class="card-body" @submit.prevent="submitForm">
+    <form v-if="newInstitutionCapForm != null" class="card-body" @submit.prevent="submitForm">
         <div class="modal-body">
             <div class="row g-3">
 
                 <div class="col-md-4">
                     <Label for="inputSd" class="form-label" value="Federal Cap"/>
-                    <Select @change="updateFedCap" class="form-select" id="inputStatus" v-model="editStaffForm.fed_cap_id">
+                    <Select @change="updateFedCap" class="form-select" id="inputStatus" v-model="newInstitutionCapForm.fed_cap_id">
                         <option></option>
                         <option v-for="f in fedCaps" :value="f.id">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
                     <Label for="inputStatus" class="form-label" value="Status"/>
-                    <Select class="form-select" id="inputStatus" v-model="editStaffForm.status">
+                    <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.status">
                         <option value=""></option>
-                        <option v-for="stat in $attrs.utils['Institution Staff Status']" :value="stat.field_name">{{ stat.field_name }}</option>
+                        <option v-for="stat in $attrs.utils['Institution Cap Status']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
                     <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
                     <div class="input-group mb-3">
-                        <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="editStaffForm.total_attestations"/>
+                        <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="newInstitutionCapForm.total_attestations"/>
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
                     </div>
                 </div>
 
                 <div class="col-12">
                     <Label for="inputComment" class="form-label" value="Comment"/>
-                    <textarea class="form-control" id="inputComment" v-model="editStaffForm.comment" rows="3"></textarea>
+                    <textarea class="form-control" id="inputComment" v-model="newInstitutionCapForm.comment" rows="3"></textarea>
                 </div>
 
-                <div v-if="editStaffForm.errors != undefined" class="row">
+                <div v-if="newInstitutionCapForm.errors != undefined" class="row">
                     <div class="col-12">
-                        <div v-if="editStaffForm.hasErrors == true" class="alert alert-danger mt-3">
+                        <div v-if="newInstitutionCapForm.hasErrors == true" class="alert alert-danger mt-3">
                             <ul>
-                                <li v-for="err in editStaffForm.errors">{{ err }}</li>
+                                <li v-for="err in newInstitutionCapForm.errors">{{ err }}</li>
                             </ul>
                         </div>
                     </div>
@@ -43,12 +43,12 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="editStaffForm.processing">
-                Update Institution Staff
+            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newInstitutionCapForm.processing">
+                Create Institution Cap
             </button>
         </div>
-        <FormSubmitAlert :form-state="editStaffForm.formState" :success-msg="editStaffForm.formSuccessMsg"
-                         :fail-msg="editStaffForm.formFailMsg"></FormSubmitAlert>
+        <FormSubmitAlert :form-state="newInstitutionCapForm.formState" :success-msg="newInstitutionCapForm.formSuccessMsg"
+                         :fail-msg="newInstitutionCapForm.formFailMsg"></FormSubmitAlert>
     </form>
 
 </template>
@@ -60,19 +60,18 @@ import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
 import {Link, useForm} from '@inertiajs/vue3';
 
 export default {
-    name: 'StaffEdit',
+    name: 'InstitutionCapCreate',
     components: {
         Input, Label, Select, Link, useForm, FormSubmitAlert
     },
     props: {
         fedCaps: Object,
-        results: Object,
-        cap: Object
+        results: Object
     },
     data() {
         return {
-            editStaffForm: null,
-            editStaffFormData: {
+            newInstitutionCapForm: null,
+            newInstitutionCapFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
@@ -88,8 +87,8 @@ export default {
     methods: {
         validateTotal: function (){
             if(this.selectedFedCap !== ''){
-                if(parseInt(this.editStaffForm.total_attestations) > this.selectedFedCap.remaining_cap){
-                    this.editStaffForm.total_attestations = this.selectedFedCap.remaining_cap;
+                if(parseInt(this.newInstitutionCapForm.total_attestations) > this.selectedFedCap.remaining_cap){
+                    this.newInstitutionCapForm.total_attestations = this.selectedFedCap.remaining_cap;
                 }
             }
         },
@@ -103,19 +102,17 @@ export default {
             }
         },
         submitForm: function () {
-            let vm = this;
-            this.editStaffForm.formState = null;
-            this.editStaffForm.put('/ministry/caps', {
+            this.newInstitutionCapForm.formState = null;
+            this.newInstitutionCapForm.post('/ministry/caps', {
                 onSuccess: (response) => {
-                    $("#editInstCapModal").modal('hide')
-                        .on('hidden.bs.modal', function () {
-                            vm.editStaffForm.reset(vm.editStaffFormData);
-                            vm.$inertia.visit('/ministry/institutions/' + vm.editStaffForm.institution_id + '/caps');
-                            vm.$emit('close');
-                        });
+                    $("#newInstCapModal").modal('hide');
+                    this.newInstitutionCapForm.reset(this.newInstitutionCapFormData);
+
+                    this.$inertia.visit('/ministry/institutions/' + this.newInstitutionCapForm.institution_id + '/caps');
+                    // console.log(response.props.institution)
                 },
                 onError: () => {
-                    this.editStaffForm.formState = false;
+                    this.newInstitutionCapForm.formState = false;
                 },
                 preserveState: true
             });
@@ -123,16 +120,8 @@ export default {
     },
 
     mounted() {
-        this.editStaffForm = useForm(this.cap);
-        this.editStaffForm.institution_id = this.results.id;
-
-        for(let i=0; i<this.fedCaps.length; i++){
-            if(this.fedCaps[i].guid === this.editStaffForm.fed_cap_guid){
-                this.editStaffForm.fed_cap_id = this.fedCaps[i].id;
-                break;
-            }
-        }
-
+        this.newInstitutionCapForm = useForm(this.newInstitutionCapFormData);
+        this.newInstitutionCapForm.institution_id = this.results.id;
     }
 }
 </script>

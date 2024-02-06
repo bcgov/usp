@@ -15,8 +15,9 @@ class Attestation extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['guid', 'cap_guid', 'institution_guid', 'student_name', 'student_id_number',
-        'student_dob', 'status', 'expiry_date', 'last_touch_by_user_guid', 'created_by_user_guid', ];
+    protected $fillable = ['guid', 'cap_guid', 'institution_guid', 'first_name', 'last_name', 'id_number',
+        'dob', 'status', 'expiry_date', 'last_touch_by_user_guid', 'created_by_user_guid',
+        'address1', 'address2', 'email', 'city', 'zip_code', 'province', 'country', ];
 
     /**
      * The attributes that should be hidden for serialization.

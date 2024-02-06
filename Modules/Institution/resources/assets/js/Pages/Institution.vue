@@ -1,8 +1,3 @@
-<style scoped>
-[type='checkbox']:checked, [type='radio']:checked {
-    background-size: initial;
-}
-</style>
 <template>
     <Head title="Institution" />
 
@@ -22,10 +17,7 @@
                     </div>
                     <div class="col-md-9">
                         <InstitutionDetails v-bind="$attrs" v-if="page === 'details'" :results="results"></InstitutionDetails>
-                        <InstitutionPrograms v-bind="$attrs" v-if="page === 'programs'" :results="results"></InstitutionPrograms>
-                        <InstitutionCaps v-bind="$attrs" v-if="page === 'caps'" :results="results" :fedCaps="fedCaps"></InstitutionCaps>
                         <InstitutionStaff v-bind="$attrs" v-if="page === 'staff'" :results="results"></InstitutionStaff>
-                        <InstitutionAttestations v-bind="$attrs" v-if="page === 'attestations'" :results="results"></InstitutionAttestations>
                     </div>
                 </div>
             </div>
@@ -37,22 +29,17 @@ import AuthenticatedLayout from '../Layouts/Authenticated.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import InstitutionMenu from "../Components/InstitutionMenu";
 import InstitutionDetails from "../Components/InstitutionDetails";
-import InstitutionCaps from "../Components/InstitutionCaps";
 import InstitutionStaff from "../Components/InstitutionStaff";
-import InstitutionAttestations from "../Components/InstitutionAttestations";
-import InstitutionPrograms from "../Components/InstitutionPrograms";
 
 export default {
     name: 'Institution',
     components: {
-        InstitutionAttestations,
         InstitutionMenu,
-        AuthenticatedLayout, Head, Link, InstitutionDetails, InstitutionCaps, InstitutionStaff, InstitutionPrograms
+        AuthenticatedLayout, Head, Link, InstitutionDetails, InstitutionStaff
     },
     props: {
         results: Object,
         page: String,
-        fedCaps: Object
     },
     data() {
         return {

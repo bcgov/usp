@@ -2,7 +2,7 @@
     <div class="card mb-3">
         <div class="card-header">
             Institution Staff - BCeID Accounts
-<!--            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newStaffModal">New Staff</button>-->
+            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newStaffModal">New Staff</button>
         </div>
         <div class="card-body">
             <div v-if="results.staff != null && results.staff.length > 0" class="table-responsive pb-3">
@@ -52,17 +52,17 @@
             </div>
             <h1 v-else class="lead">No results</h1>
         </div>
-<!--        <div v-if="editStaff == ''" class="modal modal-lg fade" id="newStaffModal" tabindex="-1" aria-labelledby="newStaffModalLabel" aria-hidden="true">-->
-<!--            <div class="modal-dialog">-->
-<!--                <div class="modal-content">-->
-<!--                    <div class="modal-header">-->
-<!--                        <h5 class="modal-title" id="newStaffModalLabel">New Staff</h5>-->
-<!--                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                    </div>-->
-<!--                    <InstitutionStaffCreate v-bind="$attrs" :results="results" />-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div v-if="editStaff == ''" class="modal modal-lg fade" id="newStaffModal" tabindex="-1" aria-labelledby="newStaffModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newStaffModalLabel">New Staff</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <InstitutionStaffCreate v-bind="$attrs" :results="results" />
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>

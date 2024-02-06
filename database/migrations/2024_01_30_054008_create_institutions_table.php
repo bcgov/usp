@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('institutions', function (Blueprint $table) {
             $table->id();
             $table->string('guid', 32)->index()->unique();
+            $table->string('bceid_business_guid');
             $table->string('dli')->nullable();
             $table->string('name');
             $table->string('legal_name')->nullable();

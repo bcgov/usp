@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AjaxRequest;
+use App\Models\InstitutionStaff;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -123,7 +124,7 @@ class UserController extends Controller
                     'status' => 'Please contact Admin to grant you access.',
                 ]);
 
-                //if the user has been disabled
+            //if the user has been disabled
             } elseif ($user->disabled === true) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
@@ -221,10 +222,32 @@ class UserController extends Controller
         $user->disabled = false;
         $user->idir_user_guid = $provider_user['idir_user_guid'] ?? null;
         $user->bceid_user_guid = $provider_user['bceid_user_guid'] ?? null;
+        $user->bceid_business_guid = $provider_user['bceid_business_guid'] ?? null;
         $user->password = Hash::make($provider_user['email']);
         $user->save();
         $this->checkRoles($user, $type);
 
+        if(!is_null($provider_user['bceid_business_guid'])){
+            $this->checkInstitutionStaff($user, $provider_user);
+        }
+
+    }
+    private function checkInstitutionStaff($user, $provider_user)
+    {
+        $user = User::find($user->id);
+        $institution = InstitutionStaff::where('bceid_business_guid', $user->bceid_business_guid)->first();
+        if(!is_null($institution)){
+            $staff = new InstitutionStaff();
+            $staff->guid = Str::orderedUuid()->getHex();
+            $staff->user_guid = $user->guid;
+            $staff->institution_guid = $institution->guid;
+            $staff->bceid_business_guid = $user->bceid_business_guid;
+            $staff->bceid_user_guid = $user->bceid_user_guid;
+            $staff->bceid_user_id = $provider_user['username'];
+            $staff->bceid_user_name = $provider_user['name'];
+            $staff->bceid_user_email = $provider_user['email'];
+            $staff->save();
+        }
     }
 
     //new user to be assigned as guest

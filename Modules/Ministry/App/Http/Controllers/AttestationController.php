@@ -43,7 +43,7 @@ class AttestationController extends Controller
             $attestation = Attestation::create($request->validated());
         }
 
-        $attestations = $this->paginateInst();
+        $attestations = $this->paginateAtte();
         $institutions = Institution::active()->with('activeCaps')->get();
 
         return Inertia::render('Ministry::Attestations', ['results' => $attestations,
@@ -98,6 +98,6 @@ class AttestationController extends Controller
             $attestations = $attestations->orderBy('created_at', 'desc');
         }
 
-        return $attestations->paginate(25)->onEachSide(1)->appends(request()->query());
+        return $attestations->with('institution')->paginate(25)->onEachSide(1)->appends(request()->query());
     }
 }

@@ -33,7 +33,7 @@
                         <h5 class="modal-title" id="newInstCapModalLabel">New Institution Cap</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <InstitutionCapCreate :fedCaps="fedCaps" :results="results" />
+                    <InstitutionCapCreate v-bind="$attrs" :fedCaps="fedCaps" :results="results" />
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
                         <h5 class="modal-title" id="editInstCapModalLabel">Edit Institution Cap</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <InstitutionCapEdit @close="closeEditForm" :cap="editCap" :fedCaps="fedCaps" :results="results" />
+                    <InstitutionCapEdit v-bind="$attrs" @close="closeEditForm" :cap="editCap" :fedCaps="fedCaps" :results="results" />
                 </div>
             </div>
         </div>

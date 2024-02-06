@@ -40,6 +40,7 @@ Route::prefix('ministry')->group(function () {
         Route::post('/caps', [CapController::class, 'store'])->name('caps.store');
 
         Route::put('/institution_staff', [InstitutionStaffController::class, 'update'])->name('institution_staff.update');
+        Route::put('/institution_roles', [InstitutionStaffController::class, 'updateRole'])->name('institution_roles.updateRole');
 
         Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
         Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');

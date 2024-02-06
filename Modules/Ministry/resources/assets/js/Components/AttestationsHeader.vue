@@ -22,6 +22,9 @@
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">
+                <span>Institution</span>
+        </th>
+        <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('status')">
                 <span>Status</span>
                 <em v-if="sortClmn === 'status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
@@ -50,15 +53,15 @@
 import {Inertia} from "@inertiajs/inertia";
 
 export default {
-    name: 'InstitutionsHeader',
+    name: 'AttestationsHeader',
     components: {},
     props: {},
     data() {
         return {
-            sortClmn: 'name',
-            sortType: 'asc',
+            sortClmn: 'created_at',
+            sortType: 'desc',
             url: '',
-            path: 'institutions',
+            path: 'attestations',
         }
     },
     mounted() {
@@ -70,7 +73,7 @@ export default {
             this.path = 'dashboard';
         }
 
-        let search = this.url.pathname.split('institution-search/');
+        let search = this.url.pathname.split('attestation-search/');
         if (search.length > 1) {
             this.path = search[1];
         }

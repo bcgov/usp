@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Inertia\Inertia;
 
 class InstitutionController extends Controller
 {
@@ -14,7 +15,7 @@ class InstitutionController extends Controller
      */
     public function index()
     {
-        return view('institution::index');
+        return Inertia::render('Institution::Dashboard', ['results' => []]);
     }
 
     /**

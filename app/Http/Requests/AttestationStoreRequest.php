@@ -16,7 +16,6 @@ class AttestationStoreRequest extends FormRequest
         return $this->user()->can('create', Attestation::class);
     }
 
-
     /**
      * Get the validation rules that apply to the request.
      *

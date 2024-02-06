@@ -3,13 +3,17 @@
         <div class="modal-body">
             <div class="row g-3">
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <Label for="inputName" class="form-label" value="Name"/>
                     <Input type="text" class="form-control" id="inputName" v-model="newInstForm.name"/>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <Label for="inputAddress1" class="form-label" value="Address 1"/>
                     <Input type="text" class="form-control" id="inputAddress1" v-model="newInstForm.address1"/>
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputBceidBizGuid" class="form-label" value="Address 1"/>
+                    <Input type="text" class="form-control" id="inputBceidBizGuid" v-model="newInstForm.bceid_business_guid"/>
                 </div>
 
                 <div class="col-md-4">
@@ -108,6 +112,7 @@ export default {
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
                 dli: "",
+                bceid_business_guid: "",
                 name: "",
                 legal_name: "",
                 address1: "",

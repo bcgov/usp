@@ -7,17 +7,13 @@
         <form class="card-body" @submit.prevent="submitForm">
             <div class="row g-3">
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputName" class="form-label" value="Name" />
                     <Input type="text" class="form-control" id="inputName" v-model="editForm.name" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputAddress1" class="form-label" value="Address 1" />
                     <Input type="text" class="form-control" id="inputAddress1" v-model="editForm.address1" />
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputBceidBizGuid" class="form-label" value="BCeID Business Guid" />
-                    <Input type="text" class="form-control" id="inputBceidBizGuid" v-model="editForm.bceid_business_guid" />
                 </div>
 
                 <div class="col-md-4">

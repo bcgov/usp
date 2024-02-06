@@ -1,22 +1,19 @@
 <template>
     <tr>
         <th scope="col">
-            <span>Name</span>
+                <span>Start Date</span>
         </th>
         <th scope="col">
-            <span>Email</span>
+                <span>End Date</span>
         </th>
         <th scope="col">
-            <span>User ID</span>
+                <span># Attestations</span>
         </th>
         <th scope="col">
-            <span>GUID</span>
+                <span>Status</span>
         </th>
-        <th scope="col">
-            <span>Role</span>
-        </th>
-        <th scope="col">
-            <span>Status</span>
+        <th scope="col" style="min-width: 100px;">
+            <span>Comment</span>
         </th>
     </tr>
 </template>
@@ -25,15 +22,15 @@
 import {Inertia} from "@inertiajs/inertia";
 
 export default {
-    name: 'InstitutionStaffHeader',
+    name: 'AttestationInstitutionsHeader',
     components: {},
     props: {},
     data() {
         return {
-            sortClmn: 'bceid_user_name',
+            sortClmn: 'start_date',
             sortType: 'asc',
             url: '',
-            path: 'staff',
+            path: 'caps',
         }
     },
     mounted() {

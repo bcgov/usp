@@ -40,6 +40,7 @@ class InstitutionStoreRequest extends FormRequest
             'guid' => 'required|unique:institutions,guid',
             'dli' => 'required|unique:institutions,dli',
             'name' => 'required|unique:institutions,name',
+            'bceid_business_guid' => 'required|unique:institutions,bceid_business_guid',
             'legal_name' => 'nullable',
             'address1' => 'required',
             'address2' => 'nullable',
