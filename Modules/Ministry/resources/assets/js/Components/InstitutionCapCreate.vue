@@ -5,7 +5,7 @@
 
                 <div class="col-md-4">
                     <Label for="inputSd" class="form-label" value="Federal Cap"/>
-                    <Select @change="updateFedCap" class="form-select" id="inputStatus" v-model="newInstitutionCapForm.fed_cap_id">
+                    <Select @change="updateFedCap" class="form-select" id="inputSd" v-model="newInstitutionCapForm.fed_cap_id">
                         <option></option>
                         <option v-for="f in fedCaps" :value="f.id">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
@@ -17,12 +17,20 @@
                         <option v-for="stat in $attrs.utils['Institution Cap Status']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
+
                 <div class="col-md-4">
                     <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="newInstitutionCapForm.total_attestations"/>
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
                     </div>
+                </div>
+                <div class="col-md-12">
+                    <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>
+                    <Select class="form-select" id="inputProgram" v-model="newInstitutionCapForm.program_id">
+                        <option value=""></option>
+                        <option v-for="c in results.programs" :value="c.id">{{ c.program_name}}</option>
+                    </Select>
                 </div>
 
                 <div class="col-12">
@@ -77,6 +85,7 @@ export default {
                 formFailMsg: 'There was an error submitting this form.',
                 institution_id: "",
                 fed_cap_id: "",
+                program_id: "",
                 total_attestations: "",
                 status: "",
                 comment: "",

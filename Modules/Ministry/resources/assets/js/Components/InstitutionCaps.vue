@@ -2,7 +2,7 @@
     <div class="card mb-3">
         <div class="card-header">
             Institution Caps
-            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newInstCapModal">New Institution Cap</button>
+            <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Cap</button>
         </div>
         <div class="card-body">
             <div v-if="results.caps != null && results.caps.length > 0" class="table-responsive pb-3">
@@ -15,6 +15,8 @@
                         <td><a href="#" @click="openEditForm(row)">{{ row.start_date }}</a></td>
                         <td>{{ row.end_date }}</td>
                         <td>{{ row.total_attestations}}</td>
+                        <td v-if="row.program == null"></td>
+                        <td v-else>{{ row.program.program_name }}</td>
                         <td>
                             <span v-if="row.status" class="badge rounded-pill text-bg-success">Active</span>
                             <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>
@@ -72,9 +74,13 @@ export default {
         }
     },
     methods: {
+        openNewForm: function (){
+            setTimeout(function(){$("#newInstCapModal").modal('show');}, 10);
+        },
+
         openEditForm: function (cap){
             this.editCap = cap;
-            $("#editInstCapModal").modal('show');
+            setTimeout(function(){$("#editInstCapModal").modal('show');}, 10);
         },
         closeEditForm: function (){
             $("#editInstCapModal").modal('hide');

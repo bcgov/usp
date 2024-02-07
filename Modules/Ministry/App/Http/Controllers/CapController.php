@@ -20,8 +20,12 @@ class CapController extends Controller
      */
     public function store(CapStoreRequest $request): \Inertia\Response
     {
-        $check = Cap::where(['start_date' => $request->start_date, 'end_date' => $request->end_date,
-            'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid])->first();
+        $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date,
+            'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
+        if($request->has('program_id') && $request->program_id != ''){
+            $conditions['program_guid'] = $request->program_guid;
+        }
+        $check = Cap::where($conditions)->first();
         if(is_null($check)){
             Cap::create($request->validated());
         }

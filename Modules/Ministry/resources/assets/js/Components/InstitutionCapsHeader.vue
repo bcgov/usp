@@ -7,7 +7,10 @@
                 <span>End Date</span>
         </th>
         <th scope="col">
-                <span># Attestations</span>
+            <span># Attestations</span>
+        </th>
+        <th scope="col">
+            <span>Program</span>
         </th>
         <th scope="col">
                 <span>Status</span>

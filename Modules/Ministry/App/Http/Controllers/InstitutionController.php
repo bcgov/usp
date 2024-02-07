@@ -42,7 +42,9 @@ class InstitutionController extends Controller
      */
     public function show(Institution $institution, $page = 'details')
     {
-        $institution = Institution::where('id', $institution->id)->with(['caps', 'activeCaps', 'staff', 'attestations', 'programs'])->first();
+        $institution = Institution::where('id', $institution->id)->with(
+            ['caps.program', 'activeCaps', 'staff', 'attestations', 'programs']
+        )->first();
         $fedCaps = FedCap::active()->get();
         return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
             'fedCaps' => $fedCaps]);

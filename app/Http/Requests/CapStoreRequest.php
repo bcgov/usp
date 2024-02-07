@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Cap;
 use App\Models\FedCap;
 use App\Models\Institution;
+use App\Models\Program;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
@@ -29,6 +30,7 @@ class CapStoreRequest extends FormRequest
             'guid' => 'required|unique:caps,guid',
             'fed_cap_guid' => 'required|exists:fed_caps,guid',
             'institution_guid' => 'required|exists:institutions,guid',
+            'program_guid' => 'nullable|exists:programs,guid',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
             'status' => 'required|in:Active,Pending',
@@ -47,7 +49,9 @@ class CapStoreRequest extends FormRequest
     {
         $fedCap = FedCap::find($this->fed_cap_id);
         $institution = Institution::find($this->institution_id);
+        $program = Program::find($this->program_id);
         $this->merge([
+            'program_guid' => $program?->guid,
             'start_date' => $fedCap->start_date,
             'end_date' => $fedCap->end_date,
             'fed_cap_guid' => $fedCap->guid,

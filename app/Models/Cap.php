@@ -15,8 +15,9 @@ class Cap extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['guid', 'fed_cap_guid', 'institution_guid', 'start_date', 'end_date', 'total_attestations', 'status', 'comment',
-        'last_touch_by_user_guid',];
+    protected $fillable = ['guid', 'fed_cap_guid', 'institution_guid', 'program_guid', 'start_date', 'end_date',
+        'total_attestations', 'status', 'comment', 'last_touch_by_user_guid',];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -37,6 +38,11 @@ class Cap extends Model
     public function attestations()
     {
         return $this->hasMany(Attestation::class, 'cap_guid', 'guid');
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_guid', 'guid');
     }
 
     /**

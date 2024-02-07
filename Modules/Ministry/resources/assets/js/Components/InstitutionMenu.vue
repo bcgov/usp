@@ -1,6 +1,7 @@
 <template>
 
     <div class="list-group">
+        <Link href="#" class="list-group-item list-group-item-action disabled list-group-item-secondary">{{ name }}</Link>
         <Link :href="'/ministry/institutions/' + id" class="list-group-item list-group-item-action" :class="page === 'details' ? 'active' : ''">Information &amp; Contact Info.</Link>
         <Link :href="'/ministry/institutions/' + id + '/programs'" class="list-group-item list-group-item-action" :class="page === 'programs' ? 'active' : ''">Programs</Link>
         <Link :href="'/ministry/institutions/' + id + '/attestations'" class="list-group-item list-group-item-action" :class="page === 'attestations' ? 'active' : ''">Attestations</Link>
@@ -12,7 +13,8 @@
 import { Link } from '@inertiajs/vue3';
 defineProps({
     page: String,
-    id: Number
+    id: Number,
+    name: String
 });
 
 </script>

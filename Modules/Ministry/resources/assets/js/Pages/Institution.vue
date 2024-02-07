@@ -9,6 +9,7 @@
     <AuthenticatedLayout v-bind="$attrs">
 
             <div v-if="results != null" class="container-fluid">
+
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card">
@@ -16,7 +17,7 @@
                                 Institution Menu
                             </div>
                             <div class="card-body">
-                                <InstitutionMenu :page="page" :id="results.id" />
+                                <InstitutionMenu :page="page" :id="results.id" :name="results.name" />
                             </div>
                         </div>
                     </div>
@@ -54,6 +55,7 @@ export default {
         page: String,
         fedCaps: Object,
         countries: Object
+
     },
     data() {
         return {
