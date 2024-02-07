@@ -27,11 +27,20 @@ class AttestationStoreRequest extends FormRequest
             'guid' => 'required|unique:institutions,guid',
             'institution_guid' => 'required|exists:institutions,guid',
             'cap_guid' => 'required|exists:caps,guid',
-            'student_name' => 'required',
-            'student_id_number' => 'required',
-            'student_dob' => 'required|date_format:Y-m-d',
+            'program_guid' => 'required|exists:programs,guid',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'id_number' => 'nullable',
+            'dob' => 'required|date_format:Y-m-d',
+            'email' => 'required|email',
+            'address1' => 'required',
+            'address2' => 'nullable',
+            'city' => 'required',
+            'zip_code' => 'nullable',
+            'province' => 'nullable',
+            'country' => 'required',
             'expiry_date' => 'required|date_format:Y-m-d',
-            'status' => 'required',
+            'status' => 'required|in:Draft,Issued,Received,Denied',
             'last_touch_by_user_guid' => 'required:exists,users,guid',
             'created_by_user_guid' => 'required:exists,users,guid',
         ];
@@ -49,8 +58,14 @@ class AttestationStoreRequest extends FormRequest
             'guid' => Str::orderedUuid()->getHex(),
             'created_by_user_guid' => $this->user()->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
-            'student_name' => Str::title($this->student_name),
-            'status' => 'Issued'
+            'id_number' => Str::upper($this->id_number),
+            'first_name' => Str::title($this->first_name),
+            'last_name' => Str::title($this->last_name),
+            'email' => Str::lower($this->email),
+            'city' => Str::title($this->city),
+            'zip_code' => Str::upper($this->zip_code),
+            'province' => Str::title($this->province),
+            'status' => 'Draft'
         ]);
     }
 

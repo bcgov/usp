@@ -3,28 +3,19 @@
         <div class="modal-body">
             <div class="row g-3">
 
-                <div class="col-md-4">
-                    <Label for="inputName" class="form-label" value="Institution Name"/>
-                    <input @change="enableCap" type="text" class="form-control" list="datalistOptionsInstName" id="inputName" placeholder="Type to search..."  v-model="selectedInstIndex" />
-                    <datalist id="datalistOptionsInstName">
-                        <option v-for="(inst, i) in institutions" :key="i" :value="inst.name"></option>
-                    </datalist>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputCap" class="form-label" value="Institution Cap"/>
-                    <Select class="form-select" id="inputCap" v-model="newAtteForm.cap_guid" :disabled="selectedInst === ''">
-                        <template v-if="selectedInst != ''">
-                            <option></option>
-                            <option v-for="c in selectedInst.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>
-                        </template>
+                    <Select class="form-select" id="inputCap" v-model="newAtteForm.cap_guid" :disabled="institution === ''">
+                        <option></option>
+                        <option v-for="c in institution.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputProgram" class="form-label" value="Institution Program"/>
-                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="selectedInst === ''">
-                        <template v-if="selectedInst != ''">
+                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="institution === ''">
+                        <template v-if="institution !== ''">
                             <option></option>
-                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
+                            <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
                         </template>
                     </Select>
                 </div>
@@ -127,13 +118,13 @@ import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
 import {Link, useForm} from '@inertiajs/vue3';
 
 export default {
-    name: 'AttestationCreate',
+    name: 'InstitutionAttestationCreate',
     components: {
         Input, Label, Select, Link, useForm, FormSubmitAlert
     },
     props: {
         newAtte: Object|null,
-        institutions: Object,
+        institution: Object,
         countries: Object
     },
     data() {
@@ -160,41 +151,17 @@ export default {
                 status: "",
                 expiry_date: ""
             },
-            selectedInstIndex: '',
-            selectedInst: '',
-            programs: []
         }
     },
     methods: {
-        enableCap: function (e){
-            const inst = this.institutions.find(inst => inst.name === e.target.value);
-            if (inst) {
-                this.selectedInst = inst;
-                this.newAtteForm.institution_guid = inst.guid;
-                this.fetchPrograms();
-            }
-        },
-        fetchPrograms: function () {
-            let vm = this;
-            let data = {
-                institution_guid: this.selectedInst.guid,
-            }
-            axios.post('/ministry/api/fetch/programs', data)
-                .then(function (response) {
-                    vm.programs = response.data.body;
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
-        },
         submitForm: function () {
             this.newAtteForm.formState = null;
             this.newAtteForm.post('/ministry/attestations', {
                 onSuccess: (response) => {
                     $("#newAtteModal").modal('hide');
+
                     this.newAtteForm.reset(this.newAtteFormData);
-                    this.$inertia.visit('/ministry/institutions/' + this.selectedInst.id + "/attestations");
+                    this.$inertia.visit('/ministry/attestations/' + this.newAtte.id);
                     // console.log(response.props.institution)
                 },
                 onError: () => {
@@ -207,6 +174,7 @@ export default {
 
     mounted() {
         this.newAtteForm = useForm(this.newAtteFormData);
+        this.newAtteForm.institution_guid = this.institution.guid;
     }
 }
 </script>

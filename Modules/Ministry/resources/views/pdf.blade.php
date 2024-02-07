@@ -35,53 +35,43 @@
             <tr>
                 <td style="text-align: left; width: 25%;"><img src="{{ public_path('/images/bc_sq_logo.png') }}"></td>
                 <td style="text-align: center; width: 50%;"></td>
-                <td style="text-align: left; width: 25%;"></td>
+                <td style="text-align: left; width: 25%;"><strong>{{ $attestation->guid }}</strong></td>
             </tr>
         </table>
     </header>
 
     <table>
-        <tr><td style="text-align: right;">{{ $now_d }}</td></tr>
+        <tr><td>{{ $now_d }}<br/><br/><br/></td></tr>
         <tr>
             <td>
-                Student name: {{ $attestation->student_name }}<br/>
+                Student name: {{ $attestation->first_name }} {{ $attestation->last_name }}<br/>
                 Attestation ID: <strong>{{ $attestation->guid }}</strong><br/>
                 Issue date/time: {{ $attestation->created_at }}<br/>
                 Expiry date: {{ $attestation->expiry_date }}<br/>
                 <br/><br/><br/>
-                Dear {{ $attestation->student_name }}:<br/><br/>
+                Dear {{ $attestation->first_name }} {{ $attestation->last_name }},<br/><br/>
+                This provincial attestation letter confirms that you have a space within British Columbia’s 2024 allocation period for study permit applications, based on the information that you provided:<br/>
+                <strong>Student:</strong>
+                <ul>
+                    <li>Student Name (as it appears on valid passport /identity document): {{ $attestation->last_name }}, {{ $attestation->first_name }}</li>
+                    <li>Student Date of Birth: {{ $attestation->dob }}</li>
+                    <li>Student's Current Residence Address: {{ $attestation->address1 }}, {{ $attestation->city }}, {{ $attestation->country }}</li>
+                </ul>
+                <br/>
+                <strong>Study Program:</strong>
+                <ul>
+                    <li>Designated Learning Institution (DLI) name: {{ $attestation->institution->name }}</li>
+                    <li>DLI number: {{ $attestation->institution->dli }}</li>
+                    <li>Program name: {{ $attestation->program->program_name }}</li>
+                </ul>
+                <br/>
+                This provincial attestation letter is valid until {{ $attestation->expiry_date }}, or until the study permit application cap is reached.<br/><br/>
+                You must include this provincial attestation letter when you submit your study permit application to
+                Immigration, Refugees and Citizenship Canada (IRCC). <strong>A study permit application that does not include a
+                provincial attestation letter, or meet an exception as outlined in the Ministerial Instructions, will
+                    not be accepted for processing.</strong> Please refer to <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada.html">IRCC’s web site</a> for study permit application information.
 
-                <h1>Some body</h1>
-                <table>
-                    <tr>
-                        <td align="right" width="100">Institution name: </td>
-                        <td>{{ $attestation->institution->name }}</td>
-                    </tr>
-                    <tr>
-                        <td align="right">Institution address: </td>
-                        <td>{{ $attestation->institution->address1 }}</td>
-                    </tr>
-                    @if(!is_null($attestation->institution->address2))
-                    <tr>
-                        <td align="right"></td>
-                        <td><strong>{{ $attestation->institution->address2 }}</strong></td>
-                    </tr>
-                    @endif
-                    <tr>
-                        <td align="right"></td>
-                        <td>{{ $attestation->institution->city }} {{ $attestation->institution->province }} {{ $attestation->institution->postal_code }}</td>
-                    </tr>
-                    <tr>
-                        <td align="right"></td>
-                        <td>Canada</td>
-                    </tr>
-                </table>
-
-
-
-
-
-                <br/><br/>Sincerely,<br/><br/><br/>
+                <br/><br/>John Marchesan,<br/><img src="{{ public_path('/images/attestation_sign.png') }}"><br/><br/>
             </td>
         </tr>
 

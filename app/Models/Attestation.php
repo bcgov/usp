@@ -15,7 +15,7 @@ class Attestation extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['guid', 'cap_guid', 'institution_guid', 'first_name', 'last_name', 'id_number',
+    protected $fillable = ['guid', 'cap_guid', 'institution_guid', 'program_guid', 'first_name', 'last_name', 'id_number',
         'dob', 'status', 'expiry_date', 'last_touch_by_user_guid', 'created_by_user_guid',
         'address1', 'address2', 'email', 'city', 'zip_code', 'province', 'country', ];
 
@@ -30,7 +30,10 @@ class Attestation extends Model
     {
         return $this->belongsTo(Institution::class, 'institution_guid', 'guid');
     }
-
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_guid', 'guid');
+    }
     public function cap()
     {
         return $this->belongsTo(Cap::class, 'cap_guid', 'guid');

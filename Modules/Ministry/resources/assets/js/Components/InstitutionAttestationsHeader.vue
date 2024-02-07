@@ -1,19 +1,25 @@
 <template>
     <tr>
         <th scope="col">
-                <span>Start Date</span>
+            <span>First Name</span>
         </th>
         <th scope="col">
-                <span>End Date</span>
+            <span>Last Name</span>
         </th>
         <th scope="col">
-                <span># Attestations</span>
+            <span>Date of Birth</span>
         </th>
         <th scope="col">
-                <span>Status</span>
+            <span>Institution</span>
         </th>
-        <th scope="col" style="min-width: 100px;">
-            <span>Comment</span>
+        <th scope="col">
+            <span>Status</span>
+        </th>
+        <th scope="col">
+            <span>Expiry Date</span>
+        </th>
+        <th scope="col">
+            <span>Issue Date</span>
         </th>
     </tr>
 </template>

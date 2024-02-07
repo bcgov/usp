@@ -123,7 +123,6 @@ class MaintenanceController extends Controller
     public function utilUpdate(UtilEditRequest $request, Util $util): \Illuminate\Http\RedirectResponse
     {
         $util->update($request->validated());
-
         return Redirect::route('ministry.maintenance.utils.list');
     }
 

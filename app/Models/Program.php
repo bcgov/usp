@@ -15,8 +15,11 @@ class Program extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['guid', 'institution_guid', 'program_name', 'program_type',
-        'noc_code', 'cip_code', 'inst_status', 'ministry_status', 'last_touch_by_user_guid',];
+    protected $fillable = ['guid', 'institution_guid', 'cap_guid', 'program_guid', 'program_name', 'program_type', 'credential',
+        'total_duration_hrs', 'total_duration_weeks', 'tuition_domestic', 'tuition_international', 'work_experience_required',
+        'delivery_in_class', 'delivery_distance', 'delivery_combined', 'noc_code', 'cip_code', 'status', 'restrictions',
+        'status', 'last_touch_by_user_guid',];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -27,5 +30,10 @@ class Program extends Model
     public function institution()
     {
         return $this->belongsTo(Institution::class, 'institution_guid', 'guid');
+    }
+
+    public function cap()
+    {
+        return $this->belongsTo(Cap::class, 'cap_guid', 'guid');
     }
 }

@@ -1,28 +1,28 @@
 <template>
     <tr>
         <th scope="col">
-            <a href="#" @click="switchSort('student_name')">
-                <span>Student Name</span>
-                <em v-if="sortClmn === 'student_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+            <a href="#" @click="switchSort('first_name')">
+                <span>First Name</span>
+                <em v-if="sortClmn === 'first_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
         <th scope="col">
-            <a href="#" @click="switchSort('student_id_number')">
-                <span>ID</span>
-                <em v-if="sortClmn === 'name' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
-                <em v-else class="bi bi-sort-numeric-down"></em>
+            <a href="#" @click="switchSort('last_name')">
+                <span>Last Name</span>
+                <em v-if="sortClmn === 'last_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">
-            <a href="#" @click="switchSort('student_dob')">
+            <a href="#" @click="switchSort('dob')">
                 <span>Date of Birth</span>
-                <em v-if="sortClmn === 'active_status' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
+                <em v-if="sortClmn === 'dob' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">
-                <span>Institution</span>
+            <span>Institution</span>
         </th>
         <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('status')">
@@ -40,7 +40,7 @@
         </th>
         <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('created_at')">
-                <span>Create Date</span>
+                <span>Issue Date</span>
                 <em v-if="sortClmn === 'created_at' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
@@ -69,8 +69,8 @@ export default {
         this.sortClmn = this.url.searchParams.get("sort");
         this.sortType = this.url.searchParams.get("direction");
 
-        if (this.url.pathname === '/dashboard') {
-            this.path = 'dashboard';
+        if (this.url.pathname === '/attestations') {
+            this.path = 'attestations';
         }
 
         let search = this.url.pathname.split('attestation-search/');

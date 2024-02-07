@@ -3,6 +3,7 @@
 use Modules\Ministry\App\Http\Controllers\AttestationController;
 use Modules\Ministry\App\Http\Controllers\InstitutionStaffController;
 use Illuminate\Support\Facades\Route;
+use Modules\Ministry\App\Http\Controllers\ProgramController;
 use Modules\Ministry\App\Http\Controllers\CapController;
 use Modules\Ministry\App\Http\Controllers\FedCapController;
 use Modules\Ministry\App\Http\Controllers\InstitutionController;
@@ -39,17 +40,25 @@ Route::prefix('ministry')->group(function () {
         Route::put('/caps', [CapController::class, 'update'])->name('caps.update');
         Route::post('/caps', [CapController::class, 'store'])->name('caps.store');
 
+        Route::put('/programs', [ProgramController::class, 'update'])->name('programs.update');
+        Route::post('/programs', [ProgramController::class, 'store'])->name('programs.store');
+
         Route::put('/institution_staff', [InstitutionStaffController::class, 'update'])->name('institution_staff.update');
         Route::put('/institution_roles', [InstitutionStaffController::class, 'updateRole'])->name('institution_roles.updateRole');
 
         Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
         Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
+        Route::put('/attestations', [AttestationController::class, 'update'])->name('attestations.update');
         Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
+
+
+
+        Route::post('/api/fetch/programs/{program?}', [ProgramController::class, 'fetchPrograms'])->name('programs.api.fetch');
 
         Route::group([
                 'middleware' => ['ministry_admin'],
                 'prefix' => 'maintenance',
-                'as' => 'ministry.',
+                'as' => 'maintenance.',
             ], function () {
             Route::get('/staff', [MaintenanceController::class, 'staffList'])->name('staff.list');
             Route::get('/staff/{user}', [MaintenanceController::class, 'staffShow'])->name('staff.show');

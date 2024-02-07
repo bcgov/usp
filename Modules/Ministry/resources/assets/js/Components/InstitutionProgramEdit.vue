@@ -32,11 +32,11 @@
                 </div>
                 <div class="col-md-3">
                     <Label for="inputTuitionDomestic" class="form-label" value="Tuition Domestic" />
-                    <Input type="number" class="form-control" id="inputTuitionDomestic" v-model="editForm.tuition_domestic" />
+                    <Input type="number" step="0.01" class="form-control" id="inputTuitionDomestic" v-model="editForm.tuition_domestic" />
                 </div>
                 <div class="col-md-3">
                     <Label for="inputTuitionInt" class="form-label" value="Tuition International" />
-                    <Input type="number" class="form-control" id="inputTuitionInt" v-model="editForm.tuition_international" />
+                    <Input type="number" step="0.01" class="form-control" id="inputTuitionInt" v-model="editForm.tuition_international" />
                 </div>
 
                 <div class="col-md-3">
@@ -72,11 +72,11 @@
                     </Select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <Label for="inputNocCode" class="form-label" value="NOC Code" />
                     <Input type="text" class="form-control" id="inputNocCode" v-model="editForm.noc_code" />
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <Label for="inputCipCode" class="form-label" value="CIP Code" />
                     <Input type="text" class="form-control" id="inputCipCode" v-model="editForm.cip_code" />
                 </div>
@@ -86,6 +86,13 @@
                         <option value=""></option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
+                    </Select>
+                </div>
+                <div class="col-md-5">
+                    <Label for="inputRestrictions" class="form-label" value="Restrictions"/>
+                    <Select class="form-select" id="inputCredential" v-model="editForm.restrictions">
+                        <option></option>
+                        <option v-for="stat in $attrs.utils['Program Restriction']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
 
@@ -150,8 +157,8 @@ export default {
                 noc_code: "",
                 cip_code: "",
                 status: "",
+                restrictions: ""
             },
-            selectedProgram: ''
         }
     },
     methods: {
@@ -164,7 +171,7 @@ export default {
                     $("#editInstProgramModal").modal('hide')
                         .on('hidden.bs.modal', function () {
                             vm.editForm.reset(vm.editForm);
-                            vm.$inertia.visit('/ministry/institutions/' + vm.editForm.institution_id + '/programs');
+                            vm.$inertia.visit('/ministry/institutions/' + vm.results.id + '/programs');
                             vm.$emit('close');
                         });
                 },

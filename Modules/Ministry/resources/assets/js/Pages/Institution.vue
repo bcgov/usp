@@ -25,7 +25,7 @@
                         <InstitutionPrograms v-bind="$attrs" v-if="page === 'programs'" :results="results"></InstitutionPrograms>
                         <InstitutionCaps v-bind="$attrs" v-if="page === 'caps'" :results="results" :fedCaps="fedCaps"></InstitutionCaps>
                         <InstitutionStaff v-bind="$attrs" v-if="page === 'staff'" :results="results"></InstitutionStaff>
-                        <InstitutionAttestations v-bind="$attrs" v-if="page === 'attestations'" :results="results"></InstitutionAttestations>
+                        <InstitutionAttestations v-bind="$attrs" v-if="page === 'attestations'" :countries="countries" :results="results"></InstitutionAttestations>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,8 @@ export default {
     props: {
         results: Object,
         page: String,
-        fedCaps: Object
+        fedCaps: Object,
+        countries: Object
     },
     data() {
         return {

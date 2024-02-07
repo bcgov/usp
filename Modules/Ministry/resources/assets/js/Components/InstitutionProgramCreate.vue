@@ -1,40 +1,107 @@
 <template>
-    <form v-if="newInstitutionCapForm != null" class="card-body" @submit.prevent="submitForm">
+    <form v-if="editForm != null" class="card-body" @submit.prevent="submitForm">
         <div class="modal-body">
             <div class="row g-3">
 
                 <div class="col-md-4">
-                    <Label for="inputSd" class="form-label" value="Federal Cap"/>
-                    <Select @change="updateFedCap" class="form-select" id="inputStatus" v-model="newInstitutionCapForm.fed_cap_id">
+                    <Label for="inputProgramName" class="form-label" value="Program Name" />
+                    <Input type="text" class="form-control" id="inputProgramName" v-model="editForm.program_name" />
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputProgramType" class="form-label" value="Program Type" />
+                    <Select class="form-select" id="inputProgramType" v-model="editForm.program_type">
                         <option></option>
-                        <option v-for="f in fedCaps" :value="f.id">{{ f.start_date }} - {{ f.end_date}}</option>
+                        <option v-for="stat in $attrs.utils['Program Type']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputStatus" class="form-label" value="Status"/>
-                    <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.status">
+                    <Label for="inputCredential" class="form-label" value="Credential"/>
+                    <Select class="form-select" id="inputCredential" v-model="editForm.credential">
+                        <option></option>
+                        <option v-for="stat in $attrs.utils['Program Credential']" :value="stat.field_name">{{ stat.field_name }}</option>
+                    </Select>
+                </div>
+
+                <div class="col-md-3">
+                    <Label for="inputDurationHrs" class="form-label" value="Total Duration Hrs" />
+                    <Input type="number" class="form-control" id="inputDurationHrs" v-model="editForm.total_duration_hrs" />
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputDurationWeeks" class="form-label" value="Total Duration Weeks" />
+                    <Input type="number" class="form-control" id="inputDurationWeeks" v-model="editForm.total_duration_weeks" />
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputTuitionDomestic" class="form-label" value="Tuition Domestic" />
+                    <Input type="number" step="0.01" class="form-control" id="inputTuitionDomestic" v-model="editForm.tuition_domestic" />
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputTuitionInt" class="form-label" value="Tuition International" />
+                    <Input type="number" step="0.01" class="form-control" id="inputTuitionInt" v-model="editForm.tuition_international" />
+                </div>
+
+                <div class="col-md-3">
+                    <Label for="inputExpReq" class="form-label" value="Work Exp. Required?"/>
+                    <Select class="form-select" id="inputExpReq" v-model="editForm.work_experience_required">
                         <option value=""></option>
-                        <option v-for="stat in $attrs.utils['Institution Cap Status']" :value="stat.field_name">{{ stat.field_name }}</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
-                    <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
-                    <div class="input-group mb-3">
-                        <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="newInstitutionCapForm.total_attestations"/>
-                        <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
-                    </div>
+                <div class="col-md-3">
+                    <Label for="inputDeliveryInClass" class="form-label" value="Delivery In-class?"/>
+                    <Select class="form-select" id="inputDeliveryInClass" v-model="editForm.delivery_in_class">
+                        <option value=""></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputDeliveryDistance" class="form-label" value="Delivery Distance?"/>
+                    <Select class="form-select" id="inputDeliveryDistance" v-model="editForm.delivery_distance">
+                        <option value=""></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputDeliveryComb" class="form-label" value="Delivery Combined?"/>
+                    <Select class="form-select" id="inputDeliveryComb" v-model="editForm.delivery_combined">
+                        <option value=""></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
                 </div>
 
-                <div class="col-12">
-                    <Label for="inputComment" class="form-label" value="Comment"/>
-                    <textarea class="form-control" id="inputComment" v-model="newInstitutionCapForm.comment" rows="3"></textarea>
+                <div class="col-md-2">
+                    <Label for="inputNocCode" class="form-label" value="NOC Code" />
+                    <Input type="text" class="form-control" id="inputNocCode" v-model="editForm.noc_code" />
+                </div>
+                <div class="col-md-2">
+                    <Label for="inputCipCode" class="form-label" value="CIP Code" />
+                    <Input type="text" class="form-control" id="inputCipCode" v-model="editForm.cip_code" />
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputStatus" class="form-label" value="Status" />
+                    <Select class="form-select" id="inputStatus" v-model="editForm.status">
+                        <option value=""></option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </Select>
+                </div>
+                <div class="col-md-5">
+                    <Label for="inputRestrictions" class="form-label" value="Restrictions"/>
+                    <Select class="form-select" id="inputCredential" v-model="editForm.restrictions">
+                        <option></option>
+                        <option v-for="stat in $attrs.utils['Program Restriction']" :value="stat.field_name">{{ stat.field_name }}</option>
+                    </Select>
                 </div>
 
-                <div v-if="newInstitutionCapForm.errors != undefined" class="row">
+
+                <div v-if="editForm.errors != undefined" class="row">
                     <div class="col-12">
-                        <div v-if="newInstitutionCapForm.hasErrors == true" class="alert alert-danger mt-3">
+                        <div v-if="editForm.hasErrors == true" class="alert alert-danger mt-3">
                             <ul>
-                                <li v-for="err in newInstitutionCapForm.errors">{{ err }}</li>
+                                <li v-for="err in editForm.errors">{{ err }}</li>
                             </ul>
                         </div>
                     </div>
@@ -43,12 +110,12 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newInstitutionCapForm.processing">
-                Create Institution Cap
+            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="editForm.processing">
+                Create Program
             </button>
         </div>
-        <FormSubmitAlert :form-state="newInstitutionCapForm.formState" :success-msg="newInstitutionCapForm.formSuccessMsg"
-                         :fail-msg="newInstitutionCapForm.formFailMsg"></FormSubmitAlert>
+        <FormSubmitAlert :form-state="editForm.formState" :success-msg="editForm.formSuccessMsg"
+                         :fail-msg="editForm.formFailMsg"></FormSubmitAlert>
     </form>
 
 </template>
@@ -60,59 +127,50 @@ import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
 import {Link, useForm} from '@inertiajs/vue3';
 
 export default {
-    name: 'InstitutionCapCreate',
+    name: 'InstitutionProgramCreate',
     components: {
         Input, Label, Select, Link, useForm, FormSubmitAlert
     },
     props: {
-        fedCaps: Object,
         results: Object
     },
     data() {
         return {
-            newInstitutionCapForm: null,
-            newInstitutionCapFormData: {
+            editForm: null,
+            editFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
-                institution_id: "",
-                fed_cap_id: "",
-                total_attestations: "",
+                institution_guid: "",
+                program_name: "",
+                program_type: "",
+                credential: "",
+                total_duration_hrs: "",
+                total_duration_weeks: "",
+                tuition_domestic: "",
+                tuition_international: "",
+                work_experience_required: "",
+                delivery_in_class: "",
+                delivery_distance: "",
+                delivery_combined: "",
+                noc_code: "",
+                cip_code: "",
                 status: "",
-                comment: "",
+                restrictions: ""
             },
-            selectedFedCap: ''
         }
     },
     methods: {
-        validateTotal: function (){
-            if(this.selectedFedCap !== ''){
-                if(parseInt(this.newInstitutionCapForm.total_attestations) > this.selectedFedCap.remaining_cap){
-                    this.newInstitutionCapForm.total_attestations = this.selectedFedCap.remaining_cap;
-                }
-            }
-        },
-        updateFedCap: function (e){
-            // Find the selected school by name
-            const cap = this.fedCaps.find(fedCap => fedCap.id == e.target.value);
 
-            // If found, update the form property
-            if (cap) {
-                this.selectedFedCap = cap;
-            }
-        },
         submitForm: function () {
-            this.newInstitutionCapForm.formState = null;
-            this.newInstitutionCapForm.post('/ministry/caps', {
+            let vm = this;
+            this.editForm.formState = null;
+            this.editForm.post('/ministry/programs', {
                 onSuccess: (response) => {
-                    $("#newInstCapModal").modal('hide');
-                    this.newInstitutionCapForm.reset(this.newInstitutionCapFormData);
-
-                    this.$inertia.visit('/ministry/institutions/' + this.newInstitutionCapForm.institution_id + '/caps');
-                    // console.log(response.props.institution)
+                    vm.$inertia.visit('/ministry/institutions/' + vm.results.id + '/programs');
                 },
                 onError: () => {
-                    this.newInstitutionCapForm.formState = false;
+                    this.editForm.formState = false;
                 },
                 preserveState: true
             });
@@ -120,8 +178,8 @@ export default {
     },
 
     mounted() {
-        this.newInstitutionCapForm = useForm(this.newInstitutionCapFormData);
-        this.newInstitutionCapForm.institution_id = this.results.id;
+        this.editForm = useForm(this.editFormData);
+        this.editForm.institution_guid = this.results.guid;
     }
 }
 </script>
