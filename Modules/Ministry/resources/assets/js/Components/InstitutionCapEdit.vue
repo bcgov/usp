@@ -5,9 +5,9 @@
 
                 <div class="col-md-4">
                     <Label for="inputSd" class="form-label" value="Federal Cap"/>
-                    <Select @change="updateFedCap" class="form-select" id="inputSd" v-model="editInstitutionCapForm.fed_cap_id">
+                    <Select @change="updateFedCap" class="form-select" id="inputSd" v-model="editInstitutionCapForm.fed_cap_guid">
                         <option></option>
-                        <option v-for="f in fedCaps" :value="f.id">{{ f.start_date }} - {{ f.end_date}}</option>
+                        <option v-for="f in fedCaps" :value="f.guid">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
@@ -27,9 +27,9 @@
                 </div>
                 <div class="col-md-12">
                     <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>
-                    <Select class="form-select" id="inputProgram" v-model="editInstitutionCapForm.program_id">
+                    <Select class="form-select" id="inputProgram" v-model="editInstitutionCapForm.program_guid">
                         <option value=""></option>
-                        <option v-for="c in results.programs" :value="c.id">{{ c.program_name}}</option>
+                        <option v-for="c in results.programs" :value="c.guid">{{ c.program_name}}</option>
                     </Select>
                 </div>
 
@@ -86,8 +86,8 @@ export default {
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
                 institution_id: "",
-                fed_cap_id: "",
-                program_id: "",
+                fed_cap_guid: "",
+                program_guid: "",
                 total_attestations: "",
                 status: "",
                 comment: "",
@@ -120,7 +120,7 @@ export default {
                     $("#editInstCapModal").modal('hide')
                         .on('hidden.bs.modal', function () {
                             vm.editInstitutionCapForm.reset(vm.editInstitutionCapFormData);
-                            vm.$inertia.visit('/ministry/institutions/' + vm.editInstitutionCapForm.institution_id + '/caps');
+                            vm.$inertia.visit('/ministry/institutions/' + vm.results.id + '/caps');
                             vm.$emit('close');
                         });
                 },
@@ -134,11 +134,11 @@ export default {
 
     mounted() {
         this.editInstitutionCapForm = useForm(this.cap);
-        this.editInstitutionCapForm.institution_id = this.results.id;
+        this.editInstitutionCapForm.institution_guid = this.results.guid;
 
         for(let i=0; i<this.fedCaps.length; i++){
             if(this.fedCaps[i].guid === this.editInstitutionCapForm.fed_cap_guid){
-                this.editInstitutionCapForm.fed_cap_id = this.fedCaps[i].id;
+                this.editInstitutionCapForm.fed_cap_guid = this.fedCaps[i].guid;
                 break;
             }
         }

@@ -16,13 +16,14 @@
                             <td>{{ row.program_type }}</td>
                             <td>{{ row.credential }}</td>
                             <td>
-                                <span v-if="row.status" class="badge rounded-pill text-bg-success">Active</span>
+                                <span v-if="row.active" class="badge rounded-pill text-bg-success">Active</span>
                                 <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <h1 v-else class="lead">No results</h1>
         </div>
 
         <div v-if="showNewModal" class="modal modal-lg fade" id="newInstProgramModal" tabindex="-1" aria-labelledby="newInstProgramModalLabel" aria-hidden="true">

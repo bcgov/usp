@@ -41,9 +41,12 @@ class CapController extends Controller
      */
     public function update(CapEditRequest $request): \Inertia\Response
     {
-        $check = Cap::where('id', '!=', $request->id)
-            ->where(['start_date' => $request->start_date, 'end_date' => $request->end_date,
-            'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid])->first();
+        $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date,
+            'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
+        if($request->has('program_guid') && $request->program_guid != ''){
+            $conditions['program_guid'] = $request->program_guid;
+        }
+        $check = Cap::where('id', '!=', $request->id)->where($conditions)->first();
         if(is_null($check)){
             Cap::where('id', $request->id)->update($request->validated());
         }

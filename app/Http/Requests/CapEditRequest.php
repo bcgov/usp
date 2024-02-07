@@ -50,7 +50,7 @@ class CapEditRequest extends FormRequest
     {
         $fedCap = FedCap::where('guid', $this->fed_cap_guid)->first();
         $institution = Institution::where('guid', $this->institution_guid)->first();
-        $program = Program::find($this->program_id);
+        $program = Program::where('guid', $this->program_guid)->first();
         $this->merge([
             'program_guid' => $program?->guid,
             'start_date' => $fedCap->start_date,

@@ -41,7 +41,7 @@ class ProgramEditRequest extends FormRequest
             'delivery_combined' => 'nullable|boolean',
             'noc_code' => 'nullable',
             'cip_code' => 'nullable',
-            'status' => 'required|in:Active,Inactive',
+            'active' => 'required|boolean',
             'restrictions' => 'nullable',
             'last_touch_by_user_guid' => 'required:exists,users,guid',
         ];
@@ -55,6 +55,7 @@ class ProgramEditRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
+            'active' => $this->toBoolean($this->active),
             'delivery_combined' => isset($this->delivery_combined) ? $this->toBoolean($this->delivery_combined) : null,
             'delivery_distance' => isset($this->delivery_distance) ? $this->toBoolean($this->delivery_distance) : null,
             'delivery_in_class' => isset($this->delivery_in_class) ? $this->toBoolean($this->delivery_in_class) : null,

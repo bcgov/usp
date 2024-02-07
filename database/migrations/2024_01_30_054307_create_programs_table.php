@@ -33,7 +33,7 @@ return new class extends Migration
 
             $table->string('noc_code')->nullable()->comment('national occupation code. NOC codes are used by training institutes');
             $table->string('cip_code')->nullable()->comment('granting institutions use CIP codes to categorize programs');
-            $table->string('status')->comment('institution status set by inst.: active, inactive');
+            $table->boolean('active')->comment('program status set by inst.: true / false');
             $table->string('restrictions')->nullable()->comment('status set by the ministry');
             $table->string('last_touch_by_user_guid')->nullable();
 

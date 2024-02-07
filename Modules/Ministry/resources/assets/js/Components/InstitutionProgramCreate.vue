@@ -81,11 +81,11 @@
                     <Input type="text" class="form-control" id="inputCipCode" v-model="editForm.cip_code" />
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputStatus" class="form-label" value="Status" />
-                    <Select class="form-select" id="inputStatus" v-model="editForm.status">
+                    <Label for="inputActive" class="form-label" value="Active?" />
+                    <Select class="form-select" id="inputActive" v-model="editForm.active">
                         <option value=""></option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
                     </Select>
                 </div>
                 <div class="col-md-5">
@@ -155,7 +155,7 @@ export default {
                 delivery_combined: "",
                 noc_code: "",
                 cip_code: "",
-                status: "",
+                active: "",
                 restrictions: ""
             },
         }
@@ -167,7 +167,8 @@ export default {
             this.editForm.formState = null;
             this.editForm.post('/ministry/programs', {
                 onSuccess: (response) => {
-                    vm.$inertia.visit('/ministry/institutions/' + vm.results.id + '/programs');
+                    $("#newInstProgramModal").modal('hide');
+                    window.location.href = '/ministry/institutions/' + vm.results.id + '/programs';
                 },
                 onError: () => {
                     this.editForm.formState = false;
