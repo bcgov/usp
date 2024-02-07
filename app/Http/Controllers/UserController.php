@@ -232,18 +232,19 @@ class UserController extends Controller
         }
 
     }
+
     private function checkInstitutionStaff($user, $provider_user)
     {
         $user = User::find($user->id);
-        $institution = InstitutionStaff::where('bceid_business_guid', $user->bceid_business_guid)->first();
-        if(!is_null($institution)){
+        $institutionStaff = InstitutionStaff::where('bceid_business_guid', $user->bceid_business_guid)->with('institution')->first();
+        if(!is_null($institutionStaff)){
             $staff = new InstitutionStaff();
             $staff->guid = Str::orderedUuid()->getHex();
             $staff->user_guid = $user->guid;
-            $staff->institution_guid = $institution->guid;
+            $staff->institution_guid = $institutionStaff->institution->guid;
             $staff->bceid_business_guid = $user->bceid_business_guid;
             $staff->bceid_user_guid = $user->bceid_user_guid;
-            $staff->bceid_user_id = $provider_user['username'];
+            $staff->bceid_user_id = $provider_user['bceid_username'];
             $staff->bceid_user_name = $provider_user['name'];
             $staff->bceid_user_email = $provider_user['email'];
             $staff->save();
