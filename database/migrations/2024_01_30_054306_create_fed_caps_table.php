@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('fed_caps', function (Blueprint $table) {
             $table->id();
-
             $table->string('guid', 32)->index()->unique();
             $table->date('start_date');
             $table->date('end_date');

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('cap_guid', 32);
             $table->foreign('cap_guid')->references('guid')->on('caps')
                 ->onDelete('cascade');
+
             $table->foreign('program_guid', 32)->references('guid')->on('programs')
                 ->onDelete('cascade');
 
@@ -35,6 +36,8 @@ return new class extends Migration
             $table->string('zip_code')->nullable();
             $table->string('province')->nullable();
             $table->string('country');
+            $table->boolean('gt_fifty_pct_in_person')->default(true)->nullable();
+
 
 
             $table->string('status')->default('new');
