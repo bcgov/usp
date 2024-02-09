@@ -20,27 +20,90 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputDli" class="form-label" value="Student Name"/>
-                    <Input type="text" class="form-control" id="inputDli" v-model="newAtteForm.student_name"
-                           :disabled="newAtteForm.cap_guid === ''"/>
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
+                    <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
+                        <option></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
                 </div>
 
                 <div class="col-md-4">
-                    <Label for="inputStudentId" class="form-label" value="Student ID"/>
-                    <Input type="text" class="form-control" id="inputStudentId" v-model="newAtteForm.student_id_number"
-                           :disabled="newAtteForm.cap_guid === ''"/>
+                    <Label for="inputProgram" class="form-label" value="Institution Program"/>
+                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="newAtteForm.program_guid === ''">
+                        <template v-if="selectedInst != ''">
+                            <option></option>
+                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
+                        </template>
+                    </Select>
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputFirstName" class="form-label" value="First Name"/>
+                    <Input type="text" class="form-control" id="inputFirstName" v-model="newAtteForm.first_name"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputLastName" class="form-label" value="Last Name"/>
+                    <Input type="text" class="form-control" id="inputLastName" v-model="newAtteForm.last_name"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+
+                <div class="col-md-4">
+                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
+                    <Input type="text" class="form-control" id="inputStudentId" v-model="newAtteForm.id_number"
+                           :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
                     <Label for="inputDob" class="form-label" value="Date of Birth"/>
                     <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputDob" v-model="newAtteForm.student_dob"
-                           :disabled="newAtteForm.cap_guid === ''"/>
+                           class="form-control" id="inputDob" v-model="newAtteForm.dob"
+                           :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
+                    <Label for="inputAddress1" class="form-label" value="Address 1"/>
+                    <Input type="text" class="form-control" id="inputAddress1" v-model="newAtteForm.address1"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+
+                <div class="col-md-4">
+                    <Label for="inputAddress2" class="form-label" value="Address 2"/>
+                    <Input type="text" class="form-control" id="inputAddress2" v-model="newAtteForm.address2"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputEmail" class="form-label" value="Email"/>
+                    <Input type="email" class="form-control" id="inputEmail" v-model="newAtteForm.email"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputCity" class="form-label" value="City"/>
+                    <Input type="text" class="form-control" id="inputCity" v-model="newAtteForm.city"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+
+                <div class="col-md-3">
+                    <Label for="inputZipCode" class="form-label" value="Zip Code"/>
+                    <Input type="text" class="form-control" id="inputZipCode" v-model="newAtteForm.zip_code"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputProvince" class="form-label" value="Province / State"/>
+                    <Input type="text" class="form-control" id="inputProvince" v-model="newAtteForm.province"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputCountry" class="form-label" value="Country"/>
+                    <input type="text" class="form-control" list="datalistOptionsInputCountry" id="inputCountry"
+                           placeholder="Type to search..."  v-model="newAtteForm.country"  :disabled="newAtteForm.program_guid === ''" />
+                    <datalist id="datalistOptionsInputCountry">
+                        <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
+                    </datalist>
+                </div>
+                <div class="col-md-3">
                     <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
                     <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputDob" v-model="newAtteForm.expiry_date"
-                           :disabled="newAtteForm.cap_guid === ''"/>
+                           class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
+                           :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
 
@@ -57,8 +120,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newAtteForm.processing">
-                Create Attestation
+            <button type="submit" class="btn me-2 btn-outline-success" :disabled="newAtteForm.processing">
+                Save Draft Attestation
             </button>
         </div>
         <FormSubmitAlert :form-state="newAtteForm.formState" :success-msg="newAtteForm.formSuccessMsg"
@@ -80,7 +143,8 @@ export default {
     },
     props: {
         newAtte: Object|null,
-        institutions: Object
+        institutions: Object,
+        countries: Object
     },
     data() {
         return {
@@ -91,13 +155,25 @@ export default {
                 formFailMsg: 'There was an error submitting this form.',
                 institution_guid: "",
                 cap_guid: "",
-                student_name: "",
-                student_id_number: "",
-                student_dob: "",
+                program_guid: "",
+                first_name: "",
+                last_name: "",
+                id_number: "",
+                dob: "",
+                address1: "",
+                address2: "",
+                email: "",
+                city: "",
+                zip_code: "",
+                province: "",
+                country: "",
+                status: "",
                 expiry_date: "",
+                gt_fifty_pct_in_person: ""
             },
             selectedInstIndex: '',
             selectedInst: '',
+            programs: []
         }
     },
     methods: {
@@ -106,7 +182,22 @@ export default {
             if (inst) {
                 this.selectedInst = inst;
                 this.newAtteForm.institution_guid = inst.guid;
+                this.fetchPrograms();
             }
+        },
+        fetchPrograms: function () {
+            let vm = this;
+            let data = {
+                institution_guid: this.selectedInst.guid,
+            }
+            axios.post('/ministry/api/fetch/programs', data)
+                .then(function (response) {
+                    vm.programs = response.data.body;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
         },
         submitForm: function () {
             this.newAtteForm.formState = null;
@@ -114,7 +205,7 @@ export default {
                 onSuccess: (response) => {
                     $("#newAtteModal").modal('hide');
                     this.newAtteForm.reset(this.newAtteFormData);
-                    this.$inertia.visit('/ministry/attestations/' + this.newAtte.id);
+                    this.$inertia.visit('/ministry/institutions/' + this.selectedInst.id + "/attestations");
                     // console.log(response.props.institution)
                 },
                 onError: () => {

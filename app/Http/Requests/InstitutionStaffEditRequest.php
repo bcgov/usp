@@ -40,7 +40,7 @@ class InstitutionStaffEditRequest extends FormRequest
             'id' => 'required',
             'guid' => 'required',
             'status' => 'required|in:Active,Inactive,pending',
-            'last_touch_by_user_guid' => 'required:exists,users,guid',
+            'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
 

@@ -1,24 +1,29 @@
 <template>
-    <div class="card mb-3">
+    <div class="card">
         <div class="card-header">
-            Institution Staff - BCeID Accounts
-<!--            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newStaffModal">New Staff</button>-->
+            <div>Staff List</div>
         </div>
+
         <div class="card-body">
-            <div v-if="results.staff != null && results.staff.length > 0" class="table-responsive pb-3">
+            <div v-if="results != null" class="table-responsive pb-3">
                 <table class="table table-striped">
                     <thead>
-                    <InstitutionStaffHeader></InstitutionStaffHeader>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">User ID</th>
+                        <th scope="col">GUID</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+                    </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(row, i) in editFrom.staff">
+                    <tr v-for="(row, i) in editFrom">
                         <td>{{ row.bceid_user_name}}</td>
                         <td>{{ row.bceid_user_email}}</td>
                         <td>{{ row.bceid_user_id }}</td>
                         <td>{{ row.bceid_user_guid }}</td>
                         <td>
-<!--                            <span v-if="row.is_admin" class="badge rounded-pill text-bg-success">Admin</span>-->
-<!--                            <span v-else class="badge rounded-pill text-bg-info">User</span>-->
                             <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">
                                 <input type="radio" class="btn-check" :name="'btnRadioRole0'+i"
                                        :id="'btnRadioRole0'+i" autocomplete="off" :checked="row.is_admin">
@@ -54,16 +59,16 @@
         </div>
 
     </div>
+
 </template>
 <script>
 import {Link, useForm} from '@inertiajs/vue3';
-import InstitutionStaffHeader from "./InstitutionStaffHeader";
-import InstitutionStaffCreate from "./InstitutionStaffCreate";
-import InstitutionStaffEdit from "./InstitutionStaffEdit";
+import BreezeInput from '@/Components/Input.vue';
+
 export default {
-    name: 'InstitutionStaff',
+    name: 'StaffList',
     components: {
-        Link, InstitutionStaffHeader, InstitutionStaffCreate, InstitutionStaffEdit
+        BreezeInput, Link
     },
     props: {
         results: Object,
@@ -77,14 +82,6 @@ export default {
         }
     },
     methods: {
-        openEditForm: function (staff){
-            this.editStaff = staff;
-            $("#editInstStaffModal").modal('show');
-        },
-        closeEditForm: function (){
-            $("#editInstStaffModal").modal('hide');
-            this.editStaff = '';
-        },
         isUser: function (roles){
             const role = roles.find(role => role.name === "Institution User");
             return !!role;
@@ -106,24 +103,24 @@ export default {
                 let newObj = staff;
                 newObj.role = role;
                 this.roleForm = useForm(newObj);
-                this.roleForm.put('/ministry/institution_roles', {
-                        onSuccess: () => {
-                            this.roleForm.reset();
-                            this.$inertia.visit('/ministry/institutions/' + this.results.id + '/staff');
-                        },
-                        onError: () => {
-                            this.roleForm.formState = false;
-                        },
-                        preserveState: true
-                    });
+                this.roleForm.put('/institution/roles', {
+                    onSuccess: () => {
+                        this.roleForm.reset();
+                        this.$inertia.visit('/institution/staff');
+                    },
+                    onError: () => {
+                        this.roleForm.formState = false;
+                    },
+                    preserveState: true
+                });
             }
         },
         submitForm: function () {
             this.editStaffForm.formState = null;
-            this.editStaffForm.put('/ministry/institution_staff', {
+            this.editStaffForm.put('/institution/staff', {
                 onSuccess: () => {
                     this.editStaffForm.reset();
-                    this.$inertia.visit('/ministry/institutions/' + this.results.id + '/staff');
+                    this.$inertia.visit('/institution/staff');
                 },
                 onError: () => {
                     this.editStaffForm.formState = false;
@@ -135,5 +132,7 @@ export default {
     mounted() {
         this.editFrom = this.results;
     }
+
 }
+
 </script>

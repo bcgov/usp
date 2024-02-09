@@ -30,7 +30,10 @@ class InstitutionPolicy
      */
     public function view(User $user, Institution $model): bool
     {
-        //
+        $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN];
+        $can = $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
+
+        return $can && ($user->bceid_business_guid === $model->bceid_business_guid);
     }
 
     /**

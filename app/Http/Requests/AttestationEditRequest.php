@@ -40,7 +40,8 @@ class AttestationEditRequest extends FormRequest
             'country' => 'required',
             'expiry_date' => 'required|date_format:Y-m-d',
             'status' => 'required|in:Draft,Issued,Received,Denied',
-            'last_touch_by_user_guid' => 'required:exists,users,guid',
+            'last_touch_by_user_guid' => 'required|exists:users,guid',
+            'gt_fifty_pct_in_person' => 'required|boolean'
         ];
     }
 
@@ -60,6 +61,17 @@ class AttestationEditRequest extends FormRequest
             'city' => Str::title($this->city),
             'zip_code' => Str::upper($this->zip_code),
             'province' => Str::title($this->province),
+            'gt_fifty_pct_in_person' => $this->toBoolean($this->gt_fifty_pct_in_person),
         ]);
+    }
+
+    /**
+     * Convert to boolean
+     *
+     * @return bool
+     */
+    private function toBoolean($booleable)
+    {
+        return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }

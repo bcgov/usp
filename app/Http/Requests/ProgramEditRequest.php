@@ -43,7 +43,7 @@ class ProgramEditRequest extends FormRequest
             'cip_code' => 'nullable',
             'active' => 'required|boolean',
             'restrictions' => 'nullable',
-            'last_touch_by_user_guid' => 'required:exists,users,guid',
+            'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
 

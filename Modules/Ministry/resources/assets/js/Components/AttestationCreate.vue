@@ -20,8 +20,17 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
+                    <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
+                        <option></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+
+                <div class="col-md-4">
                     <Label for="inputProgram" class="form-label" value="Institution Program"/>
-                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="selectedInst === ''">
+                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="newAtteForm.program_guid === ''">
                         <template v-if="selectedInst != ''">
                             <option></option>
                             <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
@@ -55,6 +64,7 @@
                     <Input type="text" class="form-control" id="inputAddress1" v-model="newAtteForm.address1"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
+
                 <div class="col-md-4">
                     <Label for="inputAddress2" class="form-label" value="Address 2"/>
                     <Input type="text" class="form-control" id="inputAddress2" v-model="newAtteForm.address2"
@@ -70,17 +80,18 @@
                     <Input type="text" class="form-control" id="inputCity" v-model="newAtteForm.city"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+
+                <div class="col-md-3">
                     <Label for="inputZipCode" class="form-label" value="Zip Code"/>
                     <Input type="text" class="form-control" id="inputZipCode" v-model="newAtteForm.zip_code"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputProvince" class="form-label" value="Province / State"/>
                     <Input type="text" class="form-control" id="inputProvince" v-model="newAtteForm.province"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputCountry" class="form-label" value="Country"/>
                     <input type="text" class="form-control" list="datalistOptionsInputCountry" id="inputCountry"
                            placeholder="Type to search..."  v-model="newAtteForm.country"  :disabled="newAtteForm.program_guid === ''" />
@@ -88,8 +99,7 @@
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
                     <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
@@ -110,7 +120,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newAtteForm.processing">
+            <button type="submit" class="btn me-2 btn-outline-success" :disabled="newAtteForm.processing">
                 Save Draft Attestation
             </button>
         </div>
@@ -158,7 +168,8 @@ export default {
                 province: "",
                 country: "",
                 status: "",
-                expiry_date: ""
+                expiry_date: "",
+                gt_fifty_pct_in_person: ""
             },
             selectedInstIndex: '',
             selectedInst: '',

@@ -1,5 +1,5 @@
 <template>
-    <form v-if="editAtteForm != null" class="card-body" @submit.prevent="submitForm">
+    <form v-if="editAtteForm != null" class="card-body">
         <div class="modal-body">
             <div v-if="attestation.status !== 'Draft'" class="text-center">
                 <a :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
@@ -26,11 +26,11 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputStatus" class="form-label" value="Status"/>
-                    <Select class="form-select" id="inputStatus" v-model="editAtteForm.status" :disabled="institution === ''">
-                        <template v-if="institution !== ''">
-                            <option v-for="stat in $attrs.utils['Attestation Status']" :value="stat.field_name">{{ stat.field_name }}</option>
-                        </template>
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
+                    <Select class="form-select" id="inputInPerson" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
+                        <option></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
                     </Select>
                 </div>
 
@@ -117,9 +117,12 @@
 
             </div>
         </div>
-        <div v-if="attestation.status === 'Draft'" class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="editAtteForm.processing">
-                Save Attestation
+        <div v-if="attestation.status === 'Draft'" class="modal-footer justify-content-between">
+            <button @click="submitForm('Issued')" type="button" class="btn me-2 btn-outline-warning" :disabled="editAtteForm.processing">
+                Issue Attestation
+            </button>
+            <button @click="submitForm('Draft')" type="button" class="btn me-2 btn-outline-success" :disabled="editAtteForm.processing">
+                Save Draft Attestation
             </button>
         </div>
         <FormSubmitAlert :form-state="editAtteForm.formState" :success-msg="editAtteForm.formSuccessMsg"
@@ -167,12 +170,14 @@ export default {
                 province: "",
                 country: "",
                 status: "",
-                expiry_date: ""
+                expiry_date: "",
+                gt_fifty_pct_in_person: ""
             },
         }
     },
     methods: {
-        submitForm: function () {
+        submitForm: function (status) {
+            this.editAtteForm.status = status;
             if(this.editAtteForm.status !== 'Draft'){
                 let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
                 if(!check){

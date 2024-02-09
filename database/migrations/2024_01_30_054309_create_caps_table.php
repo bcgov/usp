@@ -24,9 +24,14 @@ return new class extends Migration
             $table->foreign('institution_guid')->references('guid')->on('institutions')
                 ->onDelete('cascade');
 
+            $table->bigInteger('parent_cap_guid')->nullable()->comment('program or campus caps should reference the institution cap');
+
+
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('total_attestations');
+            $table->integer('issued_attestations')->default(0);
+            $table->integer('draft_attestations')->default(0);
 
             $table->string('program_guid', 32)->nullable();
             $table->string('campus_guid', 32)->nullable();

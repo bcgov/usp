@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Modules\Institution\App\Http\Requests;
 
 use App\Models\Attestation;
+use App\Models\Cap;
+use App\Models\FedCap;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class AttestationStoreRequest extends FormRequest
@@ -55,8 +59,54 @@ class AttestationStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        $fedCap = FedCap::where('status', 'Active')->first();
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+        $activeCaps = $institution->activeCaps;
+        $now = now();
+        $instCap = null;
+        $instCaps = Cap::where('institution_guid', $institution->guid)
+            ->where('fed_cap', $fedCap->guid)
+            ->where('program_guid', null)
+            ->where('status', 'Active')
+            ->get();
+
+        foreach ($instCaps as $cap){
+            if($now->gte($cap->start_date) && $now->lte($cap->end_date)) {
+
+            }
+        }
+
+        $instCap = null;
+        $programCap = null;
+        foreach ($activeCaps as $cap){
+            //the cap must be active
+            //now() must fall in between start/end dates
+            //if the cap does not have a program_guid then this is the $instCap
+            //if the cap has a program_guid matching $this->program_guid then this is $programCap
+
+            // Check if the cap is active
+            if ($cap->status === 'Active' &&
+                // Check if the current time falls within the cap's start/end dates
+                ($now->gte($cap->start_date) && $now->lte($cap->end_date))) {
+
+                // Check if the cap does not have a program_guid
+                if ($cap->program_guid === null) {
+                    // This is the institution cap
+                    $instCap = $cap;
+                } elseif ($cap->program_guid === $this->program_guid) {
+                    // This is the program cap matching $this->program_guid
+                    $programCap = $cap;
+                }
+            }
+        }
+//        'institution_guid' => 'required|exists:institutions,guid',
+//            'cap_guid' => 'required|exists:caps,guid',
+//            'program_guid' => 'required|exists:programs,guid',
+
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
+            'institution_guid' => $institution->guid,
             'created_by_user_guid' => $this->user()->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
             'id_number' => Str::upper($this->id_number),

@@ -32,7 +32,7 @@ class FedCapEditRequest extends FormRequest
             'status' => 'required|in:Active,Completed,Cancelled',
             'total_attestations' => 'required|numeric',
             'comment' => 'nullable',
-            'last_touch_by_user_guid' => 'required:exists,users,guid',
+            'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
 

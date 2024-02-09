@@ -41,7 +41,7 @@ class StaffEditRequest extends FormRequest
         return [
             'access_type' => 'required|in:A,U,G',
             'disabled' => 'required|boolean',
-            'last_touch_by_user_guid' => 'required:exists,users,guid',
+            'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
 

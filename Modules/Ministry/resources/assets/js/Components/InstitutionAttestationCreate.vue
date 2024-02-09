@@ -3,14 +3,14 @@
         <div class="modal-body">
             <div class="row g-3">
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <Label for="inputCap" class="form-label" value="Institution Cap"/>
                     <Select class="form-select" id="inputCap" v-model="newAtteForm.cap_guid" :disabled="institution === ''">
                         <option></option>
                         <option v-for="c in institution.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>
                     </Select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <Label for="inputProgram" class="form-label" value="Institution Program"/>
                     <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="institution === ''">
                         <template v-if="institution !== ''">
@@ -19,6 +19,15 @@
                         </template>
                     </Select>
                 </div>
+                <div class="col-md-4">
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
+                    <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
+                        <option></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+
                 <div class="col-md-4">
                     <Label for="inputFirstName" class="form-label" value="First Name"/>
                     <Input type="text" class="form-control" id="inputFirstName" v-model="newAtteForm.first_name"
@@ -101,7 +110,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newAtteForm.processing">
+            <button type="submit" class="btn me-2 btn-outline-success" :disabled="newAtteForm.processing">
                 Save Draft Attestation
             </button>
         </div>
@@ -149,7 +158,8 @@ export default {
                 province: "",
                 country: "",
                 status: "",
-                expiry_date: ""
+                expiry_date: "",
+                gt_fifty_pct_in_person: ""
             },
         }
     },

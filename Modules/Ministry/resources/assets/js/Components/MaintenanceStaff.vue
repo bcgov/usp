@@ -27,7 +27,7 @@
                             <td>{{ row.email }}</td>
                             <td>
                                 <template v-for="role in row.roles">
-                                    <div v-if="role.name.indexOf('LFP') === 0">{{ role.name }}</div>
+                                    <div>{{ role.name }}</div>
                                 </template>
                             </td>
                             <td>

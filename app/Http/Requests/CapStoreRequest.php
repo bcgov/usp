@@ -31,12 +31,15 @@ class CapStoreRequest extends FormRequest
             'fed_cap_guid' => 'required|exists:fed_caps,guid',
             'institution_guid' => 'required|exists:institutions,guid',
             'program_guid' => 'nullable|exists:programs,guid',
+            'parent_cap_guid' => 'nullable|exists:caps,guid',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
             'status' => 'required|in:Active,Pending',
             'total_attestations' => 'required|numeric',
+            'issued_attestations' => 'required|numeric',
+            'draft_attestations' => 'required|numeric',
             'comment' => 'nullable',
-            'last_touch_by_user_guid' => 'required:exists,users,guid',
+            'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
 
@@ -47,11 +50,19 @@ class CapStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $fedCap = FedCap::find($this->fed_cap_id);
         $institution = Institution::find($this->institution_id);
+        $fedCap = FedCap::find($this->fed_cap_id);
         $program = Program::find($this->program_id);
+        $instCap = Cap::where('institution_guid', $institution->guid)
+            ->where('fed_cap', $fedCap->guid)
+            ->where('program_guid', null)
+            ->where('status', 'Active')
+            ->where('issued_attestations', '<', 'total_attestations')
+            ->first();
+
         $this->merge([
             'program_guid' => $program?->guid,
+            'parent_cap_guid' => $instCap?->guid,
             'start_date' => $fedCap->start_date,
             'end_date' => $fedCap->end_date,
             'fed_cap_guid' => $fedCap->guid,
@@ -60,6 +71,8 @@ class CapStoreRequest extends FormRequest
             'last_touch_by_user_guid' => $this->user()->guid,
             'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
                 $fedCap->total_attestations : $this->total_attestations),
+            'issued_attestations' => 0,
+            'draft_attestations' => 0,
         ]);
     }
 }

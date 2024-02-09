@@ -53,7 +53,7 @@ class InstitutionStoreRequest extends FormRequest
             'public' => 'required|boolean',
             'active_status' => 'required|boolean',
             'standing_status' => 'nullable',
-            'last_touch_by_user_guid' => 'required:exists,users,guid',
+            'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
 
