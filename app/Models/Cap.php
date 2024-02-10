@@ -55,4 +55,14 @@ class Cap extends Model
     {
         return $query->where('status', 'Active');
     }
+
+    public function scopeOnlyInstCaps($query)
+    {
+        return $query->active()->where('program_guid', null);
+    }
+
+    public function scopeOnlyProgCaps($query)
+    {
+        return $query->active()->where('program_guid', '!=', null);
+    }
 }

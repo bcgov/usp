@@ -26,7 +26,22 @@ class InstitutionController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
-        return Inertia::render('Institution::Dashboard', ['results' => $institution]);
+        return Inertia::render('Institution::Dashboard', ['results' => $institution,
+            'instCaps' => $institution->activeInstCaps,
+            'programCaps' => $institution->activeProgramCaps]);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function caps()
+    {
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+        return Inertia::render('Institution::Caps', ['results' => $institution,
+            'instCaps' => $institution->activeInstCaps,
+            'programCaps' => $institution->activeProgramCaps]);
     }
 
     /**

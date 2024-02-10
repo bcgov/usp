@@ -34,6 +34,6 @@ class Program extends Model
 
     public function cap()
     {
-        return $this->hasOne(Cap::class, 'program_guid', 'guid');
+        return $this->hasOne(Cap::class, 'program_guid', 'guid')->active();
     }
 }

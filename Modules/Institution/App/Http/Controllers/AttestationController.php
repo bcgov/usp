@@ -41,8 +41,9 @@ class AttestationController extends Controller
 
         $attestations = $this->paginateAtte($user->institution);
         return Inertia::render('Institution::Attestations', ['error' => null, 'results' => $attestations,
-            'institution' => $user->institution, 'programs' => $user->institution->programs, 'countries' => $this->countries
-        ]);
+            'institution' => $user->institution, 'programs' => $user->institution->programs, 'countries' => $this->countries,
+            'instCaps' => $user->institution->activeInstCaps,
+            'programCaps' => $user->institution->activeProgramCaps]);
     }
 
     /**
@@ -51,7 +52,6 @@ class AttestationController extends Controller
     public function store(AttestationStoreRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
     {
         $error = null;
-        $attestation = null;
         //1. check for duplicate attestations
         $check1 = Attestation::where([
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
@@ -62,7 +62,7 @@ class AttestationController extends Controller
         $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
 
         if(is_null($check1) && !is_null($check2)){
-            $attestation = Attestation::create($request->validated());
+            Attestation::create($request->validated());
             $check2->draft_attestations += 1;
             $check2->save();
         }else{
@@ -77,10 +77,6 @@ class AttestationController extends Controller
             return redirect(route('institution.attestations.index'))->withErrors(['first_name' => $error]);
 
         return redirect(route('institution.attestations.index'));
-//
-//        $attestations = $this->paginateAtte();
-//        return Inertia::render('Institution::Attestations', ['results' => $attestations, 'error' => $error,
-//            'institutions' => $this->institutions, 'newAtte' => $attestation]);
     }
 
     /**

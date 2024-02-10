@@ -106,7 +106,9 @@ export default {
         programs: Object,
         newAtte: Object|null,
         countries: Object,
-        error: String|null
+        error: String|null,
+        instCaps: Object|null,
+        programCaps: Object|null
     },
     data() {
         return {

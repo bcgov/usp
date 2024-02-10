@@ -42,6 +42,14 @@ class Institution extends Model
     {
         return $this->hasMany(Cap::class, 'institution_guid', 'guid')->active();
     }
+    public function activeInstCaps()
+    {
+        return $this->activeCaps()->onlyInstCaps();
+    }
+    public function activeProgramCaps()
+    {
+        return $this->activeCaps()->onlyProgCaps()->with('program');
+    }
     public function staff()
     {
         return $this->hasMany(InstitutionStaff::class, 'institution_guid', 'guid');

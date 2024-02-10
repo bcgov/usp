@@ -55,6 +55,8 @@ export default {
     },
     props: {
         results: Object,
+        instCaps: Object|null,
+        programCaps: Object|null
     },
     data() {
         return {

@@ -36,6 +36,13 @@ nav.navbar {
                         </NavLink>
                     </li>
                     <li v-if="isAdmin" class="nav-item">
+                        <NavLink class="nav-link" href="/institution/caps"
+                                 :class="{ 'active': $page.url.indexOf('/caps') > -1 ||
+                            $page.url.indexOf('/caps') > -1 }">
+                            Institution Caps
+                        </NavLink>
+                    </li>
+                    <li v-if="isAdmin" class="nav-item">
                         <NavLink class="nav-link" href="/institution/account"
                                  :class="{ 'active': $page.url.indexOf('/account') > -1 ||
                             $page.url.indexOf('/account') > -1 }">

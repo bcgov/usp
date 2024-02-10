@@ -27,6 +27,8 @@ Route::prefix('institution')->group(function () {
         Route::put('/attestations', [AttestationController::class, 'update'])->name('attestations.update');
         Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 
+        Route::get('/caps', [InstitutionController::class, 'caps'])->name('caps.index');
+
     });
 
     Route::group([
