@@ -10,19 +10,10 @@
             <div v-else class="row g-3">
 
                 <div class="col-md-4">
-                    <Label for="inputCap" class="form-label" value="Institution Cap"/>
-                    <Select class="form-select" id="inputCap" v-model="editAtteForm.cap_guid" :disabled="institution === ''">
-                        <option></option>
-                        <option v-for="c in institution.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>
-                    </Select>
-                </div>
-                <div class="col-md-4">
                     <Label for="inputProgram" class="form-label" value="Institution Program"/>
-                    <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
-                        <template v-if="institution !== ''">
-                            <option></option>
-                            <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
-                        </template>
+                    <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid">
+                        <option></option>
+                        <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
@@ -33,29 +24,35 @@
                         <option value="false">No</option>
                     </Select>
                 </div>
-
                 <div class="col-md-4">
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
+                           class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+
+                <div class="col-md-3">
                     <Label for="inputFirstName" class="form-label" value="First Name"/>
                     <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputLastName" class="form-label" value="Last Name"/>
                     <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
                     <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputDob" class="form-label" value="Date of Birth"/>
                     <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="editAtteForm.dob"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
+
                 <div class="col-md-4">
                     <Label for="inputAddress1" class="form-label" value="Address 1"/>
                     <Input type="text" class="form-control" id="inputAddress1" v-model="editAtteForm.address1"
@@ -66,41 +63,34 @@
                     <Input type="text" class="form-control" id="inputAddress2" v-model="editAtteForm.address2"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-
                 <div class="col-md-4">
                     <Label for="inputEmail" class="form-label" value="Email"/>
                     <Input type="email" class="form-control" id="inputEmail" v-model="editAtteForm.email"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+
+                <div class="col-md-3">
                     <Label for="inputCity" class="form-label" value="City"/>
                     <Input type="text" class="form-control" id="inputCity" v-model="editAtteForm.city"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputZipCode" class="form-label" value="Zip Code"/>
                     <Input type="text" class="form-control" id="inputZipCode" v-model="editAtteForm.zip_code"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputProvince" class="form-label" value="Province / State"/>
                     <Input type="text" class="form-control" id="inputProvince" v-model="editAtteForm.province"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputCountry" class="form-label" value="Country"/>
                     <input type="text" class="form-control" list="datalistOptionsInputCountry" id="inputCountry"
                            placeholder="Type to search..."  v-model="editAtteForm.country"  :disabled="editAtteForm.program_guid === ''" />
                     <datalist id="datalistOptionsInputCountry">
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
-                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
-                           :disabled="editAtteForm.program_guid === ''"/>
                 </div>
 
 
@@ -144,7 +134,9 @@ export default {
     props: {
         attestation: Object,
         institution: Object,
-        countries: Object
+        countries: Object,
+        error: String|null,
+        programs: Object
     },
     data() {
         return {
@@ -154,8 +146,8 @@ export default {
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
                 id: "",
-                institution_guid: "",
                 cap_guid: "",
+                institution_guid: "",
                 program_guid: "",
                 first_name: "",
                 last_name: "",
@@ -185,13 +177,12 @@ export default {
             }
 
             this.editAtteForm.formState = null;
-            this.editAtteForm.put('/ministry/attestations', {
+            this.editAtteForm.put('/institution/attestations', {
                 onSuccess: (response) => {
                     $("#editAtteModal").modal('hide');
 
                     this.editAtteForm.reset(this.editAtteFormData);
-                    window.location.href = '/ministry/attestations';
-                    // console.log(response.props.institution)
+                    window.location.href = '/institution/attestations';
                 },
                 onError: () => {
                     this.editAtteForm.formState = false;
@@ -203,7 +194,6 @@ export default {
 
     mounted() {
         this.editAtteForm = useForm(this.attestation);
-        // this.editAtteForm.institution_guid = this.institution.guid;
     }
 }
 </script>

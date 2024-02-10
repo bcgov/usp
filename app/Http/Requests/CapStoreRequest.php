@@ -54,10 +54,10 @@ class CapStoreRequest extends FormRequest
         $fedCap = FedCap::find($this->fed_cap_id);
         $program = Program::find($this->program_id);
         $instCap = Cap::where('institution_guid', $institution->guid)
-            ->where('fed_cap', $fedCap->guid)
+            ->where('fed_cap_guid', $fedCap->guid)
             ->where('program_guid', null)
             ->where('status', 'Active')
-            ->where('issued_attestations', '<', 'total_attestations')
+            ->whereColumn('issued_attestations', '<', 'total_attestations')
             ->first();
 
         $this->merge([

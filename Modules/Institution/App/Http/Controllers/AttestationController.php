@@ -3,6 +3,7 @@
 namespace Modules\Institution\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cap;
 use Modules\Institution\App\Http\Requests\AttestationEditRequest;
 use Modules\Institution\App\Http\Requests\AttestationStoreRequest;
 use App\Models\Attestation;
@@ -28,7 +29,6 @@ class AttestationController extends Controller
     {
         $this->fedCaps = FedCap::active()->get();
         $this->countries = Country::select('name')->where('active', true)->get();
-        $this->institutions = Institution::active()->with('activeCaps')->get();
     }
 
 
@@ -37,45 +37,79 @@ class AttestationController extends Controller
      */
     public function index()
     {
-        $attestations = $this->paginateAtte();
-        return Inertia::render('Institution::Attestations', ['status' => true, 'results' => $attestations,
-            'institutions' => $this->institutions, 'countries' => $this->countries
+        $user = User::find(Auth::user()->id);
+
+        $attestations = $this->paginateAtte($user->institution);
+        return Inertia::render('Institution::Attestations', ['error' => null, 'results' => $attestations,
+            'institution' => $user->institution, 'programs' => $user->institution->programs, 'countries' => $this->countries
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AttestationStoreRequest $request): \Inertia\Response
+    public function store(AttestationStoreRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
     {
+        $error = null;
         $attestation = null;
-        $check = Attestation::where([
+        //1. check for duplicate attestations
+        $check1 = Attestation::where([
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
             'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
             'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid])->first();
-        if(is_null($check)){
+
+        //2. check cap has not been reached
+        $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
+
+        if(is_null($check1) && !is_null($check2)){
             $attestation = Attestation::create($request->validated());
+            $check2->draft_attestations += 1;
+            $check2->save();
+        }else{
+            if(!is_null($check1)){
+                $error = "There's already an attestation for the same user.";
+            }else{
+                $error = "You cannot issue any more attestations. Cap limit restriction.";
+            }
         }
 
-        $attestations = $this->paginateAtte();
-        return Inertia::render('Ministry::Attestations', ['results' => $attestations,
-            'institutions' => $this->institutions, 'newAtte' => $attestation]);
+        if(!is_null($error))
+            return redirect(route('institution.attestations.index'))->withErrors(['first_name' => $error]);
+
+        return redirect(route('institution.attestations.index'));
+//
+//        $attestations = $this->paginateAtte();
+//        return Inertia::render('Institution::Attestations', ['results' => $attestations, 'error' => $error,
+//            'institutions' => $this->institutions, 'newAtte' => $attestation]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(AttestationEditRequest $request): \Inertia\Response
+    public function update(AttestationEditRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
     {
-        //update only draft attestations
-        $check = Attestation::where('id', $request->id)->where('status', 'Draft')->first();
-        if(!is_null($check)){
+        $error = null;
+
+        //1. update only draft attestations
+        $check1 = Attestation::where('id', $request->id)->where('status', 'Draft')->first();
+
+        //2. check cap has not been reached
+        $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
+
+        if(!is_null($check1) && !is_null($check2)){
             Attestation::where('id', $request->id)->update($request->validated());
+        }else{
+            if(is_null($check1)){
+                $error = "This attestation cannot be edited. Only draft attestations can be edited.";
+            }else{
+                $error = "You cannot issue any more attestations. Cap limit restriction.";
+            }
         }
-        $attestation = Attestation::with('institution')->where('id', $request->id)->first();
-        $institution = Institution::where('id', $attestation->institution->id)->with(['caps', 'activeCaps', 'staff', 'attestations', 'programs'])->first();
-        return Inertia::render('Ministry::Institution', ['page' => 'attestations', 'results' => $institution,
-            'fedCaps' => $this->fedCaps, 'countries' => $this->countries]);
+
+        if(!is_null($error))
+            return redirect(route('institution.attestations.index'))->withErrors(['first_name' => $error]);
+
+        return redirect(route('institution.attestations.index'));
     }
 
     public function download(Request $request, Attestation $attestation)
@@ -91,18 +125,16 @@ class AttestationController extends Controller
         $now_d = date('Y-m-d');
         $now_t = date('H:m:i');
         $utils = Util::getSortedUtils();
-        $pdf = PDF::loadView('ministry::pdf', compact('attestation', 'now_d', 'now_t', 'utils'));
+        $pdf = PDF::loadView('institution::pdf', compact('attestation', 'now_d', 'now_t', 'utils'));
 
         return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
     }
 
 
-    private function paginateAtte()
+    private function paginateAtte($institution)
     {
-        $user = User::find(Auth::user()->id);
-        $institution = $user->institution;
 
-        $attestations = Attestation::where('institution_guid', $institution->guid);
+        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
 
         if (request()->filter_name !== null) {
             $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_name.'%');

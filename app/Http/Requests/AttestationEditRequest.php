@@ -26,6 +26,7 @@ class AttestationEditRequest extends FormRequest
     {
         return [
             'cap_guid' => 'required|exists:caps,guid',
+            'institution_guid' => 'required|exists:institutions,guid',
             'program_guid' => 'required|exists:programs,guid',
             'first_name' => 'required',
             'last_name' => 'required',

@@ -22,6 +22,8 @@ class CapController extends Controller
     {
         $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date,
             'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
+
+        //add a check to see if there is already a cap associated with this program
         if($request->has('program_id') && $request->program_id != ''){
             $conditions['program_guid'] = $request->program_guid;
         }
@@ -43,6 +45,8 @@ class CapController extends Controller
     {
         $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date,
             'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
+
+        //add a check to see if there is already a cap associated with this program
         if($request->has('program_guid') && $request->program_guid != ''){
             $conditions['program_guid'] = $request->program_guid;
         }

@@ -22,7 +22,7 @@
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">
-            <span>Institution</span>
+            <span>Program</span>
         </th>
         <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('status')">
@@ -31,17 +31,18 @@
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
-        <th scope="col" style="min-width: 100px;">
-            <a href="#" @click="switchSort('expiry_date')">
-                <span>Expiry Date</span>
-                <em v-if="sortClmn === 'expiry_date' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
-                <em v-else class="bi bi-sort-numeric-down"></em>
-            </a>
-        </th>
+
         <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('created_at')">
                 <span>Issue Date</span>
                 <em v-if="sortClmn === 'created_at' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
+                <em v-else class="bi bi-sort-numeric-down"></em>
+            </a>
+        </th>
+        <th scope="col" style="min-width: 100px;">
+            <a href="#" @click="switchSort('expiry_date')">
+                <span>Expiry Date</span>
+                <em v-if="sortClmn === 'expiry_date' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>

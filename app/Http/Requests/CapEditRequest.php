@@ -37,9 +37,9 @@ class CapEditRequest extends FormRequest
         if(is_null($this->program_guid)) {
             $instCapGuids = Cap::select('guid')
                 ->where('institution_guid', $institution->guid)
-                ->where('fed_cap', $fedCap->guid)
+                ->where('fed_cap_guid', $fedCap->guid)
                 ->where('status', 'Active')
-                ->where('issued_attestations', '<', 'total_attestations')
+                ->whereColumn('issued_attestations', '<', 'total_attestations')
                 ->get();
             $noAttes = Attestation::whereIn('cap_guid', $instCapGuids)->count();
         }
@@ -80,10 +80,10 @@ class CapEditRequest extends FormRequest
         $institution = Institution::where('guid', $this->institution_guid)->first();
         $program = Program::where('guid', $this->program_guid)->first();
         $instCap = Cap::where('institution_guid', $institution->guid)
-            ->where('fed_cap', $fedCap->guid)
+            ->where('fed_cap_guid', $fedCap->guid)
             ->where('program_guid', null)
             ->where('status', 'Active')
-            ->where('issued_attestations', '<', 'total_attestations')
+            ->whereColumn('issued_attestations', '<', 'total_attestations')
             ->first();
 
 

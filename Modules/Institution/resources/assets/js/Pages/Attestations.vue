@@ -32,7 +32,7 @@
                                         <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.first_name }}</button></td>
                                         <td>{{ row.last_name }}</td>
                                         <td>{{ row.dob }}</td>
-                                        <td><Link :href="'/ministry/institutions/' + row.institution.id">{{ row.institution.name }}</Link></td>
+                                        <td><Link v-if="row.program != null" :href="'/institution/programs/' + row.program.id">{{ row.program.program_name }}</Link></td>
                                         <td>
                                             <div>
                                                 <span v-if="row.status === 'Issued'" class="badge rounded-pill text-bg-success">Issued</span>
@@ -41,10 +41,10 @@
                                                 <span v-if="row.status === 'Denied'" class="badge rounded-pill text-bg-danger">Denied</span>
                                             </div>
                                         </td>
-                                        <td>{{ row.expiry_date }}</td>
                                         <td>{{ formatDate(row.created_at) }}</td>
+                                        <td>{{ row.expiry_date }}</td>
                                         <td class="text-center">
-                                            <a v-if="row.status !== 'Draft'" :href="'/ministry/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                            <a v-if="row.status !== 'Draft'" :href="'/institution/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary">
                                                 <i class="bi bi-box-arrow-down"></i>
                                             </a>
                                         </td>
@@ -67,7 +67,7 @@
                         <h5 class="modal-title" id="newAtteModalLabel">New Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <AttestationCreate :countries="countries" :institutions="institutions" :newAtte="newAtte" />
+                    <AttestationCreate :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :newAtte="newAtte" />
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                         <h5 class="modal-title" id="editAtteModalLabel">Edit Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <AttestationEdit v-bind="$attrs" :countries="countries" :institution="editRow.institution" :attestation="editRow" />
+                    <AttestationEdit :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :attestation="editRow" />
                 </div>
             </div>
         </div>
@@ -92,18 +92,21 @@ import AttestationSearchBox from '../Components/AttestationSearch.vue';
 import AttestationsHeader from '../Components/AttestationsHeader.vue';
 import AttestationCreate from '../Components/AttestationCreate.vue';
 import AttestationEdit from '../Components/AttestationEdit.vue';
+import Pagination from "@/Components/Pagination";
 import { Link, Head } from '@inertiajs/vue3';
 
 export default {
     name: 'Attestations',
     components: {
-        AuthenticatedLayout, AttestationSearchBox, AttestationsHeader, Head, Link, AttestationCreate, AttestationEdit
+        AuthenticatedLayout, AttestationSearchBox, AttestationsHeader, Head, Link, AttestationCreate, AttestationEdit, Pagination
     },
     props: {
         results: Object,
-        institutions: Object,
+        institution: Object,
+        programs: Object,
         newAtte: Object|null,
-        countries: Object
+        countries: Object,
+        error: String|null
     },
     data() {
         return {
