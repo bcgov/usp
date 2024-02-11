@@ -33,7 +33,7 @@ class IsActive
             return redirect()->route('login');
         }
 
-        //active user must have at least a TWP User role
+        //active user must have at least a Ministry User role
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Ministry_ADMIN) && ! $user->hasRole(Role::Ministry_USER)) {
             if (! $user->hasRole(Role::Ministry_GUEST)) {
                 $role = Role::where('name', Role::Ministry_GUEST)->first();

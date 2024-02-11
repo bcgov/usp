@@ -22,6 +22,7 @@ Route::prefix('institution')->group(function () {
             'as' => 'institution.',
         ], function () {
         Route::get('/', [InstitutionController::class, 'index'])->name('home');
+        Route::get('/account', [InstitutionController::class, 'show'])->name('show');
         Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
         Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
         Route::put('/attestations', [AttestationController::class, 'update'])->name('attestations.update');

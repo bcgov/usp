@@ -21,13 +21,13 @@ nav.navbar {
             <div class="collapse navbar-collapse" id="navbarScroll">
                 <ul class="navbar-nav flex-row flex-wrap ms-md-auto" style="--bs-scroll-height: 100px;">
 
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="/institution"
-                                 :class="{ 'active': $page.url.indexOf('/institution') > -1 ||
-                            $page.url.indexOf('/institution') > -1 }">
-                            Dashboard
-                        </NavLink>
-                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <NavLink class="nav-link" href="/institution"-->
+<!--                                 :class="{ 'active': $page.url.indexOf('/institution') > -1 ||-->
+<!--                            $page.url.indexOf('/institution') > -1 }">-->
+<!--                            Dashboard-->
+<!--                        </NavLink>-->
+<!--                    </li>-->
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/institution/attestations"
                                  :class="{ 'active': $page.url.indexOf('/attestation') > -1 ||
@@ -72,9 +72,9 @@ nav.navbar {
 
                             <li class="dropdown-item mt-3 space-y-1">
                                 <div class="d-grid gap-2">
-                                    <ResponsiveNavLink class="text-left" href="/logout" as="button">
+                                    <a class="text-left text-gray-600 hover:text-gray-800" :href="logoutUrl">
                                         Log Out
-                                    </ResponsiveNavLink>
+                                    </a>
                                 </div>
                             </li>
                         </ul>
@@ -119,7 +119,12 @@ export default {
                 }
             }
         }
-
     },
+    computed:{
+        logoutUrl: function(){
+            console.log(this.$attrs.logoutUrl);
+            return this.$attrs.logoutUrl;
+        }
+    }
 }
 </script>

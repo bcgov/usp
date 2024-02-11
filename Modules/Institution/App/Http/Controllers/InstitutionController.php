@@ -31,6 +31,16 @@ class InstitutionController extends Controller
             'programCaps' => $institution->activeProgramCaps]);
     }
 
+    /**
+     * Display a listing of the resource.
+     */
+    public function show(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+        return Inertia::render('Institution::Institution', ['institution' => $institution]);
+    }
+
 
     /**
      * Display a listing of the resource.

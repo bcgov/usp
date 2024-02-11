@@ -7,7 +7,7 @@ nav ul.navbar-nav a{
     line-height: 32px;
 }
 nav ul.navbar-nav a:hover{
-    color: white;
+    /*color: white;*/
 }
 .border-indigo-400 {
     --tw-border-opacity: 1;

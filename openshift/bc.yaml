@@ -1,4 +1,4 @@
-#run oc process -f bc.yaml -p NAME=tbtb-yeaf IMAGE_TAG=latest OC_REPO_SECRET_USER=user-at-github | oc apply -f -
+#run oc process -f bc.yaml -p NAME=usp IMAGE_TAG=latest OC_REPO_SECRET_USER=user-at-github | oc apply -f -
 kind: Template
 apiVersion: template.openshift.io/v1
 metadata:

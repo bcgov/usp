@@ -49,6 +49,7 @@ class HandleInertiaRequests extends Middleware
             'ziggy' => function () {
                 return (new Ziggy)->toArray();
             },
+            'logoutUrl' => env('KEYCLOAK_LOGOUT_URL')
         ]);
     }
 }

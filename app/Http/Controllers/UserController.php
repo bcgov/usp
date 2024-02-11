@@ -149,10 +149,10 @@ class UserController extends Controller
                 return Redirect::route('ministry.home');
             }
             if($type === Role::Institution_GUEST){
-                return Redirect::route('institution.home');
+                return Redirect::route('institution.attestations.index');
             }
 
-            return Redirect::route('home');
+            return Redirect::route('login');
         }
     }
 
@@ -176,13 +176,6 @@ class UserController extends Controller
         return Response::json(['status' => true, 'users' => $users]);
     }
 
-    /**
-     * Display first page after login (dashboard page)
-     */
-    public function dashboard(Request $request)
-    {
-        return Inertia::render('Yeaf/Students');
-    }
 
     /**
      * Display the login view.
