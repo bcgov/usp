@@ -78,6 +78,8 @@ class AttestationStoreRequest extends FormRequest
                 ->where('fed_cap_guid', $fedCap->guid)
                 ->where('program_guid', null)
                 ->where('status', 'Active')
+                ->whereColumn('start_date', '>=', $now)
+                ->whereColumn('end_date', '<', $now)
                 ->get();
 
             foreach ($activeCaps as $cap){
@@ -86,12 +88,8 @@ class AttestationStoreRequest extends FormRequest
                 //if the cap does not have a program_guid then this is $instCap
                 //if the cap has a program_guid matching $this->program_guid then this is $programCap
 
-                // Check if the cap is active
-                if ($cap->status === 'Active' &&
-                    // Check if the current time falls within the cap's start/end dates
-                    ($now->gte($cap->start_date) && $now->lte($cap->end_date)) &&
-                    $cap->issued_attestations < $cap->total_attestations) {
-
+                // Check if the current time falls within the cap's start/end dates
+                if ($cap->issued_attestations < $cap->total_attestations) {
                     $capGuid = $cap->guid;
                 }
             }
