@@ -2,6 +2,7 @@
 
 namespace Modules\Institution\App\Http\Middleware;
 
+use App\Models\InstitutionStaff;
 use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class IsActive
             return redirect()->route('login');
         }
 
-        //active user must have at least a Institution USER role
+        //active user must have at least an Institution USER role
         if (! $user->hasRole(Role::SUPER_ADMIN)
             && ! $user->hasRole(Role::Institution_ADMIN)
             && ! $user->hasRole(Role::Institution_USER)) {
@@ -42,7 +43,7 @@ class IsActive
                 $role = Role::where('name', Role::Institution_GUEST)->first();
                 $user->roles()->attach($role);
             }
-            return Inertia::render('Home', [
+            return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact Institution Admin to grant you access.',
@@ -51,12 +52,32 @@ class IsActive
 
         //prevent login for inactive institutions
         if(! $user->hasActiveInstitution() ){
-            return Inertia::render('Home', [
+            return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact Ministry staff. Your institution is inactive.',
             ]);
         }
+
+        $staff = InstitutionStaff::where('user_guid', $user->guid)->first();
+        if($staff->status != 'Active'){
+
+            Auth::logout();
+
+//            return redirect(route('login'))->withErrors(['first_name' => '.']);
+            return Inertia::render('Auth/Login', [
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Please contact your Institution Admin to grant you access.',
+            ]);
+
+//            return Inertia::render('Home', [
+//                'loginAttempt' => true,
+//                'hasAccess' => false,
+//                'status' => 'Please contact your Institution Admin to grant you access.',
+//            ]);
+        }
+
 
         return $next($request);
     }

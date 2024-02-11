@@ -132,8 +132,11 @@ class AttestationController extends Controller
 
         $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
 
-        if (request()->filter_name !== null) {
-            $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_name.'%');
+        if (request()->filter_first_name !== null) {
+            $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_first_name.'%');
+        }
+        if (request()->filter_last_name !== null) {
+            $attestations = $attestations->where('last_name', 'ILIKE', '%'.request()->filter_last_name.'%');
         }
 
         if (request()->sort !== null) {

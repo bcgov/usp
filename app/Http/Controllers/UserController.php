@@ -131,9 +131,12 @@ class UserController extends Controller
                     'hasAccess' => false,
                     'status' => 'Access denied. Please contact Admin.',
                 ]);
-            } else {
+            }
+
+            //else the user has access
+            if($type === Role::Ministry_GUEST){
                 //check if the user is a guest
-                $rolesToCheck = [Role::Ministry_GUEST, Role::Institution_GUEST];
+                $rolesToCheck = [Role::Ministry_GUEST];
                 if($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()){
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
@@ -141,14 +144,23 @@ class UserController extends Controller
                         'status' => $failMsg,
                     ]);
                 }
-            }
 
-            //else the user has access
-            Auth::login($user);
-            if($type === Role::Ministry_GUEST){
+                Auth::login($user);
                 return Redirect::route('ministry.home');
             }
+
             if($type === Role::Institution_GUEST){
+                //check if the user is a guest
+                $rolesToCheck = [Role::Institution_GUEST];
+                if($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()){
+                    return Inertia::render('Auth/Login', [
+                        'loginAttempt' => true,
+                        'hasAccess' => false,
+                        'status' => $failMsg,
+                    ]);
+                }
+
+                Auth::login($user);
                 return Redirect::route('institution.attestations.index');
             }
 

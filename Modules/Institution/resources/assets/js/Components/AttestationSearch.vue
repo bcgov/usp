@@ -1,9 +1,15 @@
 <template>
     <form @submit.prevent="nameFormSubmit" class="m-3">
         <div class="row mb-3">
-            <BreezeLabel class="col-auto col-form-label" for="inputName" value="Name" />
-            <div class="col-auto">
-                <BreezeInput type="text" id="inputName" class="form-control" v-model="nameForm.filter_name" />
+            <BreezeLabel class="col-auto col-form-label" for="inputFirstName" value="First Name" />
+            <div class="col-12">
+                <BreezeInput type="text" id="inputFirstName" class="form-control" v-model="nameForm.filter_first_name" autocomplete="off" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <BreezeLabel class="col-auto col-form-label" for="inputLastName" value="Last Name" />
+            <div class="col-12">
+                <BreezeInput type="text" id="inputLastName" class="form-control" v-model="nameForm.filter_last_name" autocomplete="off" />
             </div>
         </div>
         <div class="row mb-3">
@@ -31,13 +37,14 @@ const props = defineProps({
 let searchType = ref('byName');
 
 const nameFormTemplate = {
-    filter_name: '',
+    filter_first_name: '',
+    filter_last_name: '',
     filter_type: props.ftype ?? 'active',
 };
 const nameForm = useForm(nameFormTemplate);
 const nameFormSubmit = () => {
-    nameForm.get('/ministry/attestations', {
-        onFinish: () => nameForm.reset('inputName'),
+    nameForm.get('/institution/attestations', {
+        onFinish: () => nameForm.reset('inputFirstName', 'inputLastName'),
     });
 };
 

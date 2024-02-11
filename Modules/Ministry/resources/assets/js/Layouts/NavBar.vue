@@ -19,7 +19,7 @@ nav.navbar .beta-icon{
         <div class="container-fluid">
             <Link class="navbar-brand" href="/ministry/institutions">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-lg-inline">USPA - Undergraduate Study Permit Attestation</span>
+                <span class="d-none d-lg-inline fw-light">USPA - Undergraduate Study Permit Attestation</span>
                 <span aria-label="This application is currently in Beta phase" class="d-none d-lg-inline beta-icon">Beta</span>
             </Link>
 

@@ -75,6 +75,8 @@ class AttestationEditRequest extends FormRequest
             $activeCaps = Cap::where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $fedCap->guid)
                 ->where('program_guid', null)
+                ->whereColumn('start_date', '>=', $now)
+                ->whereColumn('end_date', '<', $now)
                 ->where('status', 'Active')
                 ->get();
 
@@ -84,12 +86,8 @@ class AttestationEditRequest extends FormRequest
                 //if the cap does not have a program_guid then this is $instCap
                 //if the cap has a program_guid matching $this->program_guid then this is $programCap
 
-                // Check if the cap is active
-                if ($cap->status === 'Active' &&
-                    // Check if the current time falls within the cap's start/end dates
-                    ($now->gte($cap->start_date) && $now->lte($cap->end_date)) &&
-                    $cap->issued_attestations < $cap->total_attestations) {
-
+                // Check if the current time falls within the cap's start/end dates
+                if ($cap->issued_attestations < $cap->total_attestations) {
                     $capGuid = $cap->guid;
                 }
             }

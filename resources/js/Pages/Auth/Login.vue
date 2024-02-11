@@ -35,6 +35,10 @@ export default {
     text-decoration: underline !important;
     opacity: 0.80 !important;
 }
+img.bceid_rev{
+    width: 50px;
+    display: inline;
+}
 </style>
 <template>
     <GuestLayout>
@@ -48,7 +52,8 @@ export default {
         <div class="row">
             <div class="col-12 mb-3">
                 <a href="/applogin" class="btn btn-bc-gov mb-3 w-100 fw-light">Ministry Staff Login with IDIR</a>
-                <a href="/bceid-login" class="btn btn-bc-gov mb-3 w-100 fw-light">Institution Login with BCeID</a>
+                <a href="/bceid-login" class="btn btn-bc-gov mb-3 w-100 fw-light">Institution Login with
+                    <img src="https://www.bceid.ca/assets/images/bceid_rev.png" class="bceid_rev"></a>
             </div>
         </div>
     </GuestLayout>

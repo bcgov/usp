@@ -8,7 +8,7 @@
                 <div class="col-md-3">
                     <div class="card">
                         <div class="card-header">
-                            Attestation Search
+                            Attestations Search
                         </div>
                         <div class="card-body">
                             <AttestationSearchBox />
@@ -32,7 +32,7 @@
                                         <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.first_name }}</button></td>
                                         <td>{{ row.last_name }}</td>
                                         <td>{{ row.dob }}</td>
-                                        <td><Link v-if="row.program != null" :href="'/institution/programs/' + row.program.id">{{ row.program.program_name }}</Link></td>
+                                        <td>{{ row.program.program_name }}</td>
                                         <td>
                                             <div>
                                                 <span v-if="row.status === 'Issued'" class="badge rounded-pill text-bg-success">Issued</span>
