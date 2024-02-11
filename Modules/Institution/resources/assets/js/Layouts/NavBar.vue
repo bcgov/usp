@@ -5,13 +5,22 @@ nav.navbar {
     border-bottom: 2px solid #fcba19;
     z-index: 99;
 }
+nav.navbar .beta-icon{
+    color: #fcba19;
+    margin-top: -6px;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
+    margin-left: 2px;
+}
 </style>
 <template>
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow">
         <div class="container-fluid">
-            <Link class="navbar-brand" href="/institution">
+            <Link class="navbar-brand d-flex" href="/institution">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
                 <span class="d-none d-lg-inline">USPA - Undergraduate Study Permit Attestation</span>
+                <span aria-label="This application is currently in Beta phase" class="d-none d-lg-inline beta-icon">Beta</span>
             </Link>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
