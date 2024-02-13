@@ -31,7 +31,7 @@
                                         <td>{{ row.issued_attestations}}</td>
                                         <td>{{ row.draft_attestations}}</td>
                                         <td>
-                                            <span v-if="row.status" class="badge rounded-pill text-bg-success">Active</span>
+                                            <span v-if="row.active_status" class="badge rounded-pill text-bg-success">Active</span>
                                             <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>
                                         </td>
                                     </tr>
@@ -71,7 +71,7 @@
                                         <td>{{ row.issued_attestations}}</td>
                                         <td>{{ row.draft_attestations}}</td>
                                         <td>
-                                            <span v-if="row.status" class="badge rounded-pill text-bg-success">Active</span>
+                                            <span v-if="row.active_status" class="badge rounded-pill text-bg-success">Active</span>
                                             <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>
                                         </td>
                                     </tr>

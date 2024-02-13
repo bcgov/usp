@@ -96,9 +96,12 @@ class AttestationController extends Controller
         if(!is_null($check1) && $check2){
             //if the inst or program got updated
             //then restore count for old cap
-            $cap = Cap::where('guid', $check1->cap_guid)->first();
-            $cap->draft_attestations -= 1;
-            $cap->save();
+            if($check1->cap_guid != $request->cap_guid){
+                $cap = Cap::where('guid', $check1->cap_guid)->first();
+                $cap->draft_attestations -= 1;
+                $cap->save();
+            }
+
 
             if($request->status == 'Issued'){
                 $cap = Cap::where('guid', $request->cap_guid)->first();

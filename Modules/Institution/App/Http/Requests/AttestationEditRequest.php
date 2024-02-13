@@ -58,45 +58,22 @@ class AttestationEditRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $fedCap = FedCap::where('status', 'Active')->first();
         $user = User::find(Auth::user()->id);
-        $institution = $user->institution;
 
-        $capGuid = null;
-        //check for a program cap
-        $program = Program::where('guid', $this->program_guid)->with('cap')->first();
-        if(!is_null($program->cap)){
-            $capGuid = $program->cap->guid;
-        }
+        //get the inst active cap.
+        $cap = Cap::where('institution_guid', $user->institution->guid)->active()->where('program_guid', null)->first();
 
-        //if no program cap active, use the institution active cap
-        else{
-            $now = now();
-            $activeCaps = Cap::where('institution_guid', $institution->guid)
-                ->where('fed_cap_guid', $fedCap->guid)
-                ->where('program_guid', null)
-                ->whereColumn('start_date', '>=', $now)
-                ->whereColumn('end_date', '<', $now)
-                ->where('active_status', true)
-                ->get();
+        //now check if there is a cap against the program
+        $progCap = Cap::where('institution_guid', $user->institution->guid)->active()->where('program_guid', $this->program_guid)->first();
 
-            foreach ($activeCaps as $cap){
-                //the cap must be active
-                //now() must fall in between start/end dates
-                //if the cap does not have a program_guid then this is $instCap
-                //if the cap has a program_guid matching $this->program_guid then this is $programCap
+        //if there is a program cap then use it as the cap_guid not the institution cap
+        if(!is_null($progCap)) { $cap = $progCap; }
 
-                // Check if the current time falls within the cap's start/end dates
-                if ($cap->issued_attestations < $cap->total_attestations) {
-                    $capGuid = $cap->guid;
-                }
-            }
-        }
 
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
-            'institution_guid' => $institution->guid,
-            'cap_guid' => $capGuid,
+            'institution_guid' => $user->institution->guid,
+            'cap_guid' => $cap->guid,
             'created_by_user_guid' => $this->user()->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
             'id_number' => Str::upper($this->id_number),

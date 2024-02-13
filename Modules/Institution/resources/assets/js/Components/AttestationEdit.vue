@@ -2,7 +2,7 @@
     <form v-if="editAtteForm != null" class="card-body">
         <div class="modal-body">
             <div v-if="attestation.status !== 'Draft'" class="text-center">
-                <a :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
+                <a :href="'/institution/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
                     <i class="bi bi-box-arrow-down"></i>
                 </a>
                 <p>Download Attestation</p>
