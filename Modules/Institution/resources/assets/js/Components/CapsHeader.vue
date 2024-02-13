@@ -6,6 +6,7 @@
         <th scope="col">Issued Atte.</th>
         <th scope="col">Draft Atte.</th>
         <th scope="col">Status</th>
+        <th scope="col">Comment</th>
     </tr>
 </template>
 <script>

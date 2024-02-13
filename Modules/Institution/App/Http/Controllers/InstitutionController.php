@@ -49,6 +49,9 @@ class InstitutionController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
+        $institution->activeInstCaps->makeHidden(['comment']);
+        $institution->activeProgramCaps->makeHidden(['comment']);
+
         return Inertia::render('Institution::Caps', ['results' => $institution,
             'instCaps' => $institution->activeInstCaps,
             'programCaps' => $institution->activeProgramCaps]);

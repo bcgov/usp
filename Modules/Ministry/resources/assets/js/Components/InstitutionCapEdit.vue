@@ -39,6 +39,10 @@
                     <Label for="inputComment" class="form-label" value="Comment"/>
                     <textarea class="form-control" id="inputComment" v-model="editInstitutionCapForm.comment" rows="3"></textarea>
                 </div>
+                <div class="col-12">
+                    <Label for="inputExternalComment" class="form-label" value="External Comment"/>
+                    <textarea class="form-control" id="inputExternalComment" v-model="editInstitutionCapForm.external_comment" rows="3"></textarea>
+                </div>
 
                 <div v-if="editInstitutionCapForm.errors != undefined" class="row">
                     <div class="col-12">
@@ -92,6 +96,7 @@ export default {
                 total_attestations: "",
                 active_status: "",
                 comment: "",
+                external_comment: "",
             },
             selectedFedCap: ''
         }
