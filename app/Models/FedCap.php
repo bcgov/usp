@@ -28,7 +28,7 @@ class FedCap extends Model
 
     public function caps()
     {
-        return $this->hasMany(Cap::class, 'fed_cap_guid', 'guid');
+        return $this->hasMany(Cap::class, 'fed_cap_guid', 'guid')->active();
     }
 
     public function getRemainingCapAttribute()

@@ -90,9 +90,27 @@ class AttestationController extends Controller
         $check1 = Attestation::where('id', $request->id)->where('status', 'Draft')->first();
 
         //2. check cap has not been reached
-        $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
+        $check2 = $this->checkCapLimit($request);
+//      $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
 
-        if(!is_null($check1) && !is_null($check2)){
+        if(!is_null($check1) && $check2){
+            //if the inst or program got updated
+            //then restore count for old cap
+            $cap = Cap::where('guid', $check1->cap_guid)->first();
+            $cap->draft_attestations -= 1;
+            $cap->save();
+
+            if($request->status == 'Issued'){
+                $cap = Cap::where('guid', $request->cap_guid)->first();
+                $cap->draft_attestations -= 1;
+                $cap->issued_attestations += 1;
+                $cap->save();
+            }else{
+                $cap = Cap::where('guid', $request->cap_guid)->first();
+                $cap->draft_attestations += 1;
+                $cap->save();
+            }
+
             Attestation::where('id', $request->id)->update($request->validated());
         }else{
             if(is_null($check1)){
@@ -146,5 +164,25 @@ class AttestationController extends Controller
         }
 
         return $attestations->with('institution.activeCaps', 'institution.programs')->paginate(25)->onEachSide(1)->appends(request()->query());
+    }
+
+
+    private function checkCapLimit($request)
+    {
+        $cap = Cap::where('guid', $request->cap_guid)->first();
+        //if it is an inst. cap then it should pass only the check against the inst. cap
+        if(is_null($cap->program_guid)){
+            $canCreate = $cap->issued_attestations < $cap->total_attestations;
+
+        }
+
+        //if it is a program cap then it should pass the check against the program cap first then another check against the inst. cap
+        else{
+            $instCap = Cap::where('institution_guid', $request->institution_guid)->active()->where('program_guid', null)->first();
+            $canCreate = ($cap->issued_attestations < $cap->total_attestations) &&
+                ($instCap->issued_attestations < $instCap->total_attestations);
+        }
+
+        return $canCreate;
     }
 }

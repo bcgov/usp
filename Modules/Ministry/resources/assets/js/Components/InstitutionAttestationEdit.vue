@@ -8,14 +8,17 @@
                 <p>Download Attestation</p>
             </div>
             <div v-else class="row g-3">
-
-                <div class="col-md-4">
-                    <Label for="inputCap" class="form-label" value="Institution Cap"/>
-                    <Select class="form-select" id="inputCap" v-model="editAtteForm.cap_guid" :disabled="institution === ''">
-                        <option></option>
-                        <option v-for="c in institution.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>
-                    </Select>
+                <div class="col-md-6">
+                    <Label for="inputFirstName" class="form-label" value="First Name"/>
+                    <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
                 </div>
+                <div class="col-md-6">
+                    <Label for="inputLastName" class="form-label" value="Last Name"/>
+                    <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+
                 <div class="col-md-4">
                     <Label for="inputProgram" class="form-label" value="Institution Program"/>
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
@@ -34,16 +37,7 @@
                     </Select>
                 </div>
 
-                <div class="col-md-4">
-                    <Label for="inputFirstName" class="form-label" value="First Name"/>
-                    <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputLastName" class="form-label" value="Last Name"/>
-                    <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
+
                 <div class="col-md-4">
                     <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
                     <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
@@ -177,6 +171,7 @@ export default {
     },
     methods: {
         submitForm: function (status) {
+            let vm = this;
             this.editAtteForm.status = status;
             if(this.editAtteForm.status !== 'Draft'){
                 let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
@@ -186,12 +181,14 @@ export default {
             }
 
             this.editAtteForm.formState = null;
-            this.editAtteForm.put('/ministry/attestations', {
+            this.editAtteForm.put('/ministry/attestations/institution', {
                 onSuccess: (response) => {
+
                     $("#editAtteModal").modal('hide');
 
+
                     this.editAtteForm.reset(this.editAtteFormData);
-                    this.$inertia.visit('/ministry/institutions/' + this.institution.id + '/attestations');
+                    // this.$inertia.visit('/ministry/institutions/' + this.institution.id + '/attestations');
                     // console.log(response.props.institution)
                 },
                 onError: () => {

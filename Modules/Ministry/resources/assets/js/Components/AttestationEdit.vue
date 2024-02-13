@@ -9,19 +9,22 @@
             </div>
             <div v-else class="row g-3">
 
-                <div class="col-md-4">
-                    <Label for="inputCap" class="form-label" value="Institution Cap"/>
-                    <Select class="form-select" id="inputCap" v-model="editAtteForm.cap_guid" :disabled="institution === ''">
-                        <option></option>
-                        <option v-for="c in institution.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>
-                    </Select>
+                <div class="col-md-6">
+                    <Label for="inputFirstName" class="form-label" value="First Name"/>
+                    <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
                 </div>
+                <div class="col-md-6">
+                    <Label for="inputLastName" class="form-label" value="Last Name"/>
+                    <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+
                 <div class="col-md-4">
                     <Label for="inputProgram" class="form-label" value="Institution Program"/>
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
                         <template v-if="institution !== ''">
-                            <option></option>
-                            <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
+                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
                         </template>
                     </Select>
                 </div>
@@ -34,16 +37,6 @@
                     </Select>
                 </div>
 
-                <div class="col-md-4">
-                    <Label for="inputFirstName" class="form-label" value="First Name"/>
-                    <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputLastName" class="form-label" value="Last Name"/>
-                    <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
                 <div class="col-md-4">
                     <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
                     <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
@@ -155,7 +148,6 @@ export default {
                 formFailMsg: 'There was an error submitting this form.',
                 id: "",
                 institution_guid: "",
-                cap_guid: "",
                 program_guid: "",
                 first_name: "",
                 last_name: "",
@@ -172,9 +164,34 @@ export default {
                 expiry_date: "",
                 gt_fifty_pct_in_person: ""
             },
+            selectedProgram: '',
+            selectedInst: '',
+            programs: []
         }
     },
     methods: {
+        enableCap: function (e){
+            const inst = this.institutions.find(inst => inst.name === e.target.value);
+            if (inst) {
+                this.selectedInst = inst;
+                this.editAtteForm.institution_guid = inst.guid;
+                this.fetchPrograms();
+            }
+        },
+        fetchPrograms: function () {
+            let vm = this;
+            let data = {
+                institution_guid: this.selectedInst.guid,
+            }
+            axios.post('/ministry/api/fetch/programs', data)
+                .then(function (response) {
+                    vm.programs = response.data.body;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        },
         submitForm: function (status) {
             this.editAtteForm.status = status;
             if(this.editAtteForm.status !== 'Draft'){
@@ -188,9 +205,9 @@ export default {
             this.editAtteForm.put('/ministry/attestations', {
                 onSuccess: (response) => {
                     $("#editAtteModal").modal('hide');
-
                     this.editAtteForm.reset(this.editAtteFormData);
-                    window.location.href = '/ministry/attestations';
+                    this.$inertia.visit('/ministry/institutions/' + this.institution.id + "/attestations");
+
                     // console.log(response.props.institution)
                 },
                 onError: () => {
@@ -203,6 +220,8 @@ export default {
 
     mounted() {
         this.editAtteForm = useForm(this.attestation);
+        this.selectedInst = this.attestation.institution;
+        this.fetchPrograms();
         // this.editAtteForm.institution_guid = this.institution.guid;
     }
 }

@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Attestation;
+use App\Models\Cap;
+use App\Models\Institution;
+use App\Models\Program;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
@@ -53,8 +56,19 @@ class AttestationEditRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        //use the program_guid to check for the cap_guid.
+        $program = Program::where('guid', $this->program_guid)->first();
+        //get the inst active cap.
+        $inst = Institution::where('guid', $program->institution_guid)->active()->first();
+        $cap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', null)->first();
+        //now check if there is a cap against the program
+        $progCap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', $this->program_guid)->first();
+        //if there is a program cap then use it as the cap_guid not the institution cap
+        if(!is_null($progCap)) { $cap = $progCap; }
+
         $this->merge([
             'last_touch_by_user_guid' => $this->user()->guid,
+            'cap_guid' => $cap->guid,
             'id_number' => Str::upper($this->id_number),
             'first_name' => Str::title($this->first_name),
             'last_name' => Str::title($this->last_name),

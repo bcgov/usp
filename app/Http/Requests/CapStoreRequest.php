@@ -34,11 +34,12 @@ class CapStoreRequest extends FormRequest
             'parent_cap_guid' => 'nullable|exists:caps,guid',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
-            'status' => 'required|in:Active,Pending',
+            'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric',
             'issued_attestations' => 'required|numeric',
             'draft_attestations' => 'required|numeric',
             'comment' => 'nullable',
+            'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
@@ -56,7 +57,7 @@ class CapStoreRequest extends FormRequest
         $instCap = Cap::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $fedCap->guid)
             ->where('program_guid', null)
-            ->where('status', 'Active')
+            ->where('active_status', true)
             ->whereColumn('issued_attestations', '<', 'total_attestations')
             ->first();
 
@@ -73,6 +74,17 @@ class CapStoreRequest extends FormRequest
                 $fedCap->total_attestations : $this->total_attestations),
             'issued_attestations' => 0,
             'draft_attestations' => 0,
+            'active_status' => $this->toBoolean($this->active_status),
         ]);
+    }
+
+    /**
+     * Convert to boolean
+     *
+     * @return bool
+     */
+    private function toBoolean($booleable)
+    {
+        return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }

@@ -5,14 +5,15 @@ namespace Modules\Ministry\App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionEditRequest;
 use App\Http\Requests\InstitutionStoreRequest;
+use App\Models\Attestation;
 use App\Models\FedCap;
 use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Response;
 
 class InstitutionController extends Controller
 {
@@ -46,8 +47,22 @@ class InstitutionController extends Controller
             ['caps.program', 'activeCaps', 'staff', 'attestations', 'programs']
         )->first();
         $fedCaps = FedCap::active()->get();
+        $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();
+
         return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
-            'fedCaps' => $fedCaps]);
+            'institutions' => $institutions, 'fedCaps' => $fedCaps]);
+    }
+
+
+    /**
+     * Show the specified resource.
+     */
+    public function fetchAttestations(Request $request)
+    {
+        $attestations = Attestation::where('institution_guid', $request->input('institution_guid'))
+            ->with('institution.activeCaps', 'institution.programs')->get();
+
+        return Response::json(['status' => true, 'body' => $attestations]);
     }
 
     /**

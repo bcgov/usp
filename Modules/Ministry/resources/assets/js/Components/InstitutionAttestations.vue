@@ -11,7 +11,7 @@
                     <InstitutionAttestationsHeader></InstitutionAttestationsHeader>
                     </thead>
                     <tbody>
-                    <tr v-for="(row, i) in results.attestations">
+                    <tr v-for="(row, i) in attestationList">
                         <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.first_name }}</button></td>
                         <td>{{ row.last_name }}</td>
                         <td>{{ row.dob }}</td>
@@ -47,7 +47,7 @@
                         <h5 class="modal-title" id="newAtteModalLabel">New Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <InstitutionAttestationCreate :countries="countries" :institution="results" :newAtte="newAtte" />
+                    <InstitutionAttestationCreate :institutions="institutions" :countries="countries" :institution="results" :newAtte="newAtte" />
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                         <h5 class="modal-title" id="editAtteModalLabel">Edit Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <InstitutionAttestationEdit v-bind="$attrs" :countries="countries" :institution="results" :attestation="editRow" />
+                    <InstitutionAttestationEdit v-bind="$attrs" :institutions="institutions" :countries="countries" :institution="results" :attestation="editRow" />
                 </div>
             </div>
         </div>
@@ -83,7 +83,8 @@ export default {
     props: {
         results: Object,
         newAtte: Object|null,
-        countries: Object
+        countries: Object,
+        institutions: Object
     },
     data() {
         return {
@@ -128,10 +129,24 @@ export default {
             }
             return value;
         },
-
+        fetchAttestations: function () {
+            let vm = this;
+            let data = {
+                institution_guid: this.results.guid,
+            }
+            axios.post('/ministry/api/fetch/attestations', data)
+                .then(function (response) {
+                    vm.attestationList = response.data.body;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        },
     },
     mounted() {
-        this.attestationList = this.results.attestations;
+        this.fetchAttestations();
+        //this.attestationList = this.results.attestations;
     }
 }
 </script>

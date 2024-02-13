@@ -16,7 +16,7 @@
                             <td>{{ row.program_type }}</td>
                             <td>{{ row.credential }}</td>
                             <td>
-                                <span v-if="row.active" class="badge rounded-pill text-bg-success">Active</span>
+                                <span v-if="row.active_status" class="badge rounded-pill text-bg-success">Active</span>
                                 <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>
                             </td>
                         </tr>

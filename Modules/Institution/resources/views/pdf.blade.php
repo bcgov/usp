@@ -79,8 +79,8 @@
     <footer>
         <table>
             <tr>
-                <td style="width: 25%;">{{ $utils['Ministry Name'][0]->field_name }}</td>
-                <td style="width: 20%;">{{ $utils['Ministry Branch'][0]->field_name }}</td>
+                <td style="width: 35%;">{{ $utils['Ministry Name'][0]->field_name }}<br/>
+                    {{ $utils['Ministry Branch'][0]->field_name }}<br/>{{ $utils['Ministry Branch Url'][0]->field_name }}</td>
                 <td style="width: 30%;">
                     Mailing Address:<br/>
                     {!! $utils['Ministry Mailing Address'][0]->field_name !!}<br/>

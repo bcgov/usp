@@ -78,7 +78,7 @@
                         <h5 class="modal-title" id="editAtteModalLabel">Edit Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <AttestationEdit v-bind="$attrs" :countries="countries" :institution="editRow.institution" :attestation="editRow" />
+                    <AttestationEdit v-bind="$attrs" :countries="countries" :institutions="institutions" :institution="editRow.institution" :attestation="editRow" />
                 </div>
             </div>
         </div>
@@ -92,12 +92,13 @@ import AttestationSearchBox from '../Components/AttestationSearch.vue';
 import AttestationsHeader from '../Components/AttestationsHeader.vue';
 import AttestationCreate from '../Components/AttestationCreate.vue';
 import AttestationEdit from '../Components/AttestationEdit.vue';
+import Pagination from "@/Components/Pagination";
 import { Link, Head } from '@inertiajs/vue3';
 
 export default {
     name: 'Attestations',
     components: {
-        AuthenticatedLayout, AttestationSearchBox, AttestationsHeader, Head, Link, AttestationCreate, AttestationEdit
+        AuthenticatedLayout, AttestationSearchBox, AttestationsHeader, Head, Link, AttestationCreate, Pagination, AttestationEdit
     },
     props: {
         results: Object,

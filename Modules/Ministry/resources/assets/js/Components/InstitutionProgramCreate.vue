@@ -82,7 +82,7 @@
                 </div>
                 <div class="col-md-3">
                     <Label for="inputActive" class="form-label" value="Active?" />
-                    <Select class="form-select" id="inputActive" v-model="editForm.active">
+                    <Select class="form-select" id="inputActive" v-model="editForm.active_status">
                         <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
@@ -155,7 +155,7 @@ export default {
                 delivery_combined: "",
                 noc_code: "",
                 cip_code: "",
-                active: "",
+                active_status: "",
                 restrictions: ""
             },
         }

@@ -16,7 +16,7 @@ class ProgramController extends Controller
 {
     public function fetchPrograms(Request $request, Program $program = null)
     {
-        $body = Program::where(['institution_guid' => $request->input('institution_guid'), 'status' => 'Active'])->get();
+        $body = Program::where(['institution_guid' => $request->input('institution_guid'), 'active_status' => true])->get();
         if(! is_null($program)){
             $body = $program;
         }

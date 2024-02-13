@@ -13,6 +13,9 @@
             <span>Issued Atte.</span>
         </th>
         <th scope="col">
+            <span>Program</span>
+        </th>
+        <th scope="col">
             <span>Status</span>
         </th>
         <th scope="col" style="min-width: 120px;">

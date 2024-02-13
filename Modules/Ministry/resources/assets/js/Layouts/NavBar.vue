@@ -12,6 +12,7 @@ nav.navbar .beta-icon{
     font-weight: 600;
     font-size: 14px;
     margin-left: 2px;
+    position: absolute;
 }
 </style>
 <template>
@@ -32,29 +33,26 @@ nav.navbar .beta-icon{
 
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/ministry/institutions"
-                                 :class="{ 'active': $page.url.indexOf('/institution') > -1 ||
-                            $page.url.indexOf('/institution') > -1 }">
+                                 :class="{ 'active':
+                                     $page.url.indexOf('/institution') > -1  }">
                             Institutions
                         </NavLink>
                     </li>
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/ministry/attestations"
-                                 :class="{ 'active': $page.url.indexOf('/attestation') > -1 ||
-                            $page.url.indexOf('/attestation') > -1 }">
+                                 :class="{ 'active': $page.url.indexOf('/attestations') > -1 && $page.url.indexOf('/institutions/') === -1 }">
                             Attestations
                         </NavLink>
                     </li>
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/ministry/fed_caps"
-                                 :class="{ 'active': $page.url.indexOf('/fed_caps') > -1 ||
-                            $page.url.indexOf('/fed_caps') > -1 }">
+                                 :class="{ 'active': $page.url.indexOf('/fed_caps') > -1 }">
                             Federal Caps
                         </NavLink>
                     </li>
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/ministry/maintenance/staff"
-                                 :class="{ 'active': $page.url.indexOf('maintenance') > -1 ||
-                            $page.url.indexOf('maintenance') > -1 }">
+                                 :class="{ 'active': $page.url.indexOf('maintenance') > -1 }">
                             Maintenance
                         </NavLink>
                     </li>

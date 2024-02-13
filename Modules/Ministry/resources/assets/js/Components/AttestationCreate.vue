@@ -11,14 +11,23 @@
                     </datalist>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputCap" class="form-label" value="Institution Cap"/>
-                    <Select class="form-select" id="inputCap" v-model="newAtteForm.cap_guid" :disabled="selectedInst === ''">
+                    <Label for="inputProgram" class="form-label" value="Institution Program"/>
+                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="selectedInst === ''">
                         <template v-if="selectedInst != ''">
                             <option></option>
-                            <option v-for="c in selectedInst.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>
+                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
                         </template>
                     </Select>
                 </div>
+<!--                <div class="col-md-4">-->
+<!--                    <Label for="inputCap" class="form-label" value="Institution Cap"/>-->
+<!--                    <Select class="form-select" id="inputCap" v-model="newAtteForm.cap_guid" :disabled="selectedInst === ''">-->
+<!--                        <template v-if="selectedInst != ''">-->
+<!--                            <option></option>-->
+<!--                            <option v-for="c in selectedInst.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>-->
+<!--                        </template>-->
+<!--                    </Select>-->
+<!--                </div>-->
                 <div class="col-md-4">
                     <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
                     <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
@@ -28,15 +37,7 @@
                     </Select>
                 </div>
 
-                <div class="col-md-4">
-                    <Label for="inputProgram" class="form-label" value="Institution Program"/>
-                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="newAtteForm.program_guid === ''">
-                        <template v-if="selectedInst != ''">
-                            <option></option>
-                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
-                        </template>
-                    </Select>
-                </div>
+
                 <div class="col-md-4">
                     <Label for="inputFirstName" class="form-label" value="First Name"/>
                     <Input type="text" class="form-control" id="inputFirstName" v-model="newAtteForm.first_name"
@@ -81,17 +82,17 @@
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputZipCode" class="form-label" value="Zip Code"/>
                     <Input type="text" class="form-control" id="inputZipCode" v-model="newAtteForm.zip_code"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputProvince" class="form-label" value="Province / State"/>
                     <Input type="text" class="form-control" id="inputProvince" v-model="newAtteForm.province"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputCountry" class="form-label" value="Country"/>
                     <input type="text" class="form-control" list="datalistOptionsInputCountry" id="inputCountry"
                            placeholder="Type to search..."  v-model="newAtteForm.country"  :disabled="newAtteForm.program_guid === ''" />
@@ -99,7 +100,7 @@
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
                     <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
@@ -154,7 +155,7 @@ export default {
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
                 institution_guid: "",
-                cap_guid: "",
+                // cap_guid: "",
                 program_guid: "",
                 first_name: "",
                 last_name: "",

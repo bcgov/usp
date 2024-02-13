@@ -77,7 +77,7 @@ class AttestationStoreRequest extends FormRequest
             $activeCaps = Cap::where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $fedCap->guid)
                 ->where('program_guid', null)
-                ->where('status', 'Active')
+                ->where('active_status', true)
                 ->whereColumn('start_date', '>=', $now)
                 ->whereColumn('end_date', '<', $now)
                 ->get();

@@ -11,10 +11,11 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputStatus" class="form-label" value="Status"/>
-                    <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.status">
+                    <Label for="inputStatus" class="form-label" value="Active?"/>
+                    <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.active_status">
                         <option value=""></option>
-                        <option v-for="stat in $attrs.utils['Institution Cap Status']" :value="stat.field_name">{{ stat.field_name }}</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
                     </Select>
                 </div>
 
@@ -87,7 +88,7 @@ export default {
                 fed_cap_id: "",
                 program_id: "",
                 total_attestations: "",
-                status: "",
+                active_status: "",
                 comment: "",
             },
             selectedFedCap: ''

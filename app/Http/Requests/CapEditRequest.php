@@ -38,7 +38,7 @@ class CapEditRequest extends FormRequest
             $instCapGuids = Cap::select('guid')
                 ->where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $fedCap->guid)
-                ->where('status', 'Active')
+                ->where('active_status', true)
                 ->whereColumn('issued_attestations', '<', 'total_attestations')
                 ->get();
             $noAttes = Attestation::whereIn('cap_guid', $instCapGuids)->count();
@@ -62,9 +62,10 @@ class CapEditRequest extends FormRequest
             'program_guid' => 'nullable|exists:programs,guid',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
-            'status' => 'required|in:Active,Pending',
+            'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric|gt:' . $noAttes,
             'comment' => 'nullable',
+            'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
     }
@@ -82,7 +83,7 @@ class CapEditRequest extends FormRequest
         $instCap = Cap::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $fedCap->guid)
             ->where('program_guid', null)
-            ->where('status', 'Active')
+            ->where('active_status', true)
             ->whereColumn('issued_attestations', '<', 'total_attestations')
             ->first();
 
@@ -97,6 +98,17 @@ class CapEditRequest extends FormRequest
             'last_touch_by_user_guid' => $this->user()->guid,
             'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
                 $fedCap->total_attestations : $this->total_attestations),
+            'active_status' => $this->toBoolean($this->active_status),
         ]);
+    }
+
+    /**
+     * Convert to boolean
+     *
+     * @return bool
+     */
+    private function toBoolean($booleable)
+    {
+        return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }

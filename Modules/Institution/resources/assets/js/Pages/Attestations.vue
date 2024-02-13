@@ -32,7 +32,7 @@
                                         <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.first_name }}</button></td>
                                         <td>{{ row.last_name }}</td>
                                         <td>{{ row.dob }}</td>
-                                        <td>{{ row.program.program_name }}</td>
+                                        <td><span v-if="row.program !== null">{{ row.program.program_name }}</span></td>
                                         <td>
                                             <div>
                                                 <span v-if="row.status === 'Issued'" class="badge rounded-pill text-bg-success">Issued</span>

@@ -48,12 +48,13 @@ Route::prefix('ministry')->group(function () {
 
         Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
         Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
-        Route::put('/attestations', [AttestationController::class, 'update'])->name('attestations.update');
+        Route::put('/attestations/{page?}', [AttestationController::class, 'updateAttestations'])->name('attestations.update');
         Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 
 
 
         Route::post('/api/fetch/programs/{program?}', [ProgramController::class, 'fetchPrograms'])->name('programs.api.fetch');
+        Route::post('/api/fetch/attestations/{institution?}', [InstitutionController::class, 'fetchAttestations'])->name('attestations.api.fetch');
 
         Route::group([
                 'middleware' => ['ministry_admin'],

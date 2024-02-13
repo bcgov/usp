@@ -12,6 +12,7 @@ nav.navbar .beta-icon{
     font-weight: 600;
     font-size: 14px;
     margin-left: 2px;
+    position: absolute;
 }
 </style>
 <template>

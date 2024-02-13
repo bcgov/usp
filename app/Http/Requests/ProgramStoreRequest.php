@@ -39,7 +39,7 @@ class ProgramStoreRequest extends FormRequest
             'delivery_combined' => 'nullable|boolean',
             'noc_code' => 'nullable',
             'cip_code' => 'nullable',
-            'active' => 'required|boolean',
+            'active_status' => 'required|boolean',
             'restrictions' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
@@ -54,7 +54,7 @@ class ProgramStoreRequest extends FormRequest
     {
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
-            'active' => $this->toBoolean($this->active),
+            'active_status' => $this->toBoolean($this->active_status),
             'delivery_combined' => isset($this->delivery_combined) ? $this->toBoolean($this->delivery_combined) : null,
             'delivery_distance' => isset($this->delivery_distance) ? $this->toBoolean($this->delivery_distance) : null,
             'delivery_in_class' => isset($this->delivery_in_class) ? $this->toBoolean($this->delivery_in_class) : null,

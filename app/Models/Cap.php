@@ -16,7 +16,8 @@ class Cap extends Model
      * @var array<int, string>
      */
     protected $fillable = ['guid', 'fed_cap_guid', 'institution_guid', 'program_guid', 'start_date', 'end_date',
-        'total_attestations', 'status', 'comment', 'last_touch_by_user_guid', 'parent_cap_guid', 'issued_attestations', 'draft_attestations',];
+        'total_attestations', 'status', 'comment', 'external_comment', 'last_touch_by_user_guid', 'parent_cap_guid',
+        'issued_attestations', 'draft_attestations',];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -53,7 +54,7 @@ class Cap extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('status', 'Active');
+        return $query->where('active_status', true);
     }
 
     public function scopeOnlyInstCaps($query)

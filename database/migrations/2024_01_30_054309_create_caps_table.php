@@ -39,8 +39,9 @@ return new class extends Migration
             //updated is for when the staff trigger relocation of attestations from one institution to another
             //both the to/from institutions old cap tables will be switched to status=updated
             //both the to/from institutions new cap tables will have the same guid as the old records
-            $table->string('status')->default('active')->comment('active|pending|expired|completed|updated');
+            $table->boolean('status')->default(true);
             $table->text('comment')->nullable();
+            $table->text('external_comment')->nullable();
             $table->string('last_touch_by_user_guid')->nullable();
 
             $table->softDeletes();

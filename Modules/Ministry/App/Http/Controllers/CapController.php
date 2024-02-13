@@ -20,17 +20,35 @@ class CapController extends Controller
      */
     public function store(CapStoreRequest $request): \Inertia\Response
     {
-        $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date,
+        $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date, 'active_status' => true,
             'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
 
         //add a check to see if there is already a cap associated with this program
         if($request->has('program_id') && $request->program_id != ''){
             $conditions['program_guid'] = $request->program_guid;
+        }else{
+            $conditions['program_guid'] = null;
         }
+
         $check = Cap::where($conditions)->first();
+
+        //if there is no cap, then create new one
         if(is_null($check)){
             Cap::create($request->validated());
         }
+
+        //there is one, then disable it, and create a new one
+        else{
+            $check->active_status = false;
+            $check->save();
+
+            $comment = 'Previous cap Start Date: ' . $check->start_date . ', End Date: ' . $check->end_date .
+                ', Total: ' . $check->total_attestations . ', Issued Attestations: ' . $check->issued_attestations;
+            $cap = Cap::create($request->validated());
+            $cap->comment = is_null($cap->comment) ? $comment : $cap->comment . ". " . $comment;
+            $cap->save();
+        }
+
         $institution = Institution::where('id', $request->institution_id)->with(['caps', 'staff'])->first();
         $fedCaps = FedCap::active()->get();
         return Inertia::render('Ministry::Institution', ['page' => 'caps', 'results' => $institution,

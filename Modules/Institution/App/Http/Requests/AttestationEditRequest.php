@@ -77,7 +77,7 @@ class AttestationEditRequest extends FormRequest
                 ->where('program_guid', null)
                 ->whereColumn('start_date', '>=', $now)
                 ->whereColumn('end_date', '<', $now)
-                ->where('status', 'Active')
+                ->where('active_status', true)
                 ->get();
 
             foreach ($activeCaps as $cap){
