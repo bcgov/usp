@@ -26,7 +26,6 @@ return new class extends Migration
 
             $table->bigInteger('parent_cap_guid')->nullable()->comment('program or campus caps should reference the institution cap');
 
-
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('total_attestations');

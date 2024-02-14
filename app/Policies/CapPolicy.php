@@ -14,6 +14,7 @@ class CapPolicy
     public function before(User $user, $ability)
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -23,6 +24,7 @@ class CapPolicy
     public function create(User $user): bool
     {
         $rolesToCheck = [Role::Ministry_USER];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -32,6 +34,7 @@ class CapPolicy
     public function update(User $user, Cap $model): bool
     {
         $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 }

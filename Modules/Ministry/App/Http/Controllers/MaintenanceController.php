@@ -4,7 +4,6 @@ namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StaffEditRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
 use App\Models\Role;
@@ -13,7 +12,6 @@ use App\Models\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-
 
 class MaintenanceController extends Controller
 {
@@ -85,10 +83,10 @@ class MaintenanceController extends Controller
         $this->authorize('update', $user);
 
         $newRole = Role::where('name', Role::Ministry_GUEST)->first();
-        if($request->input('role') === 'Admin'){
+        if ($request->input('role') === 'Admin') {
             $newRole = Role::where('name', Role::Ministry_ADMIN)->first();
         }
-        if($request->input('role') === 'User'){
+        if ($request->input('role') === 'User') {
             $newRole = Role::where('name', Role::Ministry_USER)->first();
         }
 
@@ -118,7 +116,7 @@ class MaintenanceController extends Controller
         foreach ($utils as $util) {
             $cat_utils[$util->field_type][] = $util;
         }
-        foreach ($cat_utils as $k=>$v){
+        foreach ($cat_utils as $k => $v) {
             $cat_titles[] = $k;
         }
         sort($cat_titles);
@@ -135,9 +133,9 @@ class MaintenanceController extends Controller
     public function utilUpdate(UtilEditRequest $request, Util $util): \Illuminate\Http\RedirectResponse
     {
         $util->update($request->validated());
+
         return Redirect::route('ministry.maintenance.utils.list');
     }
-
 
     /**
      * Store a utility resource.

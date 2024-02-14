@@ -4,8 +4,8 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Util;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UtilPolicy
 {
@@ -14,6 +14,7 @@ class UtilPolicy
     public function before(User $user, $ability)
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 

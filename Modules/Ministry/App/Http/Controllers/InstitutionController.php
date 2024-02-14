@@ -10,7 +10,6 @@ use App\Models\FedCap;
 use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
@@ -23,6 +22,7 @@ class InstitutionController extends Controller
     public function index()
     {
         $institutions = $this->paginateInst();
+
         return Inertia::render('Ministry::Institutions', ['status' => true, 'results' => $institutions]);
     }
 
@@ -53,7 +53,6 @@ class InstitutionController extends Controller
             'institutions' => $institutions, 'fedCaps' => $fedCaps]);
     }
 
-
     /**
      * Show the specified resource.
      */
@@ -82,7 +81,6 @@ class InstitutionController extends Controller
     {
         //
     }
-
 
     private function paginateInst()
     {

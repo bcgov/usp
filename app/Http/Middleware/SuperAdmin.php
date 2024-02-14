@@ -37,7 +37,7 @@ class SuperAdmin
             ! $user->hasRole(Role::SUPER_ADMIN)
         ) {
 
-                return Inertia::render('Home', [
+            return Inertia::render('Home', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact Admin to grant you access.',

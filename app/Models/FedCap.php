@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -18,7 +17,8 @@ class FedCap extends Model
      * @var array<int, string>
      */
     protected $fillable = ['guid', 'start_date', 'end_date', 'total_attestations', 'status', 'comment',
-        'last_touch_by_user_guid',];
+        'last_touch_by_user_guid', ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -38,7 +38,7 @@ class FedCap extends Model
             $total += $cap->total_attestations;
         }
 
-        if($total < 0){
+        if ($total < 0) {
             return $this->total_attestations + $total;
         }
 

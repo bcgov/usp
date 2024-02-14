@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\FedCap;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 
 class FedCapEditRequest extends FormRequest
 {
@@ -14,6 +13,7 @@ class FedCapEditRequest extends FormRequest
     public function authorize(): bool
     {
         $fedCap = FedCap::find($this->id);
+
         return $this->user()->can('update', $fedCap);
     }
 

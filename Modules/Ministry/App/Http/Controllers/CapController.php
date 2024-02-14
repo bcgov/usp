@@ -8,13 +8,10 @@ use App\Http\Requests\CapStoreRequest;
 use App\Models\Cap;
 use App\Models\FedCap;
 use App\Models\Institution;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class CapController extends Controller
 {
-
     /**
      * Store a newly created resource in storage.
      */
@@ -24,33 +21,34 @@ class CapController extends Controller
             'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
 
         //add a check to see if there is already a cap associated with this program
-        if($request->has('program_id') && $request->program_id != ''){
+        if ($request->has('program_id') && $request->program_id != '') {
             $conditions['program_guid'] = $request->program_guid;
-        }else{
+        } else {
             $conditions['program_guid'] = null;
         }
 
         $check = Cap::where($conditions)->first();
 
         //if there is no cap, then create new one
-        if(is_null($check)){
+        if (is_null($check)) {
             Cap::create($request->validated());
         }
 
         //there is one, then disable it, and create a new one
-        else{
+        else {
             $check->active_status = false;
             $check->save();
 
-            $comment = 'Previous cap Start Date: ' . $check->start_date . ', End Date: ' . $check->end_date .
-                ', Total: ' . $check->total_attestations . ', Issued Attestations: ' . $check->issued_attestations;
+            $comment = 'Previous cap Start Date: '.$check->start_date.', End Date: '.$check->end_date.
+                ', Total: '.$check->total_attestations.', Issued Attestations: '.$check->issued_attestations;
             $cap = Cap::create($request->validated());
-            $cap->comment = is_null($cap->comment) ? $comment : $cap->comment . ". " . $comment;
+            $cap->comment = is_null($cap->comment) ? $comment : $cap->comment.'. '.$comment;
             $cap->save();
         }
 
         $institution = Institution::where('id', $request->institution_id)->with(['caps', 'staff'])->first();
         $fedCaps = FedCap::active()->get();
+
         return Inertia::render('Ministry::Institution', ['page' => 'caps', 'results' => $institution,
             'fedCaps' => $fedCaps]);
 
@@ -65,15 +63,16 @@ class CapController extends Controller
             'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
 
         //add a check to see if there is already a cap associated with this program
-        if($request->has('program_guid') && $request->program_guid != ''){
+        if ($request->has('program_guid') && $request->program_guid != '') {
             $conditions['program_guid'] = $request->program_guid;
         }
         $check = Cap::where('id', '!=', $request->id)->where($conditions)->first();
-        if(is_null($check)){
+        if (is_null($check)) {
             Cap::where('id', $request->id)->update($request->validated());
         }
         $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff'])->first();
         $fedCaps = FedCap::active()->get();
+
         return Inertia::render('Ministry::Institution', ['page' => 'caps', 'results' => $institution,
             'fedCaps' => $fedCaps]);
     }

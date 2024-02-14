@@ -46,10 +46,9 @@ class AttestationStoreRequest extends FormRequest
             'status' => 'required|in:Draft,Issued,Received,Denied',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
             'created_by_user_guid' => 'required|exists:users,guid',
-            'gt_fifty_pct_in_person' => 'required|boolean'
+            'gt_fifty_pct_in_person' => 'required|boolean',
         ];
     }
-
 
     /**
      * Prepare the data for validation.
@@ -66,8 +65,9 @@ class AttestationStoreRequest extends FormRequest
         //now check if there is a cap against the program
         $progCap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', $this->program_guid)->first();
         //if there is a program cap then use it as the cap_guid not the institution cap
-        if(!is_null($progCap)) { $cap = $progCap; }
-
+        if (! is_null($progCap)) {
+            $cap = $progCap;
+        }
 
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),

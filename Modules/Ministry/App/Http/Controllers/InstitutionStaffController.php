@@ -23,6 +23,7 @@ class InstitutionStaffController extends Controller
 
         $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff'])->first();
         $fedCaps = FedCap::active()->get();
+
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
             'fedCaps' => $fedCaps]);
     }
@@ -33,19 +34,18 @@ class InstitutionStaffController extends Controller
     public function updateRole(Request $request): \Inertia\Response
     {
         $newRole = Role::where('name', Role::Institution_GUEST)->first();
-        if($request->input('role') === 'Admin'){
+        if ($request->input('role') === 'Admin') {
             $newRole = Role::where('name', Role::Institution_ADMIN)->first();
         }
-        if($request->input('role') === 'User'){
+        if ($request->input('role') === 'User') {
             $newRole = Role::where('name', Role::Institution_USER)->first();
         }
 
         $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Ministry_USER];
-        if(Auth::user()->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && Auth::user()->disabled === false){
+        if (Auth::user()->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && Auth::user()->disabled === false) {
             $staff = InstitutionStaff::where('id', $request->input('id'))->first();
 
-            if(!is_null($staff))
-            {
+            if (! is_null($staff)) {
                 //reset roles
                 $roles = Role::whereIn('name', [Role::Institution_ADMIN, Role::Institution_USER, Role::Institution_GUEST])->get();
                 foreach ($roles as $role) {
@@ -58,6 +58,7 @@ class InstitutionStaffController extends Controller
 
         $institution = Institution::where('guid', $request->input('institution_guid'))->with(['caps', 'staff'])->first();
         $fedCaps = FedCap::active()->get();
+
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
             'fedCaps' => $fedCaps]);
 

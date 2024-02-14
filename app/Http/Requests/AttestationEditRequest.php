@@ -17,6 +17,7 @@ class AttestationEditRequest extends FormRequest
     public function authorize(): bool
     {
         $attestation = Attestation::find($this->id);
+
         return $this->user()->can('update', $attestation);
     }
 
@@ -45,7 +46,7 @@ class AttestationEditRequest extends FormRequest
             'expiry_date' => 'required|date_format:Y-m-d',
             'status' => 'required|in:Draft,Issued,Received,Denied',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
-            'gt_fifty_pct_in_person' => 'required|boolean'
+            'gt_fifty_pct_in_person' => 'required|boolean',
         ];
     }
 
@@ -64,7 +65,9 @@ class AttestationEditRequest extends FormRequest
         //now check if there is a cap against the program
         $progCap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', $this->program_guid)->first();
         //if there is a program cap then use it as the cap_guid not the institution cap
-        if(!is_null($progCap)) { $cap = $progCap; }
+        if (! is_null($progCap)) {
+            $cap = $progCap;
+        }
 
         $this->merge([
             'last_touch_by_user_guid' => $this->user()->guid,

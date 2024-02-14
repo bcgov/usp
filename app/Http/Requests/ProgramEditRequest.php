@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Program;
-use App\Models\Institution;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProgramEditRequest extends FormRequest
@@ -14,6 +13,7 @@ class ProgramEditRequest extends FormRequest
     public function authorize(): bool
     {
         $program = Program::find($this->id);
+
         return $this->user()->can('update', $program);
     }
 

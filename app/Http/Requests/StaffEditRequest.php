@@ -15,6 +15,7 @@ class StaffEditRequest extends FormRequest
     public function authorize()
     {
         $staff = User::find($this->id);
+
         return $this->user()->can('update', $staff);
     }
 

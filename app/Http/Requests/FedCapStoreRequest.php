@@ -34,7 +34,6 @@ class FedCapStoreRequest extends FormRequest
         ];
     }
 
-
     /**
      * Prepare the data for validation.
      *

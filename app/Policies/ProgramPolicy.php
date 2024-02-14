@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Cap;
 use App\Models\Program;
 use App\Models\Role;
 use App\Models\User;
@@ -15,6 +14,7 @@ class ProgramPolicy
     public function before(User $user, $ability)
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -24,6 +24,7 @@ class ProgramPolicy
     public function create(User $user): bool
     {
         $rolesToCheck = [Role::Ministry_USER];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -33,6 +34,7 @@ class ProgramPolicy
     public function update(User $user, Program $model): bool
     {
         $rolesToCheck = [Role::Ministry_USER];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 }

@@ -19,14 +19,16 @@ class Role extends Model
     public const SUPER_ADMIN = 'Super Admin';
 
     public const Ministry_ADMIN = 'Ministry Admin';
+
     public const Institution_ADMIN = 'Institution Admin';
 
     public const Ministry_USER = 'Ministry User';
+
     public const Institution_USER = 'Institution User';
 
     public const Ministry_GUEST = 'Ministry Guest';
-    public const Institution_GUEST = 'Institution Guest';
 
+    public const Institution_GUEST = 'Institution Guest';
 
     /**
      * The roles that belong to the user.

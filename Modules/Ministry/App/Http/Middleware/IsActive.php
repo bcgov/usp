@@ -39,6 +39,7 @@ class IsActive
                 $role = Role::where('name', Role::Ministry_GUEST)->first();
                 $user->roles()->attach($role);
             }
+
             return Inertia::render('Home', [
                 'loginAttempt' => true,
                 'hasAccess' => false,

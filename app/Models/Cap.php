@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -17,7 +16,7 @@ class Cap extends Model
      */
     protected $fillable = ['guid', 'fed_cap_guid', 'institution_guid', 'program_guid', 'start_date', 'end_date',
         'total_attestations', 'status', 'comment', 'external_comment', 'last_touch_by_user_guid', 'parent_cap_guid',
-        'issued_attestations', 'draft_attestations',];
+        'issued_attestations', 'draft_attestations', ];
 
     /**
      * The attributes that should be hidden for serialization.

@@ -17,6 +17,7 @@ class CapEditRequest extends FormRequest
     public function authorize(): bool
     {
         $cap = Cap::find($this->id);
+
         return $this->user()->can('update', $cap);
     }
 
@@ -34,7 +35,7 @@ class CapEditRequest extends FormRequest
         //the edited limit cannot be less than the inst cap BECAUSE:
         // now you have to edit any program caps that could be greater than the new limit.
         // also, editing children limits requires checking for issued attestations so the new limit for the children does not go below the number of issued.
-        if(is_null($this->program_guid)) {
+        if (is_null($this->program_guid)) {
             $instCapGuids = Cap::select('guid')
                 ->where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $fedCap->guid)
@@ -46,13 +47,12 @@ class CapEditRequest extends FormRequest
 
         //if it's a program limit, the edited limit cannot be less than what's already issued of attestations for that program
         //the edited limit cannot be more than the inst cap
-        else{
+        else {
             $instCap = Cap::select('total_attestations')->where('guid', $this->parent_cap_guid)->first();
             $noAttes = Attestation::where('cap_guid', $this->guid)->count();
 
             $noAttes = $noAttes > $instCap->total_attestations ? $instCap->total_attestations : $noAttes;
         }
-
 
         return [
             'id' => 'required',
@@ -63,7 +63,7 @@ class CapEditRequest extends FormRequest
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
             'active_status' => 'required|boolean',
-            'total_attestations' => 'required|numeric|gt:' . $noAttes,
+            'total_attestations' => 'required|numeric|gt:'.$noAttes,
             'comment' => 'nullable',
             'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
@@ -86,7 +86,6 @@ class CapEditRequest extends FormRequest
             ->where('active_status', true)
             ->whereColumn('issued_attestations', '<', 'total_attestations')
             ->first();
-
 
         $this->merge([
             'program_guid' => $program?->guid,

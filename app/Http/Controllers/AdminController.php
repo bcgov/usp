@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Response;
 
 class AdminController extends Controller
 {
-
     /**
      * Display first page after login (dashboard page)
      */
@@ -20,7 +17,6 @@ class AdminController extends Controller
     {
         return Inertia::render('Admin/Home');
     }
-
 
     /**
      * Display first page after login (dashboard page)
@@ -31,6 +27,7 @@ class AdminController extends Controller
 
         $users = User::with('roles')->get();
         $roles = Role::orderBy('name')->get();
+
         return Inertia::render('Admin/Home', ['users' => $users, 'roles' => $roles,
             'page' => 'users']);
     }
@@ -52,7 +49,7 @@ class AdminController extends Controller
 
         //reset roles
         $user->roles()->detach();
-        foreach ($request->updatedRoles as $role){
+        foreach ($request->updatedRoles as $role) {
             $user->roles()->attach($role['id']);
         }
 
@@ -62,7 +59,6 @@ class AdminController extends Controller
         return Inertia::render('Admin/Home', ['users' => $users, 'roles' => $roles,
             'page' => 'users']);
     }
-
 
     /**
      * Display first page after login (dashboard page)
@@ -74,10 +70,10 @@ class AdminController extends Controller
         $ministry = Ministry::first();
         $users = User::with('roles')->get();
         $roles = Role::orderBy('name')->get();
+
         return Inertia::render('Admin/Home', ['users' => $users, 'roles' => $roles, 'ministry' => $ministry,
             'page' => 'ministry']);
     }
-
 
     /**
      * Display a listing of the resource.
@@ -92,8 +88,8 @@ class AdminController extends Controller
         $ministry = Ministry::first();
         $users = User::with('roles')->get();
         $roles = Role::orderBy('name')->get();
+
         return Inertia::render('Admin/Home', ['users' => $users, 'roles' => $roles, 'ministry' => $ministry,
             'page' => 'ministry']);
     }
-
 }

@@ -39,8 +39,6 @@ return new class extends Migration
             $table->string('country');
             $table->boolean('gt_fifty_pct_in_person')->default(true)->nullable();
 
-
-
             $table->string('status')->default('new');
             $table->date('expiry_date')->default(now()->addDays(30));
 

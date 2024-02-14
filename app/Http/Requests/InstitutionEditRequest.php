@@ -16,6 +16,7 @@ class InstitutionEditRequest extends FormRequest
     public function authorize()
     {
         $institution = Institution::find($this->id);
+
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
         return $this->user()->can('update', $institution);
@@ -61,7 +62,6 @@ class InstitutionEditRequest extends FormRequest
         ];
     }
 
-
     /**
      * Prepare the data for validation.
      *
@@ -88,4 +88,3 @@ class InstitutionEditRequest extends FormRequest
         return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }
-

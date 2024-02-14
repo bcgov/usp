@@ -58,15 +58,15 @@ class UserController extends Controller
             // If we don't have an authorization code then get one
             $authUrl = $provider->getAuthorizationUrl();
             $request->session()->put('oauth2state', $provider->getState());
-            \Log::info('$authUrl: ' . $authUrl);
-            \Log::info('$provider->getState(): ' . $provider->getState());
+            \Log::info('$authUrl: '.$authUrl);
+            \Log::info('$provider->getState(): '.$provider->getState());
 
             return Redirect::to($authUrl);
 
             // Check given state against previously stored one to mitigate CSRF attack
         } elseif (! $request->has('state') || ($request->state !== $request->session()->get('oauth2state'))) {
             $request->session()->forget('oauth2state');
-            \Log::info('messed up state ' . $request->state . " !== " . $request->session()->get('oauth2state'));
+            \Log::info('messed up state '.$request->state.' !== '.$request->session()->get('oauth2state'));
 
             //Invalid state, make sure HTTP sessions are enabled
             return Inertia::render('Auth/Login', [
@@ -93,8 +93,8 @@ class UserController extends Controller
                 // We got an access token, let's now get the user's details
                 $provider_user = $provider->getResourceOwner($token);
                 $provider_user = $provider_user->toArray();
-                \Log::info('We got a token: ' . $token);
-                \Log::info('$provider_user: ' . json_encode($provider_user));
+                \Log::info('We got a token: '.$token);
+                \Log::info('$provider_user: '.json_encode($provider_user));
             } catch (\Exception $e) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
@@ -105,11 +105,11 @@ class UserController extends Controller
 
             $user = null;
             $failMsg = null;
-            if($type === Role::Ministry_GUEST){
+            if ($type === Role::Ministry_GUEST) {
                 $user = User::where('idir_user_guid', 'ilike', $provider_user['idir_user_guid'])->first();
                 $failMsg = 'Please contact Ministry Admin to grant you access.';
             }
-            if($type === Role::Institution_GUEST){
+            if ($type === Role::Institution_GUEST) {
                 $user = User::where('bceid_user_guid', 'ilike', $provider_user['bceid_user_guid'])->first();
                 $failMsg = 'Please contact Institution Admin to grant you access.';
             }
@@ -124,7 +124,7 @@ class UserController extends Controller
                     'status' => 'Please contact Admin to grant you access.',
                 ]);
 
-            //if the user has been disabled
+                //if the user has been disabled
             } elseif ($user->disabled === true) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
@@ -134,10 +134,10 @@ class UserController extends Controller
             }
 
             //else the user has access
-            if($type === Role::Ministry_GUEST){
+            if ($type === Role::Ministry_GUEST) {
                 //check if the user is a guest
                 $rolesToCheck = [Role::Ministry_GUEST];
-                if($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()){
+                if ($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()) {
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -146,13 +146,14 @@ class UserController extends Controller
                 }
 
                 Auth::login($user);
+
                 return Redirect::route('ministry.home');
             }
 
-            if($type === Role::Institution_GUEST){
+            if ($type === Role::Institution_GUEST) {
                 //check if the user is a guest
                 $rolesToCheck = [Role::Institution_GUEST];
-                if($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()){
+                if ($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()) {
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -161,6 +162,7 @@ class UserController extends Controller
                 }
 
                 Auth::login($user);
+
                 return Redirect::route('institution.attestations.index');
             }
 
@@ -187,7 +189,6 @@ class UserController extends Controller
 
         return Response::json(['status' => true, 'users' => $users]);
     }
-
 
     /**
      * Display the login view.
@@ -232,7 +233,7 @@ class UserController extends Controller
         $user->save();
         $this->checkRoles($user, $type);
 
-        if(array_key_exists('bceid_business_guid', $provider_user)){
+        if (array_key_exists('bceid_business_guid', $provider_user)) {
             $this->checkInstitutionStaff($user, $provider_user);
         }
 
@@ -242,7 +243,7 @@ class UserController extends Controller
     {
         $user = User::find($user->id);
         $institutionStaff = InstitutionStaff::where('bceid_business_guid', $user->bceid_business_guid)->with('institution')->first();
-        if(!is_null($institutionStaff)){
+        if (! is_null($institutionStaff)) {
             $staff = new InstitutionStaff();
             $staff->guid = Str::orderedUuid()->getHex();
             $staff->user_guid = $user->guid;
@@ -259,8 +260,7 @@ class UserController extends Controller
     //new user to be assigned as guest
     private function checkRoles($user, $type)
     {
-        if(is_null($user->roles()->first()))
-        {
+        if (is_null($user->roles()->first())) {
             $role = Role::where('name', $type)->first();
             $user->roles()->attach($role);
         }

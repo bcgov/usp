@@ -12,6 +12,7 @@ class StaffRoleChanged
     use Dispatchable, SerializesModels;
 
     public $user;
+
     public $newRole;
 
     /**
@@ -22,5 +23,4 @@ class StaffRoleChanged
         $this->user = $user;
         $this->newRole = $newRole;
     }
-
 }

@@ -4,7 +4,6 @@ namespace Modules\Institution\App\Http\Requests;
 
 use App\Models\Attestation;
 use App\Models\Cap;
-use App\Models\FedCap;
 use App\Models\Program;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -19,6 +18,7 @@ class AttestationEditRequest extends FormRequest
     public function authorize(): bool
     {
         $attestation = Attestation::find($this->id);
+
         return $this->user()->can('update', $attestation);
     }
 
@@ -47,7 +47,7 @@ class AttestationEditRequest extends FormRequest
             'status' => 'required|in:Draft,Issued,Received,Denied',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
             'created_by_user_guid' => 'required|exists:users,guid',
-            'gt_fifty_pct_in_person' => 'required|boolean'
+            'gt_fifty_pct_in_person' => 'required|boolean',
         ];
     }
 
@@ -67,8 +67,9 @@ class AttestationEditRequest extends FormRequest
         $progCap = Cap::where('institution_guid', $user->institution->guid)->active()->where('program_guid', $this->program_guid)->first();
 
         //if there is a program cap then use it as the cap_guid not the institution cap
-        if(!is_null($progCap)) { $cap = $progCap; }
-
+        if (! is_null($progCap)) {
+            $cap = $progCap;
+        }
 
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),

@@ -43,6 +43,7 @@ class IsActive
                 $role = Role::where('name', Role::Institution_GUEST)->first();
                 $user->roles()->attach($role);
             }
+
             return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
@@ -51,7 +52,7 @@ class IsActive
         }
 
         //prevent login for inactive institutions
-        if(! $user->hasActiveInstitution() ){
+        if (! $user->hasActiveInstitution()) {
             return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
@@ -60,24 +61,23 @@ class IsActive
         }
 
         $staff = InstitutionStaff::where('user_guid', $user->guid)->first();
-        if($staff->status != 'Active'){
+        if ($staff->status != 'Active') {
 
             Auth::logout();
 
-//            return redirect(route('login'))->withErrors(['first_name' => '.']);
+            //            return redirect(route('login'))->withErrors(['first_name' => '.']);
             return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact your Institution Admin to grant you access.',
             ]);
 
-//            return Inertia::render('Home', [
-//                'loginAttempt' => true,
-//                'hasAccess' => false,
-//                'status' => 'Please contact your Institution Admin to grant you access.',
-//            ]);
+            //            return Inertia::render('Home', [
+            //                'loginAttempt' => true,
+            //                'hasAccess' => false,
+            //                'status' => 'Please contact your Institution Admin to grant you access.',
+            //            ]);
         }
-
 
         return $next($request);
     }

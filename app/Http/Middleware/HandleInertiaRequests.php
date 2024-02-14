@@ -38,8 +38,10 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = null;
-        if(Auth::check())
+        if (Auth::check()) {
             $user = User::find(Auth::user()->id);
+        }
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
@@ -49,7 +51,7 @@ class HandleInertiaRequests extends Middleware
             'ziggy' => function () {
                 return (new Ziggy)->toArray();
             },
-            'logoutUrl' => env('KEYCLOAK_LOGOUT_URL')
+            'logoutUrl' => env('KEYCLOAK_LOGOUT_URL'),
         ]);
     }
 }

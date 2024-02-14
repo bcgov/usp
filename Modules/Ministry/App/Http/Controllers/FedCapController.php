@@ -6,11 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FedCapEditRequest;
 use App\Http\Requests\FedCapStoreRequest;
 use App\Models\FedCap;
-use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -78,7 +74,6 @@ class FedCapController extends Controller
     {
         //
     }
-
 
     private function paginateInst()
     {

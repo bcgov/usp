@@ -15,6 +15,7 @@ class InstitutionStaffEditRequest extends FormRequest
     public function authorize()
     {
         $institutionStaff = InstitutionStaff::find($this->id);
+
         return $this->user()->can('update', $institutionStaff);
     }
 

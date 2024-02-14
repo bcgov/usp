@@ -1,18 +1,17 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Util extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = ['field_name', 'field_type', 'field_description', 'active_flag'];
-
 
     public static function getSortedUtils()
     {
@@ -23,10 +22,11 @@ class Util extends Model
         foreach ($utils as $util) {
             $cat_utils[$util->field_type][] = $util;
         }
-        foreach ($cat_utils as $k=>$v){
+        foreach ($cat_utils as $k => $v) {
             $cat_titles[] = $k;
         }
         sort($cat_titles);
+
         return $cat_utils;
     }
 }

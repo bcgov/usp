@@ -57,7 +57,6 @@ class InstitutionStoreRequest extends FormRequest
         ];
     }
 
-
     /**
      * Prepare the data for validation.
      *
@@ -85,4 +84,3 @@ class InstitutionStoreRequest extends FormRequest
         return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }
-

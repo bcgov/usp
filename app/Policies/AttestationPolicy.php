@@ -14,6 +14,7 @@ class AttestationPolicy
     public function before(User $user, $ability)
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Institution_USER];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()
             && $user->disabled === false;
     }
@@ -34,7 +35,6 @@ class AttestationPolicy
         return false;
     }
 
-
     /**
      * Determine whether the user can update the model.
      */
@@ -42,5 +42,4 @@ class AttestationPolicy
     {
         return false;
     }
-
 }

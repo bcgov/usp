@@ -17,6 +17,7 @@ class InstitutionStaffPolicy
     public function create(User $user): bool
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -26,6 +27,7 @@ class InstitutionStaffPolicy
     public function update(User $user, InstitutionStaff $model): bool
     {
         $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN, Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Models\Util;
 use Illuminate\Foundation\Http\FormRequest;
 
-
 class UtilEditRequest extends FormRequest
 {
     /**
@@ -16,6 +15,7 @@ class UtilEditRequest extends FormRequest
     public function authorize()
     {
         $util = Util::find($this->id);
+
         return $this->user()->can('update', $util);
     }
 
@@ -50,7 +50,6 @@ class UtilEditRequest extends FormRequest
 
         ];
     }
-
 
     /**
      * Prepare the data for validation.
