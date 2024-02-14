@@ -60,7 +60,7 @@ class InstitutionController extends Controller
     public function fetchAttestations(Request $request)
     {
         $attestations = Attestation::where('institution_guid', $request->input('institution_guid'))
-            ->with('institution.activeCaps', 'institution.programs')->get();
+            ->with('institution.activeCaps', 'institution.programs')->orderBy('created_at', 'desc')->get();
 
         return Response::json(['status' => true, 'body' => $attestations]);
     }

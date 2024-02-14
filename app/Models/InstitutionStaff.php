@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class InstitutionStaff extends Model
 {
-    protected $appends = ['is_admin'];
     use SoftDeletes;
+
+    protected $appends = ['is_admin'];
 
     /**
      * The attributes that are mass assignable.
@@ -37,7 +39,7 @@ class InstitutionStaff extends Model
     public function getIsAdminAttribute()
     {
         $admin = false;
-        foreach ($this->user->roles as $role) {
+        foreach (Auth::user()->roles as $role) {
             if($role->name === Role::Institution_ADMIN){
                 $admin = true;
                 break;

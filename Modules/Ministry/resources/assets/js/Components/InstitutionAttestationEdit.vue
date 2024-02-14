@@ -183,13 +183,9 @@ export default {
             this.editAtteForm.formState = null;
             this.editAtteForm.put('/ministry/attestations/institution', {
                 onSuccess: (response) => {
-
                     $("#editAtteModal").modal('hide');
-
-
                     this.editAtteForm.reset(this.editAtteFormData);
-                    // this.$inertia.visit('/ministry/institutions/' + this.institution.id + '/attestations');
-                    // console.log(response.props.institution)
+                    this.$inertia.visit('/ministry/institutions/' + this.institution.id + '/attestations');
                 },
                 onError: () => {
                     this.editAtteForm.formState = false;
@@ -201,7 +197,6 @@ export default {
 
     mounted() {
         this.editAtteForm = useForm(this.attestation);
-        // this.editAtteForm.institution_guid = this.institution.guid;
     }
 }
 </script>

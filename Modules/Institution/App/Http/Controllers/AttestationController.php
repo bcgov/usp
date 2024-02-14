@@ -3,7 +3,10 @@
 namespace Modules\Institution\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\AttestationPdf;
 use App\Models\Cap;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 use Modules\Institution\App\Http\Requests\AttestationEditRequest;
 use Modules\Institution\App\Http\Requests\AttestationStoreRequest;
 use App\Models\Attestation;
@@ -115,6 +118,10 @@ class AttestationController extends Controller
             }
 
             Attestation::where('id', $request->id)->update($request->validated());
+
+            if($request->status === 'Issued'){
+                $this->storePdf($request);
+            }
         }else{
             if(is_null($check1)){
                 $error = "This attestation cannot be edited. Only draft attestations can be edited.";
@@ -132,21 +139,31 @@ class AttestationController extends Controller
     public function download(Request $request, Attestation $attestation)
     {
         $this->authorize('download', $attestation);
-        $attestation = Attestation::where('id', $attestation->id)
+        $storedPdf = AttestationPdf::where('attestation_guid', $attestation->guid)->first();
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML(base64_decode($storedPdf->content));
+        return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
+    }
+
+    private function storePdf($request)
+    {
+        $attestation = Attestation::where('id', $request->id)
             ->with('institution', 'program')
             ->where('status', '!=', 'Draft')->first();
-        if(is_null($attestation)){
-            return false;
-        }
+        $this->authorize('download', $attestation);
 
         $now_d = date('Y-m-d');
         $now_t = date('H:m:i');
         $utils = Util::getSortedUtils();
-        $pdf = PDF::loadView('institution::pdf', compact('attestation', 'now_d', 'now_t', 'utils'));
 
-        return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
+        $html = view('institution::pdf', compact('attestation', 'now_d', 'now_t', 'utils'))->render();
+        $pdfContent = base64_encode($html);
+        AttestationPdf::create(['guid' => Str::orderedUuid()->getHex(),
+            'attestation_guid' => $attestation->guid,
+            'content' => $pdfContent]);
+        return true;
     }
-
 
     private function paginateAtte($institution)
     {

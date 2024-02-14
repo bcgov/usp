@@ -28,7 +28,7 @@ class Institution extends Model
 
     public function attestations()
     {
-        return $this->hasMany(Attestation::class, 'institution_guid', 'guid');
+        return $this->hasMany(Attestation::class, 'institution_guid', 'guid')->orderBy('created_at', 'asc');
     }
     public function programs()
     {
