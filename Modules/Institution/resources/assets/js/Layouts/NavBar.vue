@@ -132,7 +132,6 @@ export default {
     },
     computed:{
         logoutUrl: function(){
-            console.log(this.$attrs.logoutUrl);
             return this.$attrs.logoutUrl;
         }
     }

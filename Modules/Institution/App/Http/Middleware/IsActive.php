@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Session;
 
 class IsActive
 {
@@ -29,6 +30,7 @@ class IsActive
         $user = Auth::user();
         //if the user is disabled or has neither idir/bceid
         if ($user->disabled || (is_null($user->idir_user_guid) && is_null($user->bceid_user_guid))) {
+            Session::flush();
             Auth::logout();
 
             return redirect()->route('login');
@@ -62,10 +64,9 @@ class IsActive
 
         $staff = InstitutionStaff::where('user_guid', $user->guid)->first();
         if ($staff->status != 'Active') {
-
+            Session::flush();
             Auth::logout();
 
-            //            return redirect(route('login'))->withErrors(['first_name' => '.']);
             return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,

@@ -72,9 +72,9 @@ nav.navbar .beta-icon{
 
                             <li class="dropdown-item mt-3 space-y-1">
                                 <div class="d-grid gap-2">
-                                    <ResponsiveNavLink class="text-left" href="/logout" as="button">
+                                    <a class="text-left text-gray-600 hover:text-gray-800" :href="logoutUrl">
                                         Log Out
-                                    </ResponsiveNavLink>
+                                    </a>
                                 </div>
                             </li>
                         </ul>
@@ -121,5 +121,11 @@ export default {
         }
 
     },
+
+    computed:{
+        logoutUrl: function(){
+            return this.$attrs.logoutUrl;
+        }
+    }
 }
 </script>
