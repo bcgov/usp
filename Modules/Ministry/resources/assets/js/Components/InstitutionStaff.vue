@@ -77,14 +77,7 @@ export default {
         }
     },
     methods: {
-        openEditForm: function (staff){
-            this.editStaff = staff;
-            $("#editInstStaffModal").modal('show');
-        },
-        closeEditForm: function (){
-            $("#editInstStaffModal").modal('hide');
-            this.editStaff = '';
-        },
+
         isUser: function (roles){
             const role = roles.find(role => role.name === "Institution User");
             return !!role;

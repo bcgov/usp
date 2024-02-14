@@ -40,7 +40,7 @@ class InstitutionStaffController extends Controller
             $newRole = Role::where('name', Role::Institution_USER)->first();
         }
 
-        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Institution_USER];
+        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Ministry_USER];
         if(Auth::user()->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && Auth::user()->disabled === false){
             $staff = InstitutionStaff::where('id', $request->input('id'))->first();
 

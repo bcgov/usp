@@ -62,8 +62,13 @@ Route::prefix('ministry')->group(function () {
                 'as' => 'maintenance.',
             ], function () {
             Route::get('/staff', [MaintenanceController::class, 'staffList'])->name('staff.list');
-            Route::get('/staff/{user}', [MaintenanceController::class, 'staffShow'])->name('staff.show');
-            Route::post('/staff/{user}', [MaintenanceController::class, 'staffEdit'])->name('staff.edit');
+//            Route::get('/staff/{user}', [MaintenanceController::class, 'staffShow'])->name('staff.show');
+//            Route::post('/staff/{user}', [MaintenanceController::class, 'staffEdit'])->name('staff.edit');
+
+
+            Route::put('/staff/{user}', [MaintenanceController::class, 'updateStatus'])->name('staff.status.update');
+            Route::put('/staff/roles/{user}', [MaintenanceController::class, 'updateRole'])->name('staff.roles.update');
+
             Route::get('/utils', [MaintenanceController::class, 'utilList'])->name('utils.list');
             Route::put('/utils/{util}', [MaintenanceController::class, 'utilUpdate'])->name('utils.update');
             Route::post('/utils', [MaintenanceController::class, 'utilStore'])->name('utils.store');

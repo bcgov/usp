@@ -64,12 +64,32 @@ class MaintenanceController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse::render
      */
-    public function staffEdit(StaffEditRequest $request, User $user): \Illuminate\Http\RedirectResponse
+    public function updateStatus(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('update', $user);
 
         $user->disabled = $request->input('disabled');
         $user->save();
+
+        return Redirect::route('ministry.maintenance.staff.list');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\RedirectResponse::render
+     */
+    public function updateRole(Request $request, User $user): \Illuminate\Http\RedirectResponse
+    {
+        $this->authorize('update', $user);
+
+        $newRole = Role::where('name', Role::Ministry_GUEST)->first();
+        if($request->input('role') === 'Admin'){
+            $newRole = Role::where('name', Role::Ministry_ADMIN)->first();
+        }
+        if($request->input('role') === 'User'){
+            $newRole = Role::where('name', Role::Ministry_USER)->first();
+        }
 
         //reset roles
         $roles = Role::whereIn('name', [Role::Ministry_ADMIN, Role::Ministry_USER, Role::Ministry_GUEST])->get();
@@ -77,17 +97,7 @@ class MaintenanceController extends Controller
             $user->roles()->detach($role);
         }
 
-        //if admin add admin role
-        if ($request->access_type == 'A') {
-            $role = Role::where('name', Role::Ministry_ADMIN)->first();
-            $user->roles()->attach($role);
-        }elseif ($request->access_type == 'U') {
-            $role = Role::where('name', Role::Ministry_USER)->first();
-            $user->roles()->attach($role);
-        } else {
-            $role = Role::where('name', Role::Ministry_GUEST)->first();
-            $user->roles()->attach($role);
-        }
+        $user->roles()->attach($newRole);
 
         return Redirect::route('ministry.maintenance.staff.list');
     }
