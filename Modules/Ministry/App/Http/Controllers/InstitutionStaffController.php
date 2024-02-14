@@ -21,7 +21,7 @@ class InstitutionStaffController extends Controller
     {
         InstitutionStaff::where('id', $request->id)->update($request->validated());
 
-        $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff'])->first();
+        $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff.user.roles'])->first();
         $fedCaps = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
@@ -56,7 +56,7 @@ class InstitutionStaffController extends Controller
             }
         }
 
-        $institution = Institution::where('guid', $request->input('institution_guid'))->with(['caps', 'staff'])->first();
+        $institution = Institution::where('guid', $request->input('institution_guid'))->with(['caps', 'staff.user.roles'])->first();
         $fedCaps = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,

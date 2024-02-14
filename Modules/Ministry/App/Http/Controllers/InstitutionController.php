@@ -44,7 +44,7 @@ class InstitutionController extends Controller
     public function show(Institution $institution, $page = 'details')
     {
         $institution = Institution::where('id', $institution->id)->with(
-            ['caps.program', 'activeCaps', 'staff', 'attestations', 'programs']
+            ['caps.program', 'activeCaps', 'staff.user.roles', 'attestations', 'programs']
         )->first();
         $fedCaps = FedCap::active()->get();
         $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();

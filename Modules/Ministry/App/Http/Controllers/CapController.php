@@ -46,7 +46,7 @@ class CapController extends Controller
             $cap->save();
         }
 
-        $institution = Institution::where('id', $request->institution_id)->with(['caps', 'staff'])->first();
+        $institution = Institution::where('id', $request->institution_id)->with(['caps', 'staff.user.roles'])->first();
         $fedCaps = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'caps', 'results' => $institution,
@@ -70,7 +70,7 @@ class CapController extends Controller
         if (is_null($check)) {
             Cap::where('id', $request->id)->update($request->validated());
         }
-        $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff'])->first();
+        $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff.user.roles'])->first();
         $fedCaps = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'caps', 'results' => $institution,

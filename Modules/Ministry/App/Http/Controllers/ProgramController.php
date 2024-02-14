@@ -30,7 +30,7 @@ class ProgramController extends Controller
     public function store(ProgramStoreRequest $request): \Inertia\Response
     {
         Program::create($request->validated());
-        $institution = Institution::where('id', $request->institution_id)->with(['caps', 'staff', 'attestations', 'programs'])->first();
+        $institution = Institution::where('id', $request->institution_id)->with(['caps', 'staff.user.roles', 'attestations', 'programs'])->first();
         $fedPrograms = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'programs', 'results' => $institution,
@@ -44,7 +44,7 @@ class ProgramController extends Controller
     public function update(ProgramEditRequest $request): \Inertia\Response
     {
         Program::where('id', $request->id)->update($request->validated());
-        $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff', 'attestations', 'programs'])->first();
+        $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff.user.roles', 'attestations', 'programs'])->first();
         $fedPrograms = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'programs', 'results' => $institution,
