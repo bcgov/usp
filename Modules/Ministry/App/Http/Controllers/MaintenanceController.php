@@ -2,6 +2,7 @@
 
 namespace Modules\Ministry\App\Http\Controllers;
 
+use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StaffEditRequest;
 use App\Http\Requests\UtilEditRequest;
@@ -98,6 +99,7 @@ class MaintenanceController extends Controller
         }
 
         $user->roles()->attach($newRole);
+        event(new StaffRoleChanged($user, $newRole));
 
         return Redirect::route('ministry.maintenance.staff.list');
     }
