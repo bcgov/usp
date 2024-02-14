@@ -1,0 +1,5 @@
+signature files should be kept in sequence.
+v1.png is first gen.
+v2.png should be next
+... etc
+These files are used to point to signatures used in the attestations stored.
