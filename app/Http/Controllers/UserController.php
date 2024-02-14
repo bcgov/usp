@@ -232,7 +232,7 @@ class UserController extends Controller
         $user->save();
         $this->checkRoles($user, $type);
 
-        if(!is_null($provider_user['bceid_business_guid'])){
+        if(array_key_exists('bceid_business_guid', $provider_user)){
             $this->checkInstitutionStaff($user, $provider_user);
         }
 
