@@ -2,6 +2,7 @@
 
 namespace Modules\Institution\App\Http\Controllers;
 
+use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionStaffEditRequest;
 use App\Http\Requests\StaffEditRequest;
@@ -105,6 +106,7 @@ class InstitutionController extends Controller
                 }
 
                 $staff->user->roles()->attach($newRole);
+                event(new StaffRoleChanged($staff->user, $newRole));
             }
         }
 
