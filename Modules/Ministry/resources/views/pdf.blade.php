@@ -35,7 +35,7 @@
             <tr>
                 <td style="text-align: left; width: 25%;"><img src="{{ public_path('/images/bc_sq_logo.png') }}"></td>
                 <td style="text-align: center; width: 50%;"></td>
-                <td style="text-align: left; width: 25%;"><strong>{{ $attestation->guid }}</strong></td>
+                <td style="text-align: left; width: 25%;"><strong>{{ $attestation->fed_guid }}</strong></td>
             </tr>
         </table>
     </header>
@@ -45,7 +45,7 @@
         <tr>
             <td>
                 Student name: {{ $attestation->first_name }} {{ $attestation->last_name }}<br/>
-                Attestation ID: <strong>{{ $attestation->guid }}</strong><br/>
+                Attestation ID: <strong>{{ $attestation->fed_guid }}</strong><br/>
                 Issue date/time: {{ $attestation->created_at }}<br/>
                 Expiry date: {{ $attestation->expiry_date }}<br/>
                 <br/><br/><br/>

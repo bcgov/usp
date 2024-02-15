@@ -47,7 +47,7 @@ Route::prefix('ministry')->group(function () {
             Route::put('/institution_roles', [InstitutionStaffController::class, 'updateRole'])->name('institution_roles.updateRole');
 
             Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
-            Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
+            Route::post('/attestations/{page?}', [AttestationController::class, 'storeAttestations'])->name('attestations.store');
             Route::put('/attestations/{page?}', [AttestationController::class, 'updateAttestations'])->name('attestations.update');
             Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 

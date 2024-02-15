@@ -1,5 +1,5 @@
 <template>
-    <form v-if="newAtteForm != null" class="card-body" @submit.prevent="submitForm">
+    <form v-if="newAtteForm != null" class="card-body">
         <div class="modal-body">
             <div class="row g-3">
 
@@ -19,15 +19,7 @@
                         </template>
                     </Select>
                 </div>
-<!--                <div class="col-md-4">-->
-<!--                    <Label for="inputCap" class="form-label" value="Institution Cap"/>-->
-<!--                    <Select class="form-select" id="inputCap" v-model="newAtteForm.cap_guid" :disabled="selectedInst === ''">-->
-<!--                        <template v-if="selectedInst != ''">-->
-<!--                            <option></option>-->
-<!--                            <option v-for="c in selectedInst.active_caps" :value="c.guid">{{ c.start_date }} - {{ c.end_date}}</option>-->
-<!--                        </template>-->
-<!--                    </Select>-->
-<!--                </div>-->
+
                 <div class="col-md-4">
                     <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
                     <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
@@ -38,14 +30,25 @@
                 </div>
 
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputFirstName" class="form-label" value="First Name"/>
                     <Input type="text" class="form-control" id="inputFirstName" v-model="newAtteForm.first_name"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputLastName" class="form-label" value="Last Name"/>
                     <Input type="text" class="form-control" id="inputLastName" v-model="newAtteForm.last_name"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-6">
+                    <Label for="inputAddress1" class="form-label" value="Address 1"/>
+                    <Input type="text" class="form-control" id="inputAddress1" v-model="newAtteForm.address1"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+
+                <div class="col-md-6">
+                    <Label for="inputAddress2" class="form-label" value="Address 2"/>
+                    <Input type="text" class="form-control" id="inputAddress2" v-model="newAtteForm.address2"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
@@ -61,16 +64,11 @@
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputAddress1" class="form-label" value="Address 1"/>
-                    <Input type="text" class="form-control" id="inputAddress1" v-model="newAtteForm.address1"
+                    <Label for="inputStudentNumber" class="form-label" value="Student Number"/>
+                    <Input type="text" class="form-control" id="inputStudentNumber" v-model="newAtteForm.student_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-4">
-                    <Label for="inputAddress2" class="form-label" value="Address 2"/>
-                    <Input type="text" class="form-control" id="inputAddress2" v-model="newAtteForm.address2"
-                           :disabled="newAtteForm.program_guid === ''"/>
-                </div>
                 <div class="col-md-4">
                     <Label for="inputEmail" class="form-label" value="Email"/>
                     <Input type="email" class="form-control" id="inputEmail" v-model="newAtteForm.email"
@@ -120,8 +118,11 @@
 
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success" :disabled="newAtteForm.processing">
+        <div class="modal-footer justify-content-between">
+            <button @click="submitForm('Issued')" type="button" class="btn me-2 btn-outline-warning" :disabled="newAtteForm.processing">
+                Issue Attestation
+            </button>
+            <button @click="submitForm('Draft')" type="button" class="btn me-2 btn-outline-success" :disabled="newAtteForm.processing">
                 Save Draft Attestation
             </button>
         </div>
@@ -160,6 +161,7 @@ export default {
                 first_name: "",
                 last_name: "",
                 id_number: "",
+                student_number: "",
                 dob: "",
                 address1: "",
                 address2: "",
@@ -200,7 +202,15 @@ export default {
                     console.log(error);
                 });
         },
-        submitForm: function () {
+        submitForm: function (status) {
+            this.newAtteForm.status = status;
+            if(this.newAtteForm.status !== 'Draft'){
+                let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
+                if(!check){
+                    return false;
+                }
+            }
+
             this.newAtteForm.formState = null;
             this.newAtteForm.post('/ministry/attestations', {
                 onSuccess: (response) => {

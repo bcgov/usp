@@ -14,8 +14,8 @@ class Attestation extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['guid', 'cap_guid', 'institution_guid', 'program_guid', 'first_name', 'last_name', 'id_number',
-        'dob', 'status', 'expiry_date', 'last_touch_by_user_guid', 'created_by_user_guid',
+    protected $fillable = ['guid', 'fed_guid', 'cap_guid', 'institution_guid', 'program_guid', 'first_name', 'last_name', 'id_number',
+        'dob', 'status', 'expiry_date', 'last_touch_by_user_guid', 'created_by_user_guid', 'student_number',
         'address1', 'address2', 'email', 'city', 'zip_code', 'province', 'country', 'gt_fifty_pct_in_person', ];
 
     /**

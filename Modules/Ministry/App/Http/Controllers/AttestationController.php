@@ -48,9 +48,10 @@ class AttestationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AttestationStoreRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
+    public function store($request): ?array
     {
         $error = null;
+        $inst = Institution::where('guid', $request->institution_guid)->first();
         //1. check for duplicate attestations
         $check1 = Attestation::where([
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
@@ -60,9 +61,16 @@ class AttestationController extends Controller
         //2. check cap has not been reached
         $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
         if (is_null($check1) && ! is_null($check2)) {
-            Attestation::create($request->validated());
-            $check2->draft_attestations += 1;
+
+            $attestation = Attestation::create($request->validated());
+            if ($request->status == 'Issued') {
+                $check2->issued_attestations += 1;
+                $this->storePdf($attestation->id);
+            } else {
+                $check2->draft_attestations += 1;
+            }
             $check2->save();
+
         } else {
             if (! is_null($check1)) {
                 $error = "There's already an attestation for the same user.";
@@ -71,18 +79,33 @@ class AttestationController extends Controller
             }
         }
 
-        if (! is_null($error)) {
-            return redirect(route('ministry.attestations.index'))->withErrors(['first_name' => $error]);
+
+        return [$error, $inst];
+    }
+
+    public function storeAttestations(AttestationStoreRequest $request, $page = null): RedirectResponse|\Illuminate\Routing\Redirector
+    {
+        list($error, $inst) = $this->store($request);
+
+        if ($page === 'institution') {
+            if (! is_null($error)) {
+                return redirect(route('ministry.institutions.show', [$inst->id, 'attestations']))->withErrors(['first_name' => $error]);
+            }
+
+            return redirect(route('ministry.institutions.show', [$inst->id, 'attestations']));
+        } else {
+            if (! is_null($error)) {
+                return redirect(route('ministry.attestations.index'))->withErrors(['first_name' => $error]);
+            }
+
+            return redirect(route('ministry.attestations.index'));
         }
-
-        return redirect(route('ministry.attestations.index'));
-
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(AttestationEditRequest $request): ?string
+    private function update(AttestationEditRequest $request): ?string
     {
         $error = null;
 
@@ -115,7 +138,7 @@ class AttestationController extends Controller
             Attestation::where('id', $request->id)->update($request->validated());
 
             if ($request->status === 'Issued') {
-                $this->storePdf($request);
+                $this->storePdf($request->id);
             }
         } else {
             if (is_null($check1)) {
@@ -158,9 +181,9 @@ class AttestationController extends Controller
         return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
     }
 
-    private function storePdf($request)
+    private function storePdf($atteId)
     {
-        $attestation = Attestation::where('id', $request->id)
+        $attestation = Attestation::where('id', $atteId)
             ->with('institution', 'program')
             ->where('status', '!=', 'Draft')->first();
         $this->authorize('download', $attestation);

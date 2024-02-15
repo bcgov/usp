@@ -29,12 +29,12 @@ class AttestationEditRequest extends FormRequest
     {
         return [
             'cap_guid' => 'required|exists:caps,guid',
-            'guid' => 'required|unique:institutions,guid',
             'institution_guid' => 'required|exists:institutions,guid',
             'program_guid' => 'required|exists:programs,guid',
             'first_name' => 'required',
             'last_name' => 'required',
             'id_number' => 'nullable',
+            'student_number' => 'nullable',
             'dob' => 'required|date_format:Y-m-d',
             'email' => 'required|email',
             'address1' => 'required',
@@ -72,12 +72,12 @@ class AttestationEditRequest extends FormRequest
         }
 
         $this->merge([
-            'guid' => Str::orderedUuid()->getHex(),
             'institution_guid' => $user->institution->guid,
             'cap_guid' => $cap->guid,
             'created_by_user_guid' => $this->user()->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
             'id_number' => Str::upper($this->id_number),
+            'student_number' => Str::upper($this->student_number),
             'first_name' => Str::title($this->first_name),
             'last_name' => Str::title($this->last_name),
             'email' => Str::lower($this->email),

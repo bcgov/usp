@@ -9,6 +9,28 @@
             </div>
             <div v-else class="row g-3">
 
+                <div class="col-md-6">
+                    <Label for="inputFirstName" class="form-label" value="First Name"/>
+                    <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-6">
+                    <Label for="inputLastName" class="form-label" value="Last Name"/>
+                    <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+
+                <div class="col-md-6">
+                    <Label for="inputAddress1" class="form-label" value="Address 1"/>
+                    <Input type="text" class="form-control" id="inputAddress1" v-model="editAtteForm.address1"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-6">
+                    <Label for="inputAddress2" class="form-label" value="Address 2"/>
+                    <Input type="text" class="form-control" id="inputAddress2" v-model="editAtteForm.address2"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+
                 <div class="col-md-4">
                     <Label for="inputProgram" class="form-label" value="Institution Program"/>
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid">
@@ -25,25 +47,14 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
-                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
+                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
+                    <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-3">
-                    <Label for="inputFirstName" class="form-label" value="First Name"/>
-                    <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
-                    <Label for="inputLastName" class="form-label" value="Last Name"/>
-                    <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
-                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
-                    <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
+                <div class="col-md-4">
+                    <Label for="inputStudentNumber" class="form-label" value="Student Number"/>
+                    <Input type="text" class="form-control" id="inputStudentNumber" v-model="editAtteForm.student_number"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
@@ -53,16 +64,7 @@
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-4">
-                    <Label for="inputAddress1" class="form-label" value="Address 1"/>
-                    <Input type="text" class="form-control" id="inputAddress1" v-model="editAtteForm.address1"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputAddress2" class="form-label" value="Address 2"/>
-                    <Input type="text" class="form-control" id="inputAddress2" v-model="editAtteForm.address2"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
+
                 <div class="col-md-4">
                     <Label for="inputEmail" class="form-label" value="Email"/>
                     <Input type="email" class="form-control" id="inputEmail" v-model="editAtteForm.email"
@@ -92,7 +94,12 @@
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
                 </div>
-
+                <div class="col-md-4">
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
+                           class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
 
                 <div v-if="editAtteForm.errors != undefined" class="row">
                     <div class="col-12">
@@ -152,6 +159,7 @@ export default {
                 first_name: "",
                 last_name: "",
                 id_number: "",
+                student_number: "",
                 dob: "",
                 address1: "",
                 address2: "",

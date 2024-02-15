@@ -27,13 +27,15 @@ class AttestationStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'guid' => 'required|unique:institutions,guid',
+            'guid' => 'required|unique:attestations,guid',
+            'fed_guid' => 'required|unique:attestations,fed_guid',
             'institution_guid' => 'required|exists:institutions,guid',
             'cap_guid' => 'required|exists:caps,guid',
             'program_guid' => 'required|exists:programs,guid',
             'first_name' => 'required',
             'last_name' => 'required',
             'id_number' => 'nullable',
+            'student_number' => 'nullable',
             'dob' => 'required|date_format:Y-m-d',
             'email' => 'required|email',
             'address1' => 'required',
@@ -69,19 +71,23 @@ class AttestationStoreRequest extends FormRequest
             $cap = $progCap;
         }
 
+        //get the next fed_guid
+        $fedGuid = $this->getFedGuid();
+
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
+            'fed_guid' => $fedGuid,
             'cap_guid' => $cap->guid,
             'created_by_user_guid' => $this->user()->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
             'id_number' => Str::upper($this->id_number),
+            'student_number' => Str::upper($this->student_number),
             'first_name' => Str::title($this->first_name),
             'last_name' => Str::title($this->last_name),
             'email' => Str::lower($this->email),
             'city' => Str::title($this->city),
             'zip_code' => Str::upper($this->zip_code),
             'province' => Str::title($this->province),
-            'status' => 'Draft',
             'gt_fifty_pct_in_person' => $this->toBoolean($this->gt_fifty_pct_in_person),
         ]);
 
@@ -95,5 +101,45 @@ class AttestationStoreRequest extends FormRequest
     private function toBoolean($booleable)
     {
         return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    }
+
+    private function getFedGuid()
+    {
+        // Retrieve the last record from the database
+        $last_attestation = Attestation::latest()->first();
+
+        // Get the current year
+        $current_year = date('y');
+
+        if ($last_attestation) {
+            // Extract the value from the retrieved record
+            $last_value = $last_attestation->fed_guid;
+
+            // Extract the year and numeric part from the last value
+            preg_match('/BC(\d{2})(\d+)/', $last_value, $matches);
+            if (isset($matches[1])) {
+                $last_year = $matches[1];
+                $numeric_part = $matches[2];
+            } else {
+                // If the regex match fails, set defaults
+                $last_year = null;
+                $numeric_part = null;
+            }
+
+            // Check if it's a new year
+            if ($last_year == $current_year) {
+                // Increment the numeric part by 1
+                $next_numeric_part = $numeric_part + 1;
+            } else {
+                // Start from 10000000 for the new year
+                $next_numeric_part = 10000000;
+            }
+        } else {
+            // If no records exist, start from 1000 for the new year
+            $next_numeric_part = 10000000;
+        }
+
+        // Construct the next value
+        return "BC" . $current_year . sprintf("%03d", $next_numeric_part);
     }
 }
