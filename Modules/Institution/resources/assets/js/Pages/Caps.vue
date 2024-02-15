@@ -6,12 +6,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card mb-3">
+                    <h1 v-if="instCaps == null && programCaps == null" class="lead">No results</h1>
+
+                    <div v-if="instCaps != null && instCaps.length > 0" class="card mb-3">
                         <div class="card-header">
                             Institution Caps
                         </div>
                         <div class="card-body">
-                            <div v-if="instCaps != null && instCaps.length > 0" class="table-responsive pb-3">
+                            <div class="table-responsive pb-3">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -40,17 +42,16 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <h1 v-else class="lead">No results</h1>
                         </div>
                     </div>
 
-                    <div class="card mb-3">
+                    <div v-if="programCaps != null && programCaps.length > 0" class="card mb-3">
                         <div class="card-header">
                             Institution Program Caps
                         </div>
                         <div class="card-body">
 
-                            <div v-if="programCaps != null && programCaps.length > 0" class="table-responsive pb-3">
+                            <div class="table-responsive pb-3">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -82,7 +83,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <h1 v-else class="lead">No results</h1>
                         </div>
                     </div>
                 </div>
@@ -111,13 +111,6 @@ export default {
     data() {
         return {
         }
-    },
-
-    methods: {
-
-    },
-    computed: {
-
     },
     mounted() {
         this.attestationList = this.results.data;

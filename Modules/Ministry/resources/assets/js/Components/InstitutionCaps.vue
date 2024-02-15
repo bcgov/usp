@@ -135,9 +135,7 @@ export default {
         formatDate: function (value) {
             if (value !== undefined && value !== '') {
                 let date = value.split("T");
-                let time = date[1].split(".");
 
-                // return date[0] + " " + time[0];
                 return date[0];
             }
             return value;
