@@ -7,8 +7,10 @@ use App\Http\Requests\FedCapEditRequest;
 use App\Http\Requests\FedCapStoreRequest;
 use App\Models\FedCap;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Response;
 
 class FedCapController extends Controller
 {
@@ -20,14 +22,6 @@ class FedCapController extends Controller
         $fedCaps = $this->paginateInst();
 
         return Inertia::render('Ministry::FedCaps', ['results' => $fedCaps]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('ministry::create');
     }
 
     /**
@@ -50,14 +44,6 @@ class FedCapController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('ministry::edit');
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(FedCapEditRequest $request): RedirectResponse
@@ -68,11 +54,14 @@ class FedCapController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Show the specified resource.
      */
-    public function destroy($id)
+    public function fetchFedcapInst(Request $request)
     {
-        //
+        $fedCap = FedCap::where('guid', $request->input('fed_cap_guid'))
+            ->with('institutionCaps')->orderBy('created_at', 'desc')->first();
+
+        return Response::json(['status' => true, 'body' => $fedCap]);
     }
 
     private function paginateInst()

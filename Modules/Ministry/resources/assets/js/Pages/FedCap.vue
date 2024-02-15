@@ -22,6 +22,7 @@
                     </div>
                     <div class="col-md-9">
                         <FedCapDetails v-bind="$attrs" v-if="page === 'details'" :results="results"></FedCapDetails>
+                        <FedCapInstitutions v-bind="$attrs" v-if="page === 'caps'" :results="results"></FedCapInstitutions>
 <!--                        <InstitutionCaps v-if="page === 'area-of-audit'" :results="results"></InstitutionCaps>-->
 <!--                        <InstitutionStaff v-if="page === 'sanction-type'" :results="results"></InstitutionStaff>-->
                     </div>
@@ -35,6 +36,7 @@ import AuthenticatedLayout from '../Layouts/Authenticated.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import FedCapMenu from "../Components/FedCapMenu";
 import FedCapDetails from "../Components/FedCapDetails";
+import FedCapInstitutions from "../Components/FedCapInstitutions";
 // import MaintenanceStaff from "../Components/MaintenanceStaff";
 // import MaintenanceStaffEdit from "../Components/MaintenanceStaffEdit";
 
@@ -42,7 +44,7 @@ export default {
     name: 'FedCap',
     components: {
         FedCapMenu,
-        AuthenticatedLayout, Head, Link, FedCapDetails
+        AuthenticatedLayout, Head, Link, FedCapDetails, FedCapInstitutions
     },
     props: {
         results: Object,

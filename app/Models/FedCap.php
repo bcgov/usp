@@ -31,6 +31,16 @@ class FedCap extends Model
         return $this->hasMany(Cap::class, 'fed_cap_guid', 'guid')->active();
     }
 
+    public function institutionCaps()
+    {
+        return $this->hasMany(Cap::class, 'fed_cap_guid', 'guid')
+            ->select('caps.*', 'i.id as inst_id', 'i.name as inst_name')
+            ->where('program_guid', null)
+            ->join('institutions as i', 'i.guid', '=', 'caps.institution_guid')
+            ->orderBy('i.name')
+            ->where('caps.active_status', true);
+    }
+
     public function getRemainingCapAttribute()
     {
         $total = 0;

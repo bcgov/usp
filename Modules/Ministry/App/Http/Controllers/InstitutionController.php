@@ -93,7 +93,7 @@ class InstitutionController extends Controller
         if (request()->sort !== null) {
             $institutions = $institutions->orderBy(request()->sort, request()->direction);
         } else {
-            $institutions = $institutions->orderBy('created_at', 'desc');
+            $institutions = $institutions->orderBy('name');
         }
 
         return $institutions->paginate(25)->onEachSide(1)->appends(request()->query());

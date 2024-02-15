@@ -20,7 +20,7 @@ nav.navbar .beta-icon{
         <div class="container-fluid">
             <Link class="navbar-brand" href="/institution">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-lg-inline fw-light">USPA - Undergraduate Study Permit Attestation</span>
+                <span class="d-none d-lg-inline fw-light">BCSPA - BC Study Permit Attestation</span>
                 <span aria-label="This application is currently in Beta phase" class="d-none d-lg-inline beta-icon">Beta</span>
             </Link>
 
@@ -31,13 +31,6 @@ nav.navbar .beta-icon{
             <div class="collapse navbar-collapse" id="navbarScroll">
                 <ul class="navbar-nav flex-row flex-wrap ms-md-auto" style="--bs-scroll-height: 100px;">
 
-<!--                    <li class="nav-item">-->
-<!--                        <NavLink class="nav-link" href="/institution"-->
-<!--                                 :class="{ 'active': $page.url.indexOf('/institution') > -1 ||-->
-<!--                            $page.url.indexOf('/institution') > -1 }">-->
-<!--                            Dashboard-->
-<!--                        </NavLink>-->
-<!--                    </li>-->
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/institution/attestations"
                                  :class="{ 'active': $page.url.indexOf('/attestation') > -1 ||
