@@ -20,6 +20,8 @@ return new class extends Migration
 
             $table->string('email');
             $table->string('password');
+            $table->string('idir_username', 60)->nullable();
+            $table->string('bceid_username', 60)->nullable();
             $table->string('idir_user_guid')->nullable();
             $table->string('bceid_user_guid')->nullable();
             $table->string('bceid_business_guid')->nullable();

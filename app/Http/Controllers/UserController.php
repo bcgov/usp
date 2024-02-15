@@ -116,13 +116,22 @@ class UserController extends Controller
 
             //if it is a new IDIR or BCeID user, register the user first
             if (is_null($user)) {
-                $this->newUser($provider_user, $type);
+                $valid = $this->newUser($provider_user, $type);
+                if($valid == '200'){
+                    return Inertia::render('Auth/Login', [
+                        'loginAttempt' => true,
+                        'hasAccess' => false,
+                        'status' => 'Please contact Admin to grant you access.',
+                    ]);
+                }else{
+                    return Inertia::render('Auth/Login', [
+                        'loginAttempt' => true,
+                        'hasAccess' => false,
+                        'status' => $valid,
+                    ]);
+                }
 
-                return Inertia::render('Auth/Login', [
-                    'loginAttempt' => true,
-                    'hasAccess' => false,
-                    'status' => 'Please contact Admin to grant you access.',
-                ]);
+
 
                 //if the user has been disabled
             } elseif ($user->disabled === true) {
@@ -220,23 +229,43 @@ class UserController extends Controller
 
     private function newUser($provider_user, $type)
     {
-        $user = new User();
-        $user->guid = Str::orderedUuid()->getHex();
-        $user->first_name = $provider_user['given_name'];
-        $user->last_name = $provider_user['family_name'];
-        $user->email = $provider_user['email'];
-        $user->disabled = false;
-        $user->idir_user_guid = $provider_user['idir_user_guid'] ?? null;
-        $user->bceid_user_guid = $provider_user['bceid_user_guid'] ?? null;
-        $user->bceid_business_guid = $provider_user['bceid_business_guid'] ?? null;
-        $user->password = Hash::make($provider_user['email']);
-        $user->save();
-        $this->checkRoles($user, $type);
-
-        if (array_key_exists('bceid_business_guid', $provider_user)) {
-            $this->checkInstitutionStaff($user, $provider_user);
+        $valid = '200';
+        if (isset($provider_user['idir_username']) && $provider_user['idir_username']) {
+            $check = User::where('idir_username', $provider_user['idir_username'])->first();
+            if(!is_null($check)){
+                $valid = "This IDIR is already in user. Please contact the admin.";
+            }
         }
 
+        elseif (isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
+            $check = User::where('bceid_username', $provider_user['bceid_username'])->first();
+            if(!is_null($check)){
+                $valid = "This BCeID is already in user. Please contact the admin.";
+            }
+        }
+
+        if($valid === "200"){
+            $user = new User();
+            $user->guid = Str::orderedUuid()->getHex();
+            $user->first_name = $provider_user['given_name'];
+            $user->last_name = $provider_user['family_name'];
+            $user->email = $provider_user['email'];
+            $user->disabled = false;
+            $user->idir_username = $provider_user['idir_username'] ?? null;
+            $user->bceid_username = $provider_user['bceid_username'] ?? null;
+            $user->idir_user_guid = $provider_user['idir_user_guid'] ?? null;
+            $user->bceid_user_guid = $provider_user['bceid_user_guid'] ?? null;
+            $user->bceid_business_guid = $provider_user['bceid_business_guid'] ?? null;
+            $user->password = Hash::make($provider_user['email']);
+            $user->save();
+            $this->checkRoles($user, $type);
+
+            if (array_key_exists('bceid_business_guid', $provider_user)) {
+                $this->checkInstitutionStaff($user, $provider_user);
+            }
+        }
+
+        return $valid;
     }
 
     private function checkInstitutionStaff($user, $provider_user)

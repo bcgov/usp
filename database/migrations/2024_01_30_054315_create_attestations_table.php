@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('attestations', function (Blueprint $table) {
             $table->id();
             $table->string('guid', 32)->index()->unique();
+            $table->string('fed_guid', 12)->unique();
 
             $table->string('institution_guid', 32);
             $table->foreign('institution_guid')->references('guid')->on('institutions')
@@ -26,10 +27,11 @@ return new class extends Migration
             $table->foreign('program_guid')->references('guid')->on('programs')
                 ->onDelete('cascade');
 
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->string('first_name')->index();
+            $table->string('last_name')->index();
             $table->string('id_number');
             $table->string('dob');
+            $table->string('student_number')->nullable();
             $table->string('address1');
             $table->string('address2')->nullable();
             $table->string('email')->nullable();
