@@ -105,7 +105,7 @@ export default {
                 }
             });
 
-            Inertia.get('/ministry/' + this.path, data, {
+            Inertia.get('/institution/' + this.path, data, {
                 preserveState: true
             });
 

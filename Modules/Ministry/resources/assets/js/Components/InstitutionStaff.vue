@@ -17,11 +17,9 @@
                         <td>{{ row.bceid_user_id }}</td>
                         <td>{{ row.bceid_user_guid }}</td>
                         <td>
-<!--                            <span v-if="row.is_admin" class="badge rounded-pill text-bg-success">Admin</span>-->
-<!--                            <span v-else class="badge rounded-pill text-bg-info">User</span>-->
                             <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">
                                 <input type="radio" class="btn-check" :name="'btnRadioRole0'+i"
-                                       :id="'btnRadioRole0'+i" autocomplete="off" :checked="row.is_admin">
+                                       :id="'btnRadioRole0'+i" autocomplete="off" :checked="isAdmin(row.user.roles)">
                                 <label @click.prevent="switchRole(row,'Admin')" class="btn btn-outline-success" :for="'btnRadioRole0'+i">Admin</label>
 
                                 <input type="radio" class="btn-check" :name="'btnRadioRole1'+i"
@@ -32,7 +30,6 @@
                                        :id="'btnRadioRole2'+i" autocomplete="off" :checked="isGuest(row.user.roles)">
                                 <label @click.prevent="switchRole(row,'Guest')" class="btn btn-outline-success" :for="'btnRadioRole2'+i">Guest</label>
                             </div>
-
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff status">
@@ -77,7 +74,10 @@ export default {
         }
     },
     methods: {
-
+        isAdmin: function (roles){
+            const role = roles.find(role => role.name === "Institution Admin");
+            return !!role;
+        },
         isUser: function (roles){
             const role = roles.find(role => role.name === "Institution User");
             return !!role;

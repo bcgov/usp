@@ -39,11 +39,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(InstitutionStaff::class, 'guid', 'user_guid');
     }
-    //
-    //    public function institution()
-    //    {
-    //        return $this->belongsTo(Institution::class, 'user_guid', 'guid');
-    //    }
 
     public function getInstitutionAttribute()
     {

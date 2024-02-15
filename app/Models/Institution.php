@@ -57,7 +57,7 @@ class Institution extends Model
 
     public function staff()
     {
-        return $this->hasMany(InstitutionStaff::class, 'institution_guid', 'guid');
+        return $this->hasMany(InstitutionStaff::class, 'institution_guid', 'guid')->whereHas('user');
     }
 
     public function users()

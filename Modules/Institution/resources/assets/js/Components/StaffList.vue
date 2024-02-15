@@ -26,7 +26,7 @@
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">
                                 <input type="radio" class="btn-check" :name="'btnRadioRole0'+i"
-                                       :id="'btnRadioRole0'+i" autocomplete="off" :checked="row.is_admin">
+                                       :id="'btnRadioRole0'+i" autocomplete="off" :checked="isAdmin(row.user.roles)">
                                 <label @click.prevent="switchRole(row,'Admin')" class="btn btn-outline-success" :for="'btnRadioRole0'+i">Admin</label>
 
                                 <input type="radio" class="btn-check" :name="'btnRadioRole1'+i"
@@ -82,6 +82,10 @@ export default {
         }
     },
     methods: {
+        isAdmin: function (roles){
+            const role = roles.find(role => role.name === "Institution Admin");
+            return !!role;
+        },
         isUser: function (roles){
             const role = roles.find(role => role.name === "Institution User");
             return !!role;

@@ -34,11 +34,9 @@ class IsActive
         }
 
         //active user must have at least a Ministry User role
-        if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Ministry_ADMIN) && ! $user->hasRole(Role::Ministry_USER)) {
-            if (! $user->hasRole(Role::Ministry_GUEST)) {
-                $role = Role::where('name', Role::Ministry_GUEST)->first();
-                $user->roles()->attach($role);
-            }
+        if ($user->roles->isEmpty()) {
+            $role = Role::where('name', Role::Ministry_GUEST)->first();
+            $user->roles()->attach($role);
 
             return Inertia::render('Home', [
                 'loginAttempt' => true,

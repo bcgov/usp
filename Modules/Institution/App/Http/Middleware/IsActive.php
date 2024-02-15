@@ -37,14 +37,10 @@ class IsActive
         }
 
         //active user must have at least an Institution USER role
-        if (! $user->hasRole(Role::SUPER_ADMIN)
-            && ! $user->hasRole(Role::Institution_ADMIN)
-            && ! $user->hasRole(Role::Institution_USER)) {
+        if ($user->roles->isEmpty()) {
 
-            if (! $user->hasRole(Role::Institution_GUEST)) {
-                $role = Role::where('name', Role::Institution_GUEST)->first();
-                $user->roles()->attach($role);
-            }
+            $role = Role::where('name', Role::Institution_GUEST)->first();
+            $user->roles()->attach($role);
 
             return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
@@ -72,12 +68,6 @@ class IsActive
                 'hasAccess' => false,
                 'status' => 'Please contact your Institution Admin to grant you access.',
             ]);
-
-            //            return Inertia::render('Home', [
-            //                'loginAttempt' => true,
-            //                'hasAccess' => false,
-            //                'status' => 'Please contact your Institution Admin to grant you access.',
-            //            ]);
         }
 
         return $next($request);

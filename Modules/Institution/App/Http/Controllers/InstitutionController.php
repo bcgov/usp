@@ -61,7 +61,7 @@ class InstitutionController extends Controller
     public function staffList(Request $request): \Inertia\Response
     {
         $user = User::find(Auth::user()->id);
-        $institution = $user->institution->staff;
+        $institution = $user->institution->staff()->with('user.roles')->get();
 
         return Inertia::render('Institution::Staff', ['status' => true, 'results' => $institution]);
     }

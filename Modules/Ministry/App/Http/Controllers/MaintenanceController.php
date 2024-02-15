@@ -40,23 +40,6 @@ class MaintenanceController extends Controller
         return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $staff, 'page' => 'staff']);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Inertia\Response::render
-     */
-    public function staffShow(Request $request, User $user): \Inertia\Response
-    {
-        if ($user->roles->contains('name', Role::Ministry_ADMIN)) {
-            $user->access_type = 'A';
-        } elseif ($user->roles->contains('name', Role::Ministry_USER)) {
-            $user->access_type = 'U';
-        } else {
-            $user->access_type = 'G';
-        }
-
-        return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $user, 'page' => 'staff-edit']);
-    }
 
     /**
      * Display a listing of the resource.
