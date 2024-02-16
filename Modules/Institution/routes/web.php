@@ -21,7 +21,8 @@ Route::prefix('institution')->group(function () {
             'middleware' => ['auth', 'institution_active'],
             'as' => 'institution.',
         ], function () {
-            Route::get('/', [InstitutionController::class, 'index'])->name('home');
+            Route::get('/', [AttestationController::class, 'index'])->name('home');
+//            Route::get('/', [InstitutionController::class, 'index'])->name('home');
             Route::get('/account', [InstitutionController::class, 'show'])->name('show');
             Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
             Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');

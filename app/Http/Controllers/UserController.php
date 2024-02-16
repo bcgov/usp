@@ -233,14 +233,14 @@ class UserController extends Controller
         if (isset($provider_user['idir_username']) && $provider_user['idir_username']) {
             $check = User::where('idir_username', $provider_user['idir_username'])->first();
             if(!is_null($check)){
-                $valid = "This IDIR is already in user. Please contact the admin.";
+                $valid = "This IDIR is already in use. Please contact the admin.";
             }
         }
 
         elseif (isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
             $check = User::where('bceid_username', $provider_user['bceid_username'])->first();
             if(!is_null($check)){
-                $valid = "This BCeID is already in user. Please contact the admin.";
+                $valid = "This BCeID is already in use. Please contact the admin.";
             }
         }
 
