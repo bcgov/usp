@@ -5,11 +5,8 @@ namespace App\Listeners;
 use App\Events\InstitutionCapCreated;
 use App\Models\Attestation;
 use App\Models\Cap;
-use App\Models\FedCap;
 use App\Models\Institution;
 use App\Models\Program;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class AdjustInstitutionCap
 {
@@ -90,5 +87,16 @@ class AdjustInstitutionCap
         }
 
         $cap->save();
+
+        // If the cap is institution level, check any program caps and update the limit to be the same
+        if(is_null($cap->program_guid)){
+            // No program limit can have more attestations available to it than the institution cap
+            Cap::where('institution_guid', $institution->guid)
+                ->active()
+                ->where('program_guid', '!=', null)
+                ->where('fed_cap_guid', $cap->fed_cap_guid)
+                ->where('total_attestations', '>', $cap->total_attestations)
+                ->update(['total_attestations' => $cap->total_attestations]);
+        }
     }
 }

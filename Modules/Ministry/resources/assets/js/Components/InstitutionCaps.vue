@@ -46,7 +46,8 @@
 
                     <template v-for="(row, i) in results.caps">
                         <tr v-if="row.program_guid !== null">
-                            <td><a href="#" @click="openEditForm(row)">{{ row.start_date }}</a></td>
+                            <td v-if="row.active_status"><a href="#" @click="openEditForm(row)">{{ row.start_date }}</a></td>
+                            <td v-else>{{ row.start_date }}</td>
                             <td>{{ row.end_date }}</td>
                             <td>{{ row.total_attestations }}</td>
                             <td>{{ row.issued_attestations }}</td>
