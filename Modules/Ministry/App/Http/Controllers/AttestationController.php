@@ -2,6 +2,8 @@
 
 namespace Modules\Ministry\App\Http\Controllers;
 
+use App\Events\AttestationDraftUpdated;
+use App\Events\AttestationIssued;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttestationEditRequest;
 use App\Http\Requests\AttestationStoreRequest;
@@ -61,16 +63,8 @@ class AttestationController extends Controller
         //2. check cap has not been reached
         $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
         if (is_null($check1) && ! is_null($check2)) {
-
             $attestation = Attestation::create($request->validated());
-            if ($request->status == 'Issued') {
-                $check2->issued_attestations += 1;
-                $this->storePdf($attestation->id);
-            } else {
-                $check2->draft_attestations += 1;
-            }
-            $check2->save();
-
+            event(new AttestationIssued($check2, $attestation, $request->status));
         } else {
             if (! is_null($check1)) {
                 $error = "There's already an attestation for the same user.";
@@ -116,30 +110,13 @@ class AttestationController extends Controller
         $check2 = $this->checkCapLimit($request);
 
         if (! is_null($check1) && $check2) {
-            //if the inst or program got updated
-            //then restore count for old cap
-            if ($check1->cap_guid != $request->cap_guid) {
-                $cap = Cap::where('guid', $check1->cap_guid)->first();
-                $cap->draft_attestations -= 1;
-                $cap->save();
-            }
-
-            if ($request->status == 'Issued') {
-                $cap = Cap::where('guid', $request->cap_guid)->first();
-                $cap->draft_attestations -= 1;
-                $cap->issued_attestations += 1;
-                $cap->save();
-            } else {
-                $cap = Cap::where('guid', $request->cap_guid)->first();
-                $cap->draft_attestations += 1;
-                $cap->save();
-            }
+            $cap = Cap::where('guid', $request->cap_guid)->first();
 
             Attestation::where('id', $request->id)->update($request->validated());
+            $attestation = Attestation::find($request->id);
+            $this->authorize('download', $attestation);
+            event(new AttestationDraftUpdated($cap, $attestation, $check1, $request->status));
 
-            if ($request->status === 'Issued') {
-                $this->storePdf($request->id);
-            }
         } else {
             if (is_null($check1)) {
                 $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
@@ -181,26 +158,6 @@ class AttestationController extends Controller
         return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
     }
 
-    private function storePdf($atteId)
-    {
-        $attestation = Attestation::where('id', $atteId)
-            ->with('institution', 'program')
-            ->where('status', '!=', 'Draft')->first();
-        $this->authorize('download', $attestation);
-
-        $now_d = date('Y-m-d');
-        $now_t = date('H:m:i');
-        $utils = Util::getSortedUtils();
-
-        $html = view('ministry::pdf', compact('attestation', 'now_d', 'now_t', 'utils'))->render();
-        $pdfContent = base64_encode($html);
-        AttestationPdf::create(['guid' => Str::orderedUuid()->getHex(),
-            'attestation_guid' => $attestation->guid,
-            'content' => $pdfContent]);
-
-        return true;
-
-    }
 
     private function paginateAtte()
     {

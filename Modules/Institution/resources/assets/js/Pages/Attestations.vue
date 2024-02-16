@@ -67,7 +67,7 @@
                         <h5 class="modal-title" id="newAtteModalLabel">New Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <AttestationCreate :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :newAtte="newAtte" />
+                    <AttestationCreate :instCap="instCap" :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :newAtte="newAtte" />
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                         <h5 class="modal-title" id="editAtteModalLabel">Edit Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <AttestationEdit :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :attestation="editRow" />
+                    <AttestationEdit :instCap="instCap" :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :attestation="editRow" />
                 </div>
             </div>
         </div>
@@ -108,7 +108,8 @@ export default {
         countries: Object,
         error: String|null,
         instCaps: Object|null,
-        programCaps: Object|null
+        programCaps: Object|null,
+        instCap: Object
     },
     data() {
         return {

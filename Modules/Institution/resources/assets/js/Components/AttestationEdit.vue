@@ -39,12 +39,9 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
-                    <Select class="form-select" id="inputInPerson" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
-                        <option></option>
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </Select>
+                    <Label for="inputStudentNumber" class="form-label" value="Student Number"/>
+                    <Input type="text" class="form-control" id="inputStudentNumber" v-model="editAtteForm.student_number"
+                           :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
                     <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
@@ -52,30 +49,33 @@
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-4">
-                    <Label for="inputStudentNumber" class="form-label" value="Student Number"/>
-                    <Input type="text" class="form-control" id="inputStudentNumber" v-model="editAtteForm.student_number"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
+
+
                 <div class="col-md-3">
                     <Label for="inputDob" class="form-label" value="Date of Birth"/>
                     <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="editAtteForm.dob"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-
-
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
+                    <Select class="form-select" id="inputInPerson" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
+                        <option></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
                     <Label for="inputEmail" class="form-label" value="Email"/>
                     <Input type="email" class="form-control" id="inputEmail" v-model="editAtteForm.email"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-
                 <div class="col-md-3">
                     <Label for="inputCity" class="form-label" value="City"/>
                     <Input type="text" class="form-control" id="inputCity" v-model="editAtteForm.city"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
+
                 <div class="col-md-3">
                     <Label for="inputZipCode" class="form-label" value="Zip Code"/>
                     <Input type="text" class="form-control" id="inputZipCode" v-model="editAtteForm.zip_code"
@@ -94,7 +94,7 @@
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
                     <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
@@ -143,7 +143,8 @@ export default {
         institution: Object,
         countries: Object,
         error: String|null,
-        programs: Object
+        programs: Object,
+        instCap: Object
     },
     data() {
         return {

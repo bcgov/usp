@@ -4,6 +4,7 @@ namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionStaffEditRequest;
+use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
@@ -25,7 +26,7 @@ class InstitutionStaffController extends Controller
         $fedCaps = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
-            'fedCaps' => $fedCaps]);
+            'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get()]);
     }
 
     /**
@@ -60,7 +61,7 @@ class InstitutionStaffController extends Controller
         $fedCaps = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
-            'fedCaps' => $fedCaps]);
+            'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get()]);
 
     }
 }

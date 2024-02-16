@@ -2,6 +2,8 @@
 
 namespace Modules\Institution\App\Http\Controllers;
 
+use App\Events\AttestationDraftUpdated;
+use App\Events\AttestationIssued;
 use App\Http\Controllers\Controller;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
@@ -38,6 +40,21 @@ class AttestationController extends Controller
      */
     public function index()
     {
+        // Get the inst cap and check if we have hit the cap for issued attestations
+        // This is going to be all attes. under this inst. and are using the same fed cap as this.
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+        $fedCap = FedCap::active()->first();
+        $cap = Cap::where('fed_cap_guid', $fedCap->guid)->active()
+            ->where('program_guid', null)
+            ->where('institution_guid', $institution->guid)
+            ->first();
+
+        $issuedInstAttestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $institution)
+            ->where('fed_cap_guid', $fedCap->guid)
+            ->count();
+
         $user = User::find(Auth::user()->id);
 
         $attestations = $this->paginateAtte($user->institution);
@@ -45,7 +62,8 @@ class AttestationController extends Controller
         return Inertia::render('Institution::Attestations', ['error' => null, 'results' => $attestations,
             'institution' => $user->institution, 'programs' => $user->institution->programs, 'countries' => $this->countries,
             'instCaps' => $user->institution->activeInstCaps,
-            'programCaps' => $user->institution->activeProgramCaps]);
+            'programCaps' => $user->institution->activeProgramCaps,
+            'instCap' => $cap]);
     }
 
     /**
@@ -62,11 +80,11 @@ class AttestationController extends Controller
 
         //2. check cap has not been reached
         $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
-
         if (is_null($check1) && ! is_null($check2)) {
-            Attestation::create($request->validated());
-            $check2->draft_attestations += 1;
-            $check2->save();
+            $attestation = Attestation::create($request->validated());
+            $this->authorize('download', $attestation);
+            event(new AttestationIssued($check2, $attestation, $request->status));
+
         } else {
             if (! is_null($check1)) {
                 $error = "There's already an attestation for the same user.";
@@ -94,33 +112,15 @@ class AttestationController extends Controller
 
         //2. check cap has not been reached
         $check2 = $this->checkCapLimit($request);
-        //      $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
 
         if (! is_null($check1) && $check2) {
-            //if the inst or program got updated
-            //then restore count for old cap
-            if ($check1->cap_guid != $request->cap_guid) {
-                $cap = Cap::where('guid', $check1->cap_guid)->first();
-                $cap->draft_attestations -= 1;
-                $cap->save();
-            }
-
-            if ($request->status == 'Issued') {
-                $cap = Cap::where('guid', $request->cap_guid)->first();
-                $cap->draft_attestations -= 1;
-                $cap->issued_attestations += 1;
-                $cap->save();
-            } else {
-                $cap = Cap::where('guid', $request->cap_guid)->first();
-                $cap->draft_attestations += 1;
-                $cap->save();
-            }
+            $cap = Cap::where('guid', $request->cap_guid)->first();
 
             Attestation::where('id', $request->id)->update($request->validated());
+            $attestation = Attestation::find($request->id);
+            $this->authorize('download', $attestation);
+            event(new AttestationDraftUpdated($cap, $attestation, $check1, $request->status));
 
-            if ($request->status === 'Issued') {
-                $this->storePdf($request);
-            }
         } else {
             if (is_null($check1)) {
                 $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
@@ -145,26 +145,6 @@ class AttestationController extends Controller
         $pdf->loadHTML(base64_decode($storedPdf->content));
 
         return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
-    }
-
-    private function storePdf($request)
-    {
-        $attestation = Attestation::where('id', $request->id)
-            ->with('institution', 'program')
-            ->where('status', '!=', 'Draft')->first();
-        $this->authorize('download', $attestation);
-
-        $now_d = date('Y-m-d');
-        $now_t = date('H:m:i');
-        $utils = Util::getSortedUtils();
-
-        $html = view('institution::pdf', compact('attestation', 'now_d', 'now_t', 'utils'))->render();
-        $pdfContent = base64_encode($html);
-        AttestationPdf::create(['guid' => Str::orderedUuid()->getHex(),
-            'attestation_guid' => $attestation->guid,
-            'content' => $pdfContent]);
-
-        return true;
     }
 
     private function paginateAtte($institution)

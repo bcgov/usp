@@ -5,6 +5,7 @@ namespace Modules\Ministry\App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgramEditRequest;
 use App\Http\Requests\ProgramStoreRequest;
+use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\Institution;
 use App\Models\Program;
@@ -34,7 +35,7 @@ class ProgramController extends Controller
         $fedPrograms = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'programs', 'results' => $institution,
-            'fedPrograms' => $fedPrograms]);
+            'fedPrograms' => $fedPrograms, 'countries' => Country::orderBy('name')->get()]);
 
     }
 
@@ -48,6 +49,6 @@ class ProgramController extends Controller
         $fedPrograms = FedCap::active()->get();
 
         return Inertia::render('Ministry::Institution', ['page' => 'programs', 'results' => $institution,
-            'fedPrograms' => $fedPrograms]);
+            'fedPrograms' => $fedPrograms, 'countries' => Country::orderBy('name')->get()]);
     }
 }

@@ -134,7 +134,8 @@ export default {
         institution: Object,
         countries: Object,
         error: String|null,
-        programs: Object
+        programs: Object,
+        instCap: Object
 
     },
     data() {

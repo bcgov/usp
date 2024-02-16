@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionEditRequest;
 use App\Http\Requests\InstitutionStoreRequest;
 use App\Models\Attestation;
+use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
@@ -50,7 +51,7 @@ class InstitutionController extends Controller
         $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();
 
         return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
-            'institutions' => $institutions, 'fedCaps' => $fedCaps]);
+            'institutions' => $institutions, 'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get(),]);
     }
 
     /**
