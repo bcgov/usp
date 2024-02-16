@@ -29,6 +29,7 @@ class AttestationEditRequest extends FormRequest
     {
         return [
             'cap_guid' => 'required|exists:caps,guid',
+            'fed_cap_guid' => 'required|exists:fed_caps,guid',
             'institution_guid' => 'required|exists:institutions,guid',
             'program_guid' => 'required|exists:programs,guid',
             'first_name' => 'required',
@@ -74,6 +75,7 @@ class AttestationEditRequest extends FormRequest
         $this->merge([
             'institution_guid' => $user->institution->guid,
             'cap_guid' => $cap->guid,
+            'fed_cap_guid' => $cap->fed_cap_guid,
             'created_by_user_guid' => $this->user()->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
             'id_number' => Str::upper($this->id_number),

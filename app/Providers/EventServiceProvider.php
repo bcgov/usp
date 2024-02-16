@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\InstitutionCapCreated;
 use App\Events\StaffRoleChanged;
+use App\Listeners\AdjustInstitutionCap;
 use App\Listeners\SendActiveRoleNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         StaffRoleChanged::class => [
             SendActiveRoleNotification::class,
+        ],
+        InstitutionCapCreated::class => [
+            AdjustInstitutionCap::class,
         ],
     ];
 

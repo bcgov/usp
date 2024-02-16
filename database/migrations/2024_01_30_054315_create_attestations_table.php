@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('cap_guid', 32);
             $table->foreign('cap_guid')->references('guid')->on('caps')
                 ->onDelete('cascade');
+            $table->string('fed_cap_guid', 32);
+            $table->foreign('fed_cap_guid')->references('guid')->on('fed_caps')
+                ->onDelete('cascade');
 
             $table->string('program_guid', 32);
             $table->foreign('program_guid')->references('guid')->on('programs')

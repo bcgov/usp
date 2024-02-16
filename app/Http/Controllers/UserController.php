@@ -107,11 +107,11 @@ class UserController extends Controller
             $failMsg = null;
             if ($type === Role::Ministry_GUEST) {
                 $user = User::where('idir_user_guid', 'ilike', $provider_user['idir_user_guid'])->first();
-                $failMsg = 'Please contact Ministry Admin to grant you access.';
+                $failMsg = 'Welcome back! Please contact Ministry Admin to grant you access.';
             }
             if ($type === Role::Institution_GUEST) {
                 $user = User::where('bceid_user_guid', 'ilike', $provider_user['bceid_user_guid'])->first();
-                $failMsg = 'Please contact Institution Admin to grant you access.';
+                $failMsg = 'Welcome back! Please contact Institution Admin to grant you access.';
             }
 
             //if it is a new IDIR or BCeID user, register the user first
@@ -131,9 +131,7 @@ class UserController extends Controller
                     ]);
                 }
 
-
-
-                //if the user has been disabled
+            //if the user has been disabled
             } elseif ($user->disabled === true) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,

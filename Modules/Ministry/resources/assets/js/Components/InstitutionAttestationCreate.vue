@@ -108,7 +108,7 @@
 
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer justify-content-between">
             <button @click="submitForm('Issued')" type="button" class="btn me-2 btn-outline-warning" :disabled="newAtteForm.processing">
                 Issue Attestation
             </button>

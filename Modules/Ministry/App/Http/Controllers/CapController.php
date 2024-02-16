@@ -2,20 +2,20 @@
 
 namespace Modules\Ministry\App\Http\Controllers;
 
+use App\Events\InstitutionCapCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CapEditRequest;
 use App\Http\Requests\CapStoreRequest;
 use App\Models\Cap;
-use App\Models\FedCap;
 use App\Models\Institution;
-use Inertia\Inertia;
+use Illuminate\Http\RedirectResponse;
 
 class CapController extends Controller
 {
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CapStoreRequest $request): \Inertia\Response
+    public function store(CapStoreRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
     {
         $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date, 'active_status' => true,
             'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
@@ -31,7 +31,8 @@ class CapController extends Controller
 
         //if there is no cap, then create new one
         if (is_null($check)) {
-            Cap::create($request->validated());
+            $cap = Cap::create($request->validated());
+            event(new InstitutionCapCreated($cap));
         }
 
         //there is one, then disable it, and create a new one
@@ -45,20 +46,19 @@ class CapController extends Controller
             $cap = Cap::create($request->validated());
             $cap->comment = is_null($check->comment) ? $cap->comment . ". " . $comment : $check->comment.'. '.$cap->comment . ". " . $comment;
             $cap->save();
+
+            event(new InstitutionCapCreated($cap));
+
         }
 
-        $institution = Institution::where('id', $request->institution_id)->with(['caps', 'staff.user.roles'])->first();
-        $fedCaps = FedCap::active()->get();
-
-        return Inertia::render('Ministry::Institution', ['page' => 'caps', 'results' => $institution,
-            'fedCaps' => $fedCaps]);
-
+        $institution = Institution::where('id', $request->institution_id)->first();
+        return redirect(route('ministry.institutions.show', [$institution->id, 'caps']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(CapEditRequest $request): \Inertia\Response
+    public function update(CapEditRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
     {
         $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date, 'active_status' => true,
             'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
@@ -73,11 +73,12 @@ class CapController extends Controller
         $check = Cap::where('id', '!=', $request->id)->where($conditions)->first();
         if (is_null($check)) {
             Cap::where('id', $request->id)->update($request->validated());
+            $cap = Cap::find($request->id);
+            event(new InstitutionCapCreated($cap));
         }
-        $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff.user.roles'])->first();
-        $fedCaps = FedCap::active()->get();
+        $institution = Institution::where('guid', $request->institution_guid)->first();
 
-        return Inertia::render('Ministry::Institution', ['page' => 'caps', 'results' => $institution,
-            'fedCaps' => $fedCaps]);
+        return redirect(route('ministry.institutions.show', [$institution->id, 'caps']));
+
     }
 }
