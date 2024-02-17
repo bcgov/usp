@@ -19,6 +19,10 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             Attestations
+                            <template v-if="capStat != ''">
+                                <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
+                                <span class="badge rounded-pill text-bg-primary me-1">Issued Attestations: {{ capStat.issued }}</span>
+                            </template>
                             <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Attestation</button>
                         </div>
                         <div class="card-body">
@@ -117,7 +121,8 @@ export default {
             attestationList: '',
             editRow: '',
             showNewModal: false,
-            showEditModal: false
+            showEditModal: false,
+            capStat: ''
         }
     },
 
@@ -153,12 +158,27 @@ export default {
                     });
             }, 10);
         },
+        fetchCapStats: function () {
+            let vm = this;
+            let data = {
+                institution_guid: this.institution.guid,
+            }
+            axios.post('/institution/api/fetch/capStats', data)
+                .then(function (response) {
+                    vm.capStat = response.data.body;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        }
     },
     computed: {
 
     },
     mounted() {
         this.attestationList = this.results.data;
+        this.fetchCapStats();
     },
 }
 </script>

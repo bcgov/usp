@@ -6,9 +6,12 @@ use App\Events\InstitutionCapCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CapEditRequest;
 use App\Http\Requests\CapStoreRequest;
+use App\Models\Attestation;
 use App\Models\Cap;
 use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Response;
 
 class CapController extends Controller
 {
@@ -79,6 +82,18 @@ class CapController extends Controller
         $institution = Institution::where('guid', $request->institution_guid)->first();
 
         return redirect(route('ministry.institutions.show', [$institution->id, 'caps']));
+    }
 
+    public function capStat(Request $request){
+        $instCap = Cap::where('institution_guid', $request->input('institution_guid'))
+            ->active()
+            ->where('program_guid', null)
+            ->first();
+
+        $issuedInstAttestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $instCap->institution_guid)
+            ->where('fed_cap_guid', $instCap->fed_cap_guid)
+            ->count();
+        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
     }
 }

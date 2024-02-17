@@ -2,6 +2,10 @@
     <div class="card mb-3">
         <div class="card-header">
             Institution Caps
+            <template v-if="capStat != ''">
+                <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Issued Attestations: {{ capStat.issued }}</span>
+            </template>
             <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Cap</button>
         </div>
         <div class="card-body">
@@ -13,7 +17,7 @@
                     <tbody>
                     <template v-for="(row, i) in results.caps">
                         <tr v-if="row.program_guid === null">
-                            <td><a href="#" @click="openEditForm(row)">{{ row.start_date }}</a></td>
+                            <td>{{ row.start_date }}</td>
                             <td>{{ row.end_date }}</td>
                             <td>{{ row.total_attestations }}</td>
                             <td>{{ row.issued_attestations }}</td>
@@ -46,8 +50,7 @@
 
                     <template v-for="(row, i) in results.caps">
                         <tr v-if="row.program_guid !== null">
-                            <td v-if="row.active_status"><a href="#" @click="openEditForm(row)">{{ row.start_date }}</a></td>
-                            <td v-else>{{ row.start_date }}</td>
+                            <td>{{ row.start_date }}</td>
                             <td>{{ row.end_date }}</td>
                             <td>{{ row.total_attestations }}</td>
                             <td>{{ row.issued_attestations }}</td>
@@ -113,7 +116,8 @@ export default {
     },
     data() {
         return {
-            editCap: ''
+            editCap: '',
+            capStat: ''
         }
     },
     methods: {
@@ -141,8 +145,23 @@ export default {
             }
             return value;
         },
+        fetchCapStats: function () {
+            let vm = this;
+            let data = {
+                institution_guid: this.results.guid,
+            }
+            axios.post('/ministry/api/fetch/capStats', data)
+                .then(function (response) {
+                    vm.capStat = response.data.body;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        }
     },
     mounted() {
+        this.fetchCapStats();
     }
 }
 </script>

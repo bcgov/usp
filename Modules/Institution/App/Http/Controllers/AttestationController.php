@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Modules\Institution\App\Http\Requests\AttestationEditRequest;
 use Modules\Institution\App\Http\Requests\AttestationStoreRequest;
+use Response;
 
 class AttestationController extends Controller
 {
@@ -125,6 +126,19 @@ class AttestationController extends Controller
         $pdf->loadHTML(base64_decode($storedPdf->content));
 
         return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
+    }
+
+    public function capStat(Request $request){
+        $instCap = Cap::where('institution_guid', $request->input('institution_guid'))
+            ->active()
+            ->where('program_guid', null)
+            ->first();
+
+        $issuedInstAttestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $instCap->institution_guid)
+            ->where('fed_cap_guid', $instCap->fed_cap_guid)
+            ->count();
+        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
     }
 
     private function paginateAtte($institution)

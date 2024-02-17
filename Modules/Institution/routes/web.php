@@ -30,6 +30,7 @@ Route::prefix('institution')->group(function () {
             Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 
             Route::get('/caps', [InstitutionController::class, 'caps'])->name('caps.index');
+            Route::post('/api/fetch/capStats', [AttestationController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
 
         });
 

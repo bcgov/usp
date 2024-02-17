@@ -54,6 +54,7 @@ Route::prefix('ministry')->group(function () {
             Route::post('/api/fetch/programs/{program?}', [ProgramController::class, 'fetchPrograms'])->name('programs.api.fetch');
             Route::post('/api/fetch/attestations/{institution?}', [InstitutionController::class, 'fetchAttestations'])->name('attestations.api.fetch');
             Route::post('/api/fetch/fedcap_inst', [FedCapController::class, 'fetchFedcapInst'])->name('fedcaps.api.fetch.institution-caps');
+            Route::post('/api/fetch/capStats', [CapController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
 
             Route::group([
                 'middleware' => ['ministry_admin'],
