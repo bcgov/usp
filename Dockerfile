@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.2-apache
 ARG DEBIAN_VERSION=20.04
 ARG APACHE_OPENIDC_VERSION=2.4.10
 ARG TZ=America/Vancouver
@@ -20,7 +20,6 @@ ENV APACHE_SERVER_NAME=__default__
 
 WORKDIR /
 
-RUN whoami
 
 RUN apt-get -y update --fix-missing \
     && apt-get update && apt-get install -y --no-install-recommends apt-utils \
@@ -38,8 +37,9 @@ RUN apt-get -y update --fix-missing \
     && sed -ri -e 's!expose_php = On!expose_php = Off!g' $PHP_INI_DIR/php.ini-production \
     && sed -ri -e 's!ServerTokens OS!ServerTokens Prod!g' /etc/apache2/conf-available/security.conf \
     && sed -ri -e 's!ServerSignature On!ServerSignature Off!g' /etc/apache2/conf-available/security.conf \
-    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
-    && apt-get install -yq zlib1g-dev g++ libicu-dev libpq-dev git nano netcat-traditional curl apache2 dialog locate libcurl4 libcurl3-dev psmisc \
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+RUN apt-get install -yq zlib1g-dev g++ libicu-dev libpq-dev git nano netcat-traditional curl apache2 dialog locate libcurl4 libcurl3-dev psmisc \
 	libfreetype6-dev \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
@@ -51,9 +51,10 @@ RUN apt-get -y update --fix-missing \
     && docker-php-ext-enable apcu \
     && docker-php-ext-install intl opcache\
     && docker-php-ext-configure zip \
-    && docker-php-ext-install zip \
+    && docker-php-ext-install zip
+
 # Install Postgre PDO
-    && apt-get install -y libonig-dev \
+RUN apt-get install -y libonig-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql pgsql && docker-php-ext-install curl  \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/  \
@@ -147,7 +148,7 @@ RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage boot
     && chmod 764 /var/www/html/artisan \
 #Error: EACCES: permission denied, open '/var/www/html/public/mix-manifest.json' \
     && cd /var/www/html/public && chmod 766 mix-manifest.json \
-    && mkdir /.npm && chown -R ${USER_ID}:0 "/.npm" \
+    && mkdir /.npm && mkdir /.npm/_cache && chown -R ${USER_ID}:0 "/.npm" \
 #Writing to directory /.config/psysh is not allowed.
     && mkdir -p /.config/psysh && chown -R ${USER_ID}:root /.config && chmod -R 755 /.config \
     && mkdir -p /.composer && chown -R ${USER_ID}:root /.composer && chmod -R 755 /.composer \

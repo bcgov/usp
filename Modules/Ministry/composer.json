@@ -1,0 +1,23 @@
+{
+    "name": "usp/ministry",
+    "description": "",
+    "authors": [
+        {
+            "name": "Kal Marsh",
+            "email": "kal.marsh@gov.bc.ca"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Ministry\\": ""
+        }
+    }
+}

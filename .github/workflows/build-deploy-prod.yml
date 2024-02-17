@@ -41,7 +41,7 @@ jobs:
           echo BUILD NAMESPACE: $BUILD_NAMESPACE
           echo BRANCH: $BUILD_REF
       - name: Checkout Target Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Log in to OpenShift.
       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
@@ -83,7 +83,7 @@ jobs:
           echo SOURCE_REPOSITORY_BRANCH: $SOURCE_REPOSITORY_BRANCH
       # Checkout the PR branch
       - name: Checkout Target Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Log in to OpenShift.
       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
