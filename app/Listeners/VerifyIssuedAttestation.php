@@ -76,7 +76,6 @@ class VerifyIssuedAttestation
         $cap->save();
     }
 
-
     private function storePdf($atteId)
     {
         $attestation = Attestation::where('id', $atteId)
@@ -94,6 +93,5 @@ class VerifyIssuedAttestation
             'content' => $pdfContent]);
 
         return true;
-
     }
 }

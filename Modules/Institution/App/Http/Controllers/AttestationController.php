@@ -11,12 +11,10 @@ use App\Models\Cap;
 use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\User;
-use App\Models\Util;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Modules\Institution\App\Http\Requests\AttestationEditRequest;
 use Modules\Institution\App\Http\Requests\AttestationStoreRequest;
@@ -50,11 +48,6 @@ class AttestationController extends Controller
             ->where('institution_guid', $institution->guid)
             ->first();
 
-        $issuedInstAttestations = Attestation::where('status', 'Issued')
-            ->where('institution_guid', $institution)
-            ->where('fed_cap_guid', $fedCap->guid)
-            ->count();
-
         $user = User::find(Auth::user()->id);
 
         $attestations = $this->paginateAtte($user->institution);
@@ -78,19 +71,13 @@ class AttestationController extends Controller
             'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
             'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid])->first();
 
-        //2. check cap has not been reached
-        $check2 = Cap::where('guid', $request->cap_guid)->whereColumn('issued_attestations', '<', 'total_attestations')->first();
-        if (is_null($check1) && ! is_null($check2)) {
+        if (is_null($check1)) {
             $attestation = Attestation::create($request->validated());
             $this->authorize('download', $attestation);
-            event(new AttestationIssued($check2, $attestation, $request->status));
+            event(new AttestationIssued($attestation->cap, $attestation, $request->status));
 
         } else {
-            if (! is_null($check1)) {
-                $error = "There's already an attestation for the same user.";
-            } else {
-                $error = 'You cannot issue any more attestations. Cap limit restriction.';
-            }
+            $error = "There's already an attestation for the same user.";
         }
 
         if (! is_null($error)) {
@@ -110,10 +97,7 @@ class AttestationController extends Controller
         //1. update only draft attestations
         $check1 = Attestation::where('id', $request->id)->where('status', 'Draft')->first();
 
-        //2. check cap has not been reached
-        $check2 = $this->checkCapLimit($request);
-
-        if (! is_null($check1) && $check2) {
+        if (! is_null($check1)) {
             $cap = Cap::where('guid', $request->cap_guid)->first();
 
             Attestation::where('id', $request->id)->update($request->validated());
@@ -122,11 +106,7 @@ class AttestationController extends Controller
             event(new AttestationDraftUpdated($cap, $attestation, $check1, $request->status));
 
         } else {
-            if (is_null($check1)) {
-                $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
-            } else {
-                $error = 'You cannot issue any more attestations. Cap limit restriction.';
-            }
+            $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
         }
 
         if (! is_null($error)) {
@@ -166,24 +146,5 @@ class AttestationController extends Controller
         }
 
         return $attestations->with('institution.activeCaps', 'institution.programs')->paginate(25)->onEachSide(1)->appends(request()->query());
-    }
-
-    private function checkCapLimit($request)
-    {
-        $cap = Cap::where('guid', $request->cap_guid)->first();
-        //if it is an inst. cap then it should pass only the check against the inst. cap
-        if (is_null($cap->program_guid)) {
-            $canCreate = $cap->issued_attestations < $cap->total_attestations;
-
-        }
-
-        //if it is a program cap then it should pass the check against the program cap first then another check against the inst. cap
-        else {
-            $instCap = Cap::where('institution_guid', $request->institution_guid)->active()->where('program_guid', null)->first();
-            $canCreate = ($cap->issued_attestations < $cap->total_attestations) &&
-                ($instCap->issued_attestations < $instCap->total_attestations);
-        }
-
-        return $canCreate;
     }
 }

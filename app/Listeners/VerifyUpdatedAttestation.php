@@ -60,18 +60,20 @@ class VerifyUpdatedAttestation
                 \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: ' . $issuedProgAttestations . ' >= ' . $instCap->total_attestations);
                 $valid = false;
             }
-        }
-
-
-        if($valid){
-            $this->storePdf($attestation->id);
-            $cap->draft_attestations -= 1;
-            $cap->issued_attestations += 1;
+            if($valid){
+                $this->storePdf($attestation->id);
+                $cap->draft_attestations -= 1;
+                $cap->issued_attestations += 1;
+            }else{
+                $attestation->status = 'Draft';
+                $attestation->save();
+            }
         }else{
             $attestation->status = 'Draft';
             $attestation->save();
         }
 
+        $cap->save();
 
         //if selected a different inst or program
         //then restore count for old cap
@@ -81,9 +83,7 @@ class VerifyUpdatedAttestation
             $capCap->save();
         }
 
-        $cap->save();
     }
-
 
     private function storePdf($atteId)
     {
@@ -102,6 +102,5 @@ class VerifyUpdatedAttestation
             'content' => $pdfContent]);
 
         return true;
-
     }
 }
