@@ -52,7 +52,7 @@ class VerifyUpdatedAttestation
             //check if the program cap has been reached
             //if so switch it to draft
             $issuedProgAttestations = Attestation::where('status', 'Issued')
-                ->where('cap_guid', $cap->cap_guid)
+                ->where('cap_guid', $cap->guid)
                 ->count();
 
             // If we hit or acceded the inst cap limit for issued attestations
