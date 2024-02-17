@@ -121,3 +121,5 @@ parameters:
     required: false
   - name: MEM_LIMITS
     required: false
+  - name: VAULT_ENV
+    required: false
