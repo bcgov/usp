@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use App\Events\AttestationDraftUpdated;
+use App\Events\AttestationIssued;
+use App\Events\InstitutionCapCreated;
+use App\Events\StaffRoleChanged;
+use App\Listeners\AdjustInstitutionCap;
+use App\Listeners\SendActiveRoleNotification;
+use App\Listeners\VerifyIssuedAttestation;
+use App\Listeners\VerifyUpdatedAttestation;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,8 +20,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        StaffRoleChanged::class => [
+            SendActiveRoleNotification::class,
+        ],
+        InstitutionCapCreated::class => [
+            AdjustInstitutionCap::class,
+        ],
+        AttestationIssued::class => [
+            VerifyIssuedAttestation::class,
+        ],
+        AttestationDraftUpdated::class => [
+            VerifyUpdatedAttestation::class,
         ],
     ];
 

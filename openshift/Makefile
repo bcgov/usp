@@ -15,6 +15,9 @@ export BACKUP_CONFIGMAP_NAME := $(or $(BACKUP_CONFIGMAP_NAME), usp-patroni-backu
 
 ##if
 ifeq ($(GIT_LOCAL_BRANCH),dev)
+define DEPLOY_FILE
+"dev_dc_latest.yaml"
+endef
 define OC_USER_ID
 "1009370000"
 endef
@@ -26,6 +29,9 @@ define BUILD_TAG
 endef
 
 else ifeq ($(GIT_LOCAL_BRANCH),test)
+define DEPLOY_FILE
+"dc_latest.yaml"
+endef
 define OC_USER_ID
 "1004030000"
 endef
@@ -37,6 +43,9 @@ define BUILD_TAG
 endef
 
 else
+define DEPLOY_FILE
+"dc_latest.yaml"
+endef
 define OC_USER_ID
 "1009380000"
 endef
@@ -112,7 +121,7 @@ deploy-web:
 	test -n "$(NAMESPACE)"
 	test -n "$(BUILD_NAMESPACE)"
 	@echo "+\n++ Deploying Web into $(NAMESPACE)\n+"
-	@oc -n $(NAMESPACE) process -f dc_latest.yaml --param-file=$(PARAM_FILE) | oc -n $(NAMESPACE) apply -f -
+	@oc -n $(NAMESPACE) process -f $(DEPLOY_FILE) --param-file=$(PARAM_FILE) | oc -n $(NAMESPACE) apply -f -
 	$(call rollout_and_wait,dc/$(HOST_PREFIX))
 	@echo "+\n++ FINISHED Deploying Web\n+"
 

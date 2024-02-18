@@ -1,4 +1,4 @@
-#run oc process -f bc.yaml -p NAME=tbtb-yeaf IMAGE_TAG=latest OC_REPO_SECRET_USER=user-at-github | oc apply -f -
+#run oc process -f bc.yaml -p NAME=usp IMAGE_TAG=latest OC_REPO_SECRET_USER=user-at-github | oc apply -f -
 kind: Template
 apiVersion: template.openshift.io/v1
 metadata:
@@ -19,11 +19,11 @@ objects:
       postCommit: {}
       resources:
         requests:
-          cpu: ${CPU_REQUESTS}
-          memory: ${MEM_REQUESTS}
+          cpu: ${BUILD_CPU_REQUESTS}
+          memory: ${BUILD_MEM_REQUESTS}
         limits:
-          cpu: ${CPU_LIMITS}
-          memory: ${MEM_LIMITS}
+          cpu: ${BUILD_CPU_LIMITS}
+          memory: ${BUILD_MEM_LIMITS}
       runPolicy: Serial
       source:
         git:
@@ -98,20 +98,28 @@ parameters:
 
   - name: LABEL_NAME
     required: false
-#  - name: IMAGE_TAG
-#    required: false
   - name: NAMESPACE
     required: false
 
-  - name: CPU_REQUESTS
+  - name: BUILD_CPU_REQUESTS
     required: true
-  - name: CPU_LIMITS
+  - name: BUILD_CPU_LIMITS
     required: true
-  - name: MEM_REQUESTS
+  - name: BUILD_MEM_REQUESTS
     required: true
-  - name: MEM_LIMITS
+  - name: BUILD_MEM_LIMITS
     required: true
   - name: MIN_REPLICAS
     required: true
   - name: MAX_REPLICAS
     required: true
+  - name: CPU_REQUESTS
+    required: false
+  - name: CPU_LIMITS
+    required: false
+  - name: MEM_REQUESTS
+    required: false
+  - name: MEM_LIMITS
+    required: false
+  - name: VAULT_ENV
+    required: false

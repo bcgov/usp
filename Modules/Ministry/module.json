@@ -1,0 +1,11 @@
+{
+    "name": "Ministry",
+    "alias": "ministry",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Ministry\\App\\Providers\\MinistryServiceProvider"
+    ],
+    "files": []
+}
