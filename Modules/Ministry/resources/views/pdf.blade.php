@@ -10,6 +10,9 @@
             line-height: 1.1rem;
             font-size: 14px;
             margin: 130px 30px 30px 30px;
+            position: relative;
+            /* Ensure the watermark covers the entire page */
+            min-height: 100vh;
         }
         header { position: fixed; top: 0px; left: 0px; right: 0px; height: 120px; border-bottom: #0b2e13 1px solid; }
         footer { font-family: sans-serif; position: fixed; bottom: 12px; left: 0px; right: 0px; height: 80px; font-size: 10px;
@@ -26,6 +29,15 @@
         }
         img{
             width: 125px;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg); /* Rotate the watermark */
+            font-size: 10em; /* Adjust font size as needed */
+            color: rgba(0, 0, 0, 0.3); /* Set the color with some opacity */
+            pointer-events: none; /* Ensure the watermark doesn't interfere with clicking or selecting */
         }
     </style>
 </head>
@@ -97,6 +109,9 @@
             </tr>
         </table>
     </footer>
+    @if($draft)
+        <div class="watermark">DRAFT</div>
+    @endif
 
 </body>
 </html>
