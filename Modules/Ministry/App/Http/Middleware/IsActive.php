@@ -44,7 +44,9 @@ class IsActive
                 'status' => 'Please contact Ministry Admin to grant you access.',
             ]);
         }
-
+        if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Ministry_ADMIN) && ! $user->hasRole(Role::Ministry_USER)) {
+            return redirect('ministry.home');
+        }
         return $next($request);
     }
 }

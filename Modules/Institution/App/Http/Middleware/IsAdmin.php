@@ -27,7 +27,7 @@ class IsAdmin
 
         $user = Auth::user();
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Institution_ADMIN)) {
-            return redirect(RouteServiceProvider::HOME);
+            return redirect('institution.home');
         }
 
         return $next($request);

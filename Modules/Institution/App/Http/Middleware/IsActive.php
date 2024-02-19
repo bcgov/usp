@@ -69,7 +69,9 @@ class IsActive
                 'status' => 'Please contact your Institution Admin to grant you access.',
             ]);
         }
-
+        if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Institution_ADMIN) && ! $user->hasRole(Role::Institution_USER)) {
+            return redirect('institution.home');
+        }
         return $next($request);
     }
 }
