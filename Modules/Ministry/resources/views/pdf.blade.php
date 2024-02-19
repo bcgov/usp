@@ -110,7 +110,7 @@
         </table>
     </footer>
     @if($draft)
-        <div class="watermark">DRAFT</div>
+        <div class="watermark">SAMPLE</div>
     @endif
 
 </body>
