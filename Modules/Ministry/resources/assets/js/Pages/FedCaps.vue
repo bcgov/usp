@@ -38,8 +38,9 @@
                                             <td>{{ row.end_date }}</td>
                                             <td>{{ row.total_attestations}}</td>
                                             <td>
-                                                <span v-if="row.status" class="badge rounded-pill text-bg-success">Active</span>
-                                                <span v-else class="badge rounded-pill text-bg-secondary">{{ row.status }}</span>
+                                                <span v-if="row.status === 'Active'" class="badge rounded-pill text-bg-success">Active</span>
+                                                <span v-if="row.status === 'Completed'" class="badge rounded-pill text-bg-primary">Completed</span>
+                                                <span v-if="row.status === 'Cancelled'" class="badge rounded-pill text-bg-warning">Cancelled</span>
                                             </td>
                                         </tr>
                                         </tbody>

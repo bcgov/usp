@@ -1,5 +1,5 @@
 <template>
-    <form v-if="newFedCapForm != null" class="card-body" @submit.prevent="submitForm">
+    <form v-if="newFedCapForm != null" class="card-body">
         <div class="modal-body">
             <div class="row g-3">
 
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newFedCapForm.processing">
+            <button @click="submitForm" type="button" class="btn me-2 btn-outline-success float-end" :disabled="newFedCapForm.processing">
                 Create Federal Cap
             </button>
         </div>
@@ -84,13 +84,17 @@ export default {
     },
     methods: {
         submitForm: function () {
+            let check = confirm('You are about to create a new Federal Cap. This will disable the active Federal Cap and all Institution/Program Caps associated with it. Are you sure you want to continue?');
+            if(!check){
+                return false;
+            }
+
             this.newFedCapForm.formState = null;
             this.newFedCapForm.post('/ministry/fed_caps', {
                 onSuccess: (response) => {
                     $("#newFedCapModal").modal('hide');
                     this.newFedCapForm.reset(this.newFedCapFormData);
                     this.$inertia.visit('/ministry/fed_caps/' + this.newFedCap.id);
-                    // console.log(response.props.institution)
                 },
                 onError: () => {
                     this.newFedCapForm.formState = false;
