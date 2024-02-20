@@ -5,7 +5,7 @@
 
                 <div class="col-md-4">
                     <Label for="inputName" class="form-label" value="Institution Name" required="true"/>
-                    <input @change="enableCap" type="text" class="form-control" list="datalistOptionsInstName" id="inputName" placeholder="Type to search..."  v-model="selectedInstIndex" />
+                    <input @change="enableCap" type="text" class="form-control" list="datalistOptionsInstName" id="inputName" placeholder="Type to search..." autocomplete="off"  v-model="selectedInstIndex" />
                     <datalist id="datalistOptionsInstName">
                         <option v-for="(inst, i) in institutions" :key="i" :value="inst.name"></option>
                     </datalist>
