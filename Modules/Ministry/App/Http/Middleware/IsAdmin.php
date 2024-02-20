@@ -27,7 +27,7 @@ class IsAdmin
 
         $user = Auth::user();
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Ministry_ADMIN)) {
-            return redirect(route('ministry.home'));
+            return redirect('ministry.home');
         }
 
         return $next($request);

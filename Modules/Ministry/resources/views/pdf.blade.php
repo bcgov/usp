@@ -34,10 +34,10 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg); /* Rotate the watermark */
-            font-size: 10em; /* Adjust font size as needed */
-            color: rgba(0, 0, 0, 0.3); /* Set the color with some opacity */
-            pointer-events: none; /* Ensure the watermark doesn't interfere with clicking or selecting */
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 10em;
+            color: rgba(0, 0, 0, 0.2);
+            pointer-events: none;
         }
     </style>
 </head>
