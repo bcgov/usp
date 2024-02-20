@@ -9,17 +9,17 @@
             </div>
             <div v-else class="row g-3">
                 <div class="col-md-6">
-                    <Label for="inputFirstName" class="form-label" value="First Name"/>
+                    <Label for="inputFirstName" class="form-label" value="First Name" required="true"/>
                     <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-6">
-                    <Label for="inputLastName" class="form-label" value="Last Name"/>
+                    <Label for="inputLastName" class="form-label" value="Last Name" required="true"/>
                     <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-6">
-                    <Label for="inputAddress1" class="form-label" value="Address 1"/>
+                    <Label for="inputAddress1" class="form-label" value="Address 1" required="true"/>
                     <Input type="text" class="form-control" id="inputAddress1" v-model="editAtteForm.address1"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
@@ -30,11 +30,13 @@
                 </div>
 
                 <div class="col-md-4">
-                    <Label for="inputProgram" class="form-label" value="Institution Program"/>
+                    <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
                         <template v-if="institution !== ''">
                             <option></option>
-                            <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
+                            <template v-for="c in institution.programs">
+                                <option v-if="c.active_status" :value="c.guid">{{ c.program_name}}</option>
+                            </template>
                         </template>
                     </Select>
                 </div>
@@ -44,19 +46,19 @@
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
+                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID" required="true"/>
                     <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputDob" class="form-label" value="Date of Birth"/>
+                    <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
                     <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="editAtteForm.dob"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?" required="true"/>
                     <Select class="form-select" id="inputInPerson" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
                         <option></option>
                         <option value="true">Yes</option>
@@ -64,12 +66,12 @@
                     </Select>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputEmail" class="form-label" value="Email"/>
+                    <Label for="inputEmail" class="form-label" value="Email" required="true"/>
                     <Input type="email" class="form-control" id="inputEmail" v-model="editAtteForm.email"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputCity" class="form-label" value="City"/>
+                    <Label for="inputCity" class="form-label" value="City" required="true"/>
                     <Input type="text" class="form-control" id="inputCity" v-model="editAtteForm.city"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
@@ -85,7 +87,7 @@
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputCountry" class="form-label" value="Country"/>
+                    <Label for="inputCountry" class="form-label" value="Country" required="true"/>
                     <input type="text" class="form-control" list="datalistOptionsInputCountry" id="inputCountry"
                            placeholder="Type to search..."  v-model="editAtteForm.country"
                            :disabled="editAtteForm.program_guid === ''" />
@@ -94,7 +96,7 @@
                     </datalist>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
                     <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
                            :disabled="editAtteForm.program_guid === ''"/>
