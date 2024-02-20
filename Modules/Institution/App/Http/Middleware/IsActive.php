@@ -70,7 +70,7 @@ class IsActive
             ]);
         }
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Institution_ADMIN) && ! $user->hasRole(Role::Institution_USER)) {
-            return redirect('institution.home');
+            return redirect(route('institution.home'));
         }
         return $next($request);
     }
