@@ -136,12 +136,12 @@ class AttestationStoreRequest extends FormRequest
                 // Increment the numeric part by 1
                 $next_numeric_part = $numeric_part + 1;
             } else {
-                // Start from 10000000 for the new year
-                $next_numeric_part = 10000000;
+                // Start from 100000000 for the new year
+                $next_numeric_part = 100000000;
             }
         } else {
             // If no records exist, start from 1000 for the new year
-            $next_numeric_part = 10000000;
+            $next_numeric_part = 100000000;
         }
 
         // Construct the next value
