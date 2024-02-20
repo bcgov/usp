@@ -76,7 +76,7 @@ class AttestationStoreRequest extends FormRequest
         }
 
         //get the next fed_guid
-        $fedGuid = $this->getFedGuid();
+        $fedGuid = $this->getFedGuid($cap);
 
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
@@ -109,13 +109,16 @@ class AttestationStoreRequest extends FormRequest
         return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 
-    private function getFedGuid()
+    private function getFedGuid(Cap $cap)
     {
         // Retrieve the last record from the database
         $last_attestation = Attestation::latest()->first();
 
         // Get the current year
-        $current_year = date('y');
+        //$current_year = date('y');
+
+        // Get the year prefix
+        $year_prefix = date('y', strtotime($cap->fedCap->start_date));
 
         if ($last_attestation) {
             // Extract the value from the retrieved record
@@ -133,7 +136,7 @@ class AttestationStoreRequest extends FormRequest
             }
 
             // Check if it's a new year
-            if ($last_year == $current_year) {
+            if ($last_year == $year_prefix) {
                 // Increment the numeric part by 1
                 $next_numeric_part = $numeric_part + 1;
             } else {
@@ -146,6 +149,6 @@ class AttestationStoreRequest extends FormRequest
         }
 
         // Construct the next value
-        return "BC" . $current_year . sprintf("%03d", $next_numeric_part);
+        return "BC" . $year_prefix . "-" . sprintf("%03d", $next_numeric_part);
     }
 }
