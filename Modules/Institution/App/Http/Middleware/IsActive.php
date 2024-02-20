@@ -70,7 +70,11 @@ class IsActive
             ]);
         }
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Institution_ADMIN) && ! $user->hasRole(Role::Institution_USER)) {
-            return redirect(route('institution.home'));
+            return Inertia::render('Auth/Login', [
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Please contact your Institution Admin to verify your access.',
+            ]);
         }
         return $next($request);
     }

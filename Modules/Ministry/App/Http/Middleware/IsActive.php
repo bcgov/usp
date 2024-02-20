@@ -38,14 +38,18 @@ class IsActive
             $role = Role::where('name', Role::Ministry_GUEST)->first();
             $user->roles()->attach($role);
 
-            return Inertia::render('Home', [
+            return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact Ministry Admin to grant you access.',
             ]);
         }
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Ministry_ADMIN) && ! $user->hasRole(Role::Ministry_USER)) {
-            return redirect(route('ministry.home'));
+            return Inertia::render('Auth/Login', [
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Please contact Ministry Admin to verify your access.',
+            ]);
         }
         return $next($request);
     }
