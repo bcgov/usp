@@ -4,14 +4,14 @@
             <div class="row g-3">
 
                 <div class="col-md-4">
-                    <Label for="inputName" class="form-label" value="Institution Name"/>
+                    <Label for="inputName" class="form-label" value="Institution Name" required="true"/>
                     <input @change="enableCap" type="text" class="form-control" list="datalistOptionsInstName" id="inputName" placeholder="Type to search..."  v-model="selectedInstIndex" />
                     <datalist id="datalistOptionsInstName">
                         <option v-for="(inst, i) in institutions" :key="i" :value="inst.name"></option>
                     </datalist>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputProgram" class="form-label" value="Institution Program"/>
+                    <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
                     <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="selectedInst === ''">
                         <template v-if="selectedInst != ''">
                             <option></option>
@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?"/>
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?" required="true"/>
                     <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
                         <option></option>
                         <option value="true">Yes</option>
@@ -31,17 +31,17 @@
 
 
                 <div class="col-md-6">
-                    <Label for="inputFirstName" class="form-label" value="First Name"/>
+                    <Label for="inputFirstName" class="form-label" value="First Name" required="true"/>
                     <Input type="text" class="form-control" id="inputFirstName" v-model="newAtteForm.first_name"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-6">
-                    <Label for="inputLastName" class="form-label" value="Last Name"/>
+                    <Label for="inputLastName" class="form-label" value="Last Name" required="true"/>
                     <Input type="text" class="form-control" id="inputLastName" v-model="newAtteForm.last_name"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-6">
-                    <Label for="inputAddress1" class="form-label" value="Address 1"/>
+                    <Label for="inputAddress1" class="form-label" value="Address 1" required="true"/>
                     <Input type="text" class="form-control" id="inputAddress1" v-model="newAtteForm.address1"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
@@ -53,12 +53,12 @@
                 </div>
 
                 <div class="col-md-4">
-                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
+                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID" required="true"/>
                     <Input type="text" class="form-control" id="inputStudentId" v-model="newAtteForm.id_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputDob" class="form-label" value="Date of Birth"/>
+                    <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
                     <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="newAtteForm.dob"
                            :disabled="newAtteForm.program_guid === ''"/>
@@ -70,12 +70,12 @@
                 </div>
 
                 <div class="col-md-4">
-                    <Label for="inputEmail" class="form-label" value="Email"/>
+                    <Label for="inputEmail" class="form-label" value="Email" required="true"/>
                     <Input type="email" class="form-control" id="inputEmail" v-model="newAtteForm.email"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputCity" class="form-label" value="City"/>
+                    <Label for="inputCity" class="form-label" value="City" required="true"/>
                     <Input type="text" class="form-control" id="inputCity" v-model="newAtteForm.city"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
@@ -91,7 +91,7 @@
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputCountry" class="form-label" value="Country"/>
+                    <Label for="inputCountry" class="form-label" value="Country" required="true"/>
                     <input type="text" class="form-control" list="datalistOptionsInputCountry" id="inputCountry"
                            placeholder="Type to search..."  v-model="newAtteForm.country"  :disabled="newAtteForm.program_guid === ''" />
                     <datalist id="datalistOptionsInputCountry">
@@ -99,7 +99,7 @@
                     </datalist>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
                     <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
                            :disabled="newAtteForm.program_guid === ''"/>
