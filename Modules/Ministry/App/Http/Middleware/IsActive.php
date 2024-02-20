@@ -45,7 +45,7 @@ class IsActive
             ]);
         }
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Ministry_ADMIN) && ! $user->hasRole(Role::Ministry_USER)) {
-            return redirect('ministry.home');
+            return redirect(route('ministry.home'));
         }
         return $next($request);
     }
