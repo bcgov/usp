@@ -1,5 +1,5 @@
 <template>
-    <form v-if="newInstitutionCapForm != null" class="card-body" @submit.prevent="submitForm">
+    <form v-if="newInstitutionCapForm != null" class="card-body">
         <div class="modal-body">
             <div class="row g-3">
 
@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newInstitutionCapForm.processing">
+            <button @click="submitForm" type="button" class="btn me-2 btn-outline-success float-end" :disabled="newInstitutionCapForm.processing">
                 Create Institution Cap
             </button>
         </div>
@@ -117,6 +117,14 @@ export default {
             }
         },
         submitForm: function () {
+            let check = confirm('You are about to create a new Institution Cap. This will disable the active Institution Cap. Are you sure you want to continue?');
+            if(!check){
+                return false;
+            }
+            if(this.newInstitutionCapForm.fed_cap_id === '' || this.newInstitutionCapForm.total_attestations === ''){
+                return false;
+            }
+
             this.newInstitutionCapForm.formState = null;
             this.newInstitutionCapForm.post('/ministry/caps', {
                 onSuccess: (response) => {
