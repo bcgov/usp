@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attestations', function (Blueprint $table) {
             $table->id();
             $table->string('guid', 32)->index()->unique();
-            $table->string('fed_guid', 12)->unique();
+            $table->string('fed_guid', 15)->unique();
 
             $table->string('institution_guid', 32);
             $table->foreign('institution_guid')->references('guid')->on('institutions')
