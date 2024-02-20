@@ -2,6 +2,7 @@
 
 namespace Modules\Ministry\App\Http\Controllers;
 
+use App\Events\FederalCapCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FedCapEditRequest;
 use App\Http\Requests\FedCapStoreRequest;
@@ -30,6 +31,8 @@ class FedCapController extends Controller
     public function store(FedCapStoreRequest $request): \Inertia\Response
     {
         $fedCap = FedCap::create($request->validated());
+        event(new FederalCapCreated($fedCap));
+
         $fedCaps = $this->paginateInst();
 
         return Inertia::render('Ministry::FedCaps', ['results' => $fedCaps, 'newfedCap' => $fedCap]);
