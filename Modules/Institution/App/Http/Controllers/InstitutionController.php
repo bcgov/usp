@@ -5,6 +5,8 @@ namespace Modules\Institution\App\Http\Controllers;
 use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionStaffEditRequest;
+use App\Models\Attestation;
+use App\Models\Cap;
 use App\Models\InstitutionStaff;
 use App\Models\Role;
 use App\Models\User;
@@ -19,12 +21,25 @@ class InstitutionController extends Controller
      */
     public function index()
     {
+        $issuedInstAttestations = 0;
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
+        $instCap = Cap::where('institution_guid', $institution->guid)
+            ->active()
+            ->where('program_guid', null)
+            ->first();
+
+        if(!is_null($instCap)){
+            $issuedInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $institution->guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->count();
+        }
+
         return Inertia::render('Institution::Dashboard', ['results' => $institution,
-            'instCaps' => $institution->activeInstCaps,
-            'programCaps' => $institution->activeProgramCaps]);
+            'capTotal' => $instCap->total_attestations ?? 0,
+            'issued' => $issuedInstAttestations]);
     }
 
     /**
