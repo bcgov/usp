@@ -1,94 +1,94 @@
 <template>
-    <form v-if="newAtteForm != null" class="card-body">
+    <form :id="randomId" v-if="newAtteForm != null" class="card-body">
         <div class="modal-body">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
-                    <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid">
+                    <Label class="form-label" value="Institution Program" required="true"/>
+                    <Select class="form-select" v-model="newAtteForm.program_guid">
                         <option></option>
                         <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?" required="true"/>
-                    <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
+                    <Label class="form-label" value="> 50% in-person?" required="true"/>
+                    <Select class="form-select" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
                         <option></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputStudentNumber" class="form-label" value="Student Number"/>
-                    <Input type="text" class="form-control" id="inputStudentNumber" v-model="newAtteForm.student_number"
+                    <Label class="form-label" value="Student Number"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.student_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
                 <div class="col-md-6">
-                    <Label for="inputFirstName" class="form-label" value="First Name" required="true"/>
-                    <Input type="text" class="form-control" id="inputFirstName" v-model="newAtteForm.first_name"
+                    <Label class="form-label" value="First Name" required="true"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.first_name"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-6">
-                    <Label for="inputLastName" class="form-label" value="Last Name" required="true"/>
-                    <Input type="text" class="form-control" id="inputLastName" v-model="newAtteForm.last_name"
+                    <Label class="form-label" value="Last Name" required="true"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.last_name"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
                 <div class="col-md-6">
-                    <Label for="inputAddress1" class="form-label" value="Address 1" required="true"/>
-                    <Input type="text" class="form-control" id="inputAddress1" v-model="newAtteForm.address1"
+                    <Label class="form-label" value="Address 1" required="true"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.address1"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-6">
-                    <Label for="inputAddress2" class="form-label" value="Address 2"/>
-                    <Input type="text" class="form-control" id="inputAddress2" v-model="newAtteForm.address2"
+                    <Label class="form-label" value="Address 2"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.address2"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID" required="true"/>
-                    <Input type="text" class="form-control" id="inputStudentId" v-model="newAtteForm.id_number"
+                    <Label class="form-label" value="Passport/Travel Doc. ID" required="true"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.id_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputDob" v-model="newAtteForm.dob"
+                    <Label class="form-label" value="Date of Birth" required="true"/>
+                    <Input type="date" min="1930-01-01" max="2014-12-31" placeholder="YYYY-MM-DD"
+                           class="form-control" v-model="newAtteForm.dob"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputEmail" class="form-label" value="Email" required="true"/>
-                    <Input type="email" class="form-control" id="inputEmail" v-model="newAtteForm.email"
+                    <Label class="form-label" value="Email" required="true"/>
+                    <Input type="email" class="form-control" v-model="newAtteForm.email"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputCity" class="form-label" value="City" required="true"/>
-                    <Input type="text" class="form-control" id="inputCity" v-model="newAtteForm.city"
+                    <Label class="form-label" value="City" required="true"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.city"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputZipCode" class="form-label" value="Zip Code"/>
-                    <Input type="text" class="form-control" id="inputZipCode" v-model="newAtteForm.zip_code"
+                    <Label class="form-label" value="Zip Code"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.zip_code"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputProvince" class="form-label" value="Province / State"/>
-                    <Input type="text" class="form-control" id="inputProvince" v-model="newAtteForm.province"
+                    <Label class="form-label" value="Province / State"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.province"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputCountry" class="form-label" value="Country" required="true"/>
-                    <input type="text" class="form-control" list="datalistOptionsInputCountry" id="inputCountry"
+                    <Label class="form-label" value="Country" required="true"/>
+                    <input type="text" class="form-control" list="datalistOptionsInputCountry"
                            placeholder="Type to search..."  v-model="newAtteForm.country"  :disabled="newAtteForm.program_guid === ''" />
                     <datalist id="datalistOptionsInputCountry">
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
-                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
+                    <Label class="form-label" value="Expiry Date" required="true"/>
+                    <Input type="date" min="2024-02-01" max="2040-12-31" placeholder="YYYY-MM-DD"
+                           class="form-control" v-model="newAtteForm.expiry_date"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
@@ -140,6 +140,7 @@ export default {
     },
     data() {
         return {
+            randomId: '',
             newAtteForm: null,
             newAtteFormData: {
                 formState: true,
@@ -188,11 +189,40 @@ export default {
                 },
                 preserveState: true
             });
+        },
+
+        randomizer: function ()
+        {
+            if(this.newAtteForm != null){
+                // Count the existing elements inside the form
+                const form = document.getElementById(this.randomId);
+                // const existingElementsCount = form.children.length;
+                const existingElementsCount = form.querySelectorAll('input, select, textarea');
+
+                // Generate random elements
+                const generatedElementsCount = Math.floor(Math.random() * 5) + 1; // Generate between 1 to 5 elements
+                for (let i = 0; i < generatedElementsCount; i++) {
+                    const elementType = Math.random() < 0.5 ? 'input' : 'select'; // Randomly choose between input and select
+                    const element = document.createElement(elementType);
+                    if(elementType === 'input') element.type = 'text';
+                    // Set other attributes for the generated elements as needed
+                    element.style.display = 'none'; // Hide the generated elements
+                    // Randomly place the generated elements before randomly chosen original elements
+                    const randomIndex = Math.floor(Math.random() * existingElementsCount);
+                    form.insertBefore(element, form.children[randomIndex]);
+                }
+            }
+
         }
     },
 
     mounted() {
         this.newAtteForm = useForm(this.newAtteFormData);
+        this.randomId = "" + Math.random() + "";
+
+        let vm = this;
+        setTimeout(function(){vm.randomizer();}, 1000);
+
     }
 }
 </script>

@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <div v-if="showNewModal" class="modal modal-lg fade" id="newAtteModal" tabindex="-1" aria-labelledby="newAtteModalLabel" aria-hidden="true">
+        <div v-if="showNewModal" class="modal modal-lg" id="newAtteModal" tabindex="-1" aria-labelledby="newAtteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -75,7 +75,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="showEditModal" class="modal modal-lg fade" id="editAtteModal" tabindex="0" aria-labelledby="editAtteModalLabel" aria-hidden="true">
+        <div v-if="showEditModal" class="modal modal-lg" id="editAtteModal" tabindex="0" aria-labelledby="editAtteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
