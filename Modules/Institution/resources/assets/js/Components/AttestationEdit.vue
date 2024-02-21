@@ -44,7 +44,7 @@
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID" required="true"/>
+                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
                     <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>

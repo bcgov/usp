@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label class="form-label" value="Passport/Travel Doc. ID" required="true"/>
+                    <Label class="form-label" value="Passport/Travel Doc. ID"/>
                     <Input type="text" class="form-control" v-model="newAtteForm.id_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>

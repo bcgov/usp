@@ -108,7 +108,7 @@ class AttestationStoreRequest extends FormRequest
     private function getFedGuid(Cap $cap)
     {
         // Retrieve the last record from the database
-        $last_attestation = Attestation::latest()->first();
+        $last_attestation = Attestation::orderByDesc('fed_guid')->first();
 
         // Get the current year
         //$current_year = date('y');
