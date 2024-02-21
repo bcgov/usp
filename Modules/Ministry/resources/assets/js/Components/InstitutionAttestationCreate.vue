@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID" required="true"/>
+                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
                     <Input type="text" class="form-control" id="inputStudentId" v-model="newAtteForm.id_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
