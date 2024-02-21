@@ -121,7 +121,7 @@ class AttestationStoreRequest extends FormRequest
             $last_value = $last_attestation->fed_guid;
 
             // Extract the year and numeric part from the last value
-            preg_match('/BC(\d{2})(\d+)/', $last_value, $matches);
+            preg_match('/BC(\d{2})-(\d+)/', $last_value, $matches);
             if (isset($matches[1])) {
                 $last_year = $matches[1];
                 $numeric_part = $matches[2];
