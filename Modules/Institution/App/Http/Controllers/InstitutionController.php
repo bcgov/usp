@@ -21,6 +21,7 @@ class InstitutionController extends Controller
      */
     public function index()
     {
+        $issuedInstAttestations = 0;
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
@@ -29,13 +30,15 @@ class InstitutionController extends Controller
             ->where('program_guid', null)
             ->first();
 
-        $issuedInstAttestations = Attestation::where('status', 'Issued')
-            ->where('institution_guid', $instCap->institution_guid)
-            ->where('fed_cap_guid', $instCap->fed_cap_guid)
-            ->count();
+        if(!is_null($instCap)){
+            $issuedInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $institution->guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->count();
+        }
 
         return Inertia::render('Institution::Dashboard', ['results' => $institution,
-            'capTotal' => $instCap->total_attestations,
+            'capTotal' => $instCap->total_attestations ?? 0,
             'issued' => $issuedInstAttestations]);
     }
 
