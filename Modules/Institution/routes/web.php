@@ -22,12 +22,13 @@ Route::prefix('institution')->group(function () {
             'as' => 'institution.',
         ], function () {
             Route::get('/', [AttestationController::class, 'index'])->name('home');
-//            Route::get('/', [InstitutionController::class, 'index'])->name('home');
-            Route::get('/account', [InstitutionController::class, 'show'])->name('show');
             Route::get('/attestations', [AttestationController::class, 'index'])->name('attestations.index');
             Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
             Route::put('/attestations', [AttestationController::class, 'update'])->name('attestations.update');
             Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
+
+            Route::get('/dashboard', [InstitutionController::class, 'index'])->name('dashboard');
+            Route::get('/account', [InstitutionController::class, 'show'])->name('show');
 
             Route::get('/caps', [InstitutionController::class, 'caps'])->name('caps.index');
             Route::post('/api/fetch/capStats', [AttestationController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
