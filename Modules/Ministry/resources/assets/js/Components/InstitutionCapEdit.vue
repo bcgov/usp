@@ -26,7 +26,7 @@
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
                     </div>
                 </div>
-<!--                <div class="col-md-12">-->
+<!--                <div v-if="activeInstCap !== null" class="col-md-12">-->
 <!--                    <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>-->
 <!--                    <Select class="form-select" id="inputProgram" v-model="editInstitutionCapForm.program_guid">-->
 <!--                        <option value=""></option>-->
@@ -81,7 +81,8 @@ export default {
     props: {
         fedCaps: Object,
         results: Object,
-        cap: Object
+        cap: Object,
+        activeInstCap: Object|null
     },
     data() {
         return {
