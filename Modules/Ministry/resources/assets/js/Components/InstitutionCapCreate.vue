@@ -26,13 +26,13 @@
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>
-                    <Select class="form-select" id="inputProgram" v-model="newInstitutionCapForm.program_id">
-                        <option value=""></option>
-                        <option v-for="c in results.programs" :value="c.id">{{ c.program_name}}</option>
-                    </Select>
-                </div>
+<!--                <div class="col-md-12">-->
+<!--                    <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>-->
+<!--                    <Select class="form-select" id="inputProgram" v-model="newInstitutionCapForm.program_id">-->
+<!--                        <option value=""></option>-->
+<!--                        <option v-for="c in results.programs" :value="c.id">{{ c.program_name}}</option>-->
+<!--                    </Select>-->
+<!--                </div>-->
 
                 <div class="col-12">
                     <Label for="inputComment" class="form-label" value="Comment"/>
