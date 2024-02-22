@@ -72,7 +72,7 @@ class UserController extends Controller
             return Inertia::render('Auth/Login', [
                 'loginAttempt' => true,
                 'hasAccess' => false,
-                'status' => 'We could not log you in. Please contact RequestIT.',
+                'status' => 'We could not log you in. Please contact RequestIT@gov.bc.ca',
             ]);
         } else {
             // Try to get an access token (using the authorization coe grant)

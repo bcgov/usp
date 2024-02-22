@@ -94,8 +94,9 @@ class VerifyUpdatedAttestation
         $now_d = date('Y-m-d');
         $now_t = date('H:m:i');
         $utils = Util::getSortedUtils();
+        $draft = env('APP_ENV') !== 'production';
 
-        $html = view('ministry::pdf', compact('attestation', 'now_d', 'now_t', 'utils'))->render();
+        $html = view('ministry::pdf', compact('attestation', 'now_d', 'now_t', 'utils', 'draft'))->render();
         $pdfContent = base64_encode($html);
         AttestationPdf::create(['guid' => Str::orderedUuid()->getHex(),
             'attestation_guid' => $attestation->guid,

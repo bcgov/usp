@@ -76,7 +76,7 @@ class AttestationStoreRequest extends FormRequest
         }
 
         //get the next fed_guid
-        $fedGuid = $this->getFedGuid();
+        $fedGuid = $this->getFedGuid($cap);
 
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
@@ -109,20 +109,23 @@ class AttestationStoreRequest extends FormRequest
         return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 
-    private function getFedGuid()
+    private function getFedGuid(Cap $cap)
     {
         // Retrieve the last record from the database
-        $last_attestation = Attestation::latest()->first();
+        $last_attestation = Attestation::orderByDesc('fed_guid')->first();
 
         // Get the current year
-        $current_year = date('y');
+        //$current_year = date('y');
+
+        // Get the year prefix
+        $year_prefix = date('y', strtotime($cap->fedCap->start_date));
 
         if ($last_attestation) {
             // Extract the value from the retrieved record
             $last_value = $last_attestation->fed_guid;
 
             // Extract the year and numeric part from the last value
-            preg_match('/BC(\d{2})(\d+)/', $last_value, $matches);
+            preg_match('/BC(\d{2})-(\d+)/', $last_value, $matches);
             if (isset($matches[1])) {
                 $last_year = $matches[1];
                 $numeric_part = $matches[2];
@@ -133,19 +136,19 @@ class AttestationStoreRequest extends FormRequest
             }
 
             // Check if it's a new year
-            if ($last_year == $current_year) {
+            if ($last_year == $year_prefix) {
                 // Increment the numeric part by 1
                 $next_numeric_part = $numeric_part + 1;
             } else {
-                // Start from 10000000 for the new year
-                $next_numeric_part = 10000000;
+                // Start from 100000000 for the new year
+                $next_numeric_part = 100000000;
             }
         } else {
             // If no records exist, start from 1000 for the new year
-            $next_numeric_part = 10000000;
+            $next_numeric_part = 100000000;
         }
 
         // Construct the next value
-        return "BC" . $current_year . sprintf("%03d", $next_numeric_part);
+        return "BC" . $year_prefix . "-" . sprintf("%03d", $next_numeric_part);
     }
 }

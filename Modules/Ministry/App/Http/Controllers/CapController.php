@@ -20,8 +20,7 @@ class CapController extends Controller
      */
     public function store(CapStoreRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
     {
-        $conditions = ['start_date' => $request->start_date, 'end_date' => $request->end_date, 'active_status' => true,
-            'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
+        $conditions = ['active_status' => true, 'fed_cap_guid' => $request->fed_cap_guid, 'institution_guid' => $request->institution_guid];
 
         //add a check to see if there is already a cap associated with this program
         if ($request->has('program_id') && $request->program_id != '') {

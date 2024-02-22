@@ -1,5 +1,5 @@
 <template>
-    <form v-if="newInstitutionCapForm != null" class="card-body" @submit.prevent="submitForm">
+    <form v-if="newInstitutionCapForm != null" class="card-body">
         <div class="modal-body">
             <div class="row g-3">
 
@@ -26,13 +26,13 @@
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>
-                    <Select class="form-select" id="inputProgram" v-model="newInstitutionCapForm.program_id">
-                        <option value=""></option>
-                        <option v-for="c in results.programs" :value="c.id">{{ c.program_name}}</option>
-                    </Select>
-                </div>
+<!--                <div v-if="activeInstCap !== null" class="col-md-12">-->
+<!--                    <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>-->
+<!--                    <Select class="form-select" id="inputProgram" v-model="newInstitutionCapForm.program_id">-->
+<!--                        <option value=""></option>-->
+<!--                        <option v-for="c in results.programs" :value="c.id">{{ c.program_name}}</option>-->
+<!--                    </Select>-->
+<!--                </div>-->
 
                 <div class="col-12">
                     <Label for="inputComment" class="form-label" value="Comment"/>
@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="newInstitutionCapForm.processing">
+            <button @click="submitForm" type="button" class="btn me-2 btn-outline-success float-end" :disabled="newInstitutionCapForm.processing">
                 Create Institution Cap
             </button>
         </div>
@@ -79,7 +79,8 @@ export default {
     },
     props: {
         fedCaps: Object,
-        results: Object
+        results: Object,
+        activeInstCap: Object|null
     },
     data() {
         return {
@@ -117,6 +118,14 @@ export default {
             }
         },
         submitForm: function () {
+            let check = confirm('You are about to create a new Institution Cap. This will disable the active Institution Cap. Are you sure you want to continue?');
+            if(!check){
+                return false;
+            }
+            if(this.newInstitutionCapForm.fed_cap_id === '' || this.newInstitutionCapForm.total_attestations === ''){
+                return false;
+            }
+
             this.newInstitutionCapForm.formState = null;
             this.newInstitutionCapForm.post('/ministry/caps', {
                 onSuccess: (response) => {

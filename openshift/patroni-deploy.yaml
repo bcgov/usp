@@ -181,21 +181,21 @@ parameters:
     description: |
       Starting amount of CPU the container can use.
     displayName: CPU REQUEST
-    value: '100m'
+    value: '50m'
   - name: CPU_LIMIT
     description:
       Maximum amount of CPU the container can use.
     displayName: CPU Limit
-    value: '500m'
+    value: '150m'
   - name: MEMORY_REQUEST
     description:
       Starting amount of memory the container can use.
     displayName: Memory Request
-    value: 256Mi
+    value: 100Mi
   - name: MEMORY_LIMIT
     description: Maximum amount of memory the container can use.
     displayName: Memory Limit
-    value: 500Mi
+    value: 200Mi
   - name: BUILD_NAMESPACE
     description: |
       The OpenShift Namespace where the patroni and postgresql
@@ -210,7 +210,7 @@ parameters:
     description:
       The size of the persistent volume to create.
     displayName: Persistent Volume Size
-    value: 500Mi
+    value: 200Mi
   - name: STORAGE_CLASS
     value: netapp-file-standard
   - name: IMAGE_REGISTRY

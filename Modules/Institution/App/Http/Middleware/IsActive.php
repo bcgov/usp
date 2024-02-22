@@ -69,7 +69,13 @@ class IsActive
                 'status' => 'Please contact your Institution Admin to grant you access.',
             ]);
         }
-
+        if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Institution_ADMIN) && ! $user->hasRole(Role::Institution_USER)) {
+            return Inertia::render('Auth/Login', [
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Please contact your Institution Admin to verify your access.',
+            ]);
+        }
         return $next($request);
     }
 }

@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class IsAdmin
 {
@@ -15,19 +16,27 @@ class IsAdmin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @param  string|null  ...$roles
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @return \Inertia\Response
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $roles = empty($roles) ? [null] : $roles;
 
         if (! Auth::check()) {
-            return redirect()->route('login');
+            return Inertia::render('Auth/Login', [
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Please login again.',
+            ]);
         }
 
         $user = Auth::user();
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Institution_ADMIN)) {
-            return redirect(RouteServiceProvider::HOME);
+            return Inertia::render('Auth/Login', [
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Please contact your Institution Admin to verify your access.',
+            ]);
         }
 
         return $next($request);
