@@ -77,7 +77,7 @@
                         <h5 class="modal-title" id="newInstCapModalLabel">New Institution Cap</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <InstitutionCapCreate v-bind="$attrs" :fedCaps="fedCaps" :results="results"/>
+                    <InstitutionCapCreate v-bind="$attrs" :fedCaps="fedCaps" :results="results" :activeInstCap="activeInstCap"/>
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <InstitutionCapEdit v-bind="$attrs" @close="closeEditForm" :cap="editCap" :fedCaps="fedCaps"
-                                        :results="results"/>
+                                        :results="results" :activeInstCap="activeInstCap"/>
                 </div>
             </div>
         </div>
@@ -117,7 +117,8 @@ export default {
     data() {
         return {
             editCap: '',
-            capStat: ''
+            capStat: '',
+            activeInstCap: null
         }
     },
     methods: {
@@ -162,6 +163,14 @@ export default {
     },
     mounted() {
         this.fetchCapStats();
+
+        //look for inst active cap
+        for (const cap of this.results.caps) {
+            if (cap.program_guid === null && cap.active_status) {
+                this.activeInstCap = cap;
+                break;
+            }
+        }
     }
 }
 </script>

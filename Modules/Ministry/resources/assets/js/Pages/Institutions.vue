@@ -24,7 +24,7 @@
                         <div class="card mb-3">
                             <div class="card-header">
                                 Institutions
-                                <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newInstModal">New Institution</button>
+<!--                                <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newInstModal">New Institution</button>-->
                             </div>
                             <div class="card-body">
                                 <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">
