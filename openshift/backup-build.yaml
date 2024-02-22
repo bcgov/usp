@@ -28,8 +28,6 @@ objects:
       strategy:
         type: Docker
         dockerStrategy:
-          pullSecret:
-            name: artifacts-pull-default-hkucak
           from:
             kind: DockerImage
             name: ${BASE_IMAGE_FOR_BUILD}
@@ -80,4 +78,4 @@ parameters:
     displayName: FROM Image Tag
     description: Base image to build from.  Docker creds or Artificatory setup may be needed to alleviate docker rate-limiting
     required: true
-    value: artifacts.developer.gov.bc.ca/docker-remote/fedora/postgresql-14:14
+    value: quay.io/fedora/postgresql-14:14

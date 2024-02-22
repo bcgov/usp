@@ -91,8 +91,11 @@ export default {
             }, 10);
         },
         openEditForm: function (program){
+            let vm = this;
             this.editProgram = program;
-            setTimeout(function(){$("#editInstProgramModal").modal('show');}, 10)
+            setTimeout(function(){$("#editInstProgramModal").modal('show').on('hidden.bs.modal', function () {
+                vm.editProgram = '';
+            });}, 10)
         },
         closeEditForm: function (){
             setTimeout(function(){$("#editInstProgramModal").modal('hide');}, 10)
