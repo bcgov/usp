@@ -92,7 +92,7 @@
         <table>
             <tr>
                 <td style="width: 35%;">{{ $utils['Ministry Name'][0]->field_name }}<br/>
-                    {{ $utils['Ministry Branch'][0]->field_name }}<br/>{{ $utils['Ministry Branch Url'][0]->field_name }}</td>
+                    {{ $utils['Ministry Branch'][0]->field_name }}<br/><a href="{{$utils['Ministry Branch Url'][0]->field_name}}">{{ $utils['Ministry Branch Url'][0]->field_name }}</a></td>
                 <td style="width: 30%;">
                     Mailing Address:<br/>
                     {!! $utils['Ministry Mailing Address'][0]->field_name !!}<br/>
