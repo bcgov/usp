@@ -22,11 +22,13 @@
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">
-            <a href="#" @click="switchSort('standing_status')">
-                <span>Standing Status</span>
-                <em v-if="sortClmn === 'standing_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-down"></em>
-            </a>
+            Active Cap Total
+        </th>
+        <th scope="col" style="min-width: 100px;">
+            Active Cap Issued
+        </th>
+        <th scope="col" style="min-width: 100px;">
+            Active Cap Remaining
         </th>
     </tr>
 </template>

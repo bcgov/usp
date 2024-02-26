@@ -9,6 +9,8 @@ class Cap extends Model
 {
     use SoftDeletes;
 
+    protected $appends = ['inst_active_cap_stat'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -64,5 +66,19 @@ class Cap extends Model
     public function scopeOnlyProgCaps($query)
     {
         return $query->active()->where('program_guid', '!=', null);
+    }
+
+
+    public function getInstActiveCapStatAttribute()
+    {
+        $issuedInstAttestations = 0;
+        if(!$this->attestations->isEmpty()){
+            $issuedInstAttestations = $this->attestations->where('status', 'Issued')
+                ->count();
+        }
+
+
+        return ['total' => $this->total_attestations, 'issued' => $issuedInstAttestations,
+            'remain' => $this->total_attestations - $issuedInstAttestations];
     }
 }

@@ -40,7 +40,16 @@
                                                 <span v-if="row.active_status" class="badge rounded-pill text-bg-success">Active</span>
                                                 <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>
                                             </td>
-                                            <td>{{ row.standing_status}}</td>
+                                            <template v-if="row.active_caps.length > 0">
+                                                <td>{{row.active_caps[0].inst_active_cap_stat.total}}</td>
+                                                <td>{{row.active_caps[0].inst_active_cap_stat.issued}}</td>
+                                                <td>{{row.active_caps[0].inst_active_cap_stat.remain}}</td>
+                                            </template>
+                                            <template v-else>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </template>
                                         </tr>
                                         </tbody>
                                     </table>
