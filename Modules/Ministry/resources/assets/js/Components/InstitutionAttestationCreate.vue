@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputZipCode" class="form-label" value="Zip Code"/>
+                    <Label for="inputZipCode" class="form-label" value="Postal Code"/>
                     <Input type="text" class="form-control" id="inputZipCode" v-model="newAtteForm.zip_code"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
