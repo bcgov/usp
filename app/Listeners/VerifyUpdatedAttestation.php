@@ -60,6 +60,11 @@ class VerifyUpdatedAttestation
                 \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: ' . $issuedProgAttestations . ' >= ' . $instCap->total_attestations);
                 $valid = false;
             }
+
+            if($attestation->gt_fifty_pct_in_person == false){
+                $valid = false;
+            }
+
             if($valid){
                 $this->storePdf($attestation->id);
                 $cap->draft_attestations -= 1;
