@@ -2,9 +2,9 @@
     <tr>
         <th scope="col">Start Date</th>
         <th scope="col">End Date</th>
-        <th scope="col">Total Atte.</th>
-        <th scope="col">Issued Atte.</th>
-        <th scope="col">Draft Atte.</th>
+        <th scope="col">Total PAL</th>
+        <th scope="col">Issued PAL</th>
+        <th scope="col">Draft PAL</th>
         <th scope="col">Status</th>
         <th scope="col">Comment</th>
     </tr>
