@@ -119,7 +119,7 @@ export default {
             }
         },
         submitForm: function () {
-            let check = confirm('You are about to create a new Institution Cap. This will disable the active Institution Cap. Are you sure you want to continue?');
+            let check = confirm('You are about to create a new Institution Cap. The new amount will override the previous cap and disable the old active Institution Cap. Are you sure you want to continue?');
             if(!check){
                 return false;
             }
