@@ -9,6 +9,24 @@
             </div>
             <div v-else class="row g-3">
 
+                <div class="col-md-4">
+                    <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
+                    <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid">
+                        <option></option>
+                        <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
+                    </Select>
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputStudentNumber" class="form-label" value="Student Number"/>
+                    <Input type="text" class="form-control" id="inputStudentNumber" v-model="editAtteForm.student_number"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-4">
+                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
+                    <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+
                 <div class="col-md-6">
                     <Label for="inputFirstName" class="form-label" value="First Name" required="true"/>
                     <Input type="text" class="form-control" id="inputFirstName" v-model="editAtteForm.first_name"
@@ -30,26 +48,6 @@
                     <Input type="text" class="form-control" id="inputAddress2" v-model="editAtteForm.address2"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-
-                <div class="col-md-4">
-                    <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
-                    <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid">
-                        <option></option>
-                        <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
-                    </Select>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputStudentNumber" class="form-label" value="Student Number"/>
-                    <Input type="text" class="form-control" id="inputStudentNumber" v-model="editAtteForm.student_number"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputStudentId" class="form-label" value="Passport/Travel Doc. ID"/>
-                    <Input type="text" class="form-control" id="inputStudentId" v-model="editAtteForm.id_number"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-
-
 
                 <div class="col-md-3">
                     <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>

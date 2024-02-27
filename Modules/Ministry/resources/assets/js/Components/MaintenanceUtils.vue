@@ -35,7 +35,7 @@
     </div>
 
 
-    <div class="modal modal-lg fade" id="newUtilModal" tabindex="-1" aria-labelledby="newUtilModalLabel" aria-hidden="true">
+    <div class="modal modal-lg fade" id="newUtilModal" tabindex="-1" aria-labelledby="newUtilModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -88,7 +88,7 @@
     </div><!-- end new util -->
     <FormSubmitAlert :form-state="newUtilForm.formState"></FormSubmitAlert>
 
-    <div class="modal modal-lg fade" id="editUtilModal" tabindex="-1" aria-labelledby="editUtilModalLabel" aria-hidden="true">
+    <div class="modal modal-lg fade" id="editUtilModal" tabindex="-1" aria-labelledby="editUtilModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

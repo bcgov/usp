@@ -83,7 +83,8 @@
                 provincial attestation letter, or meet an exception as outlined in the Ministerial Instructions, will
                     not be accepted for processing.</strong> Please refer to <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada.html">IRCC’s web site</a> for study permit application information.
 
-                <br/><br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/><br/>
+                <br/><br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/><br/>{{ $utils['PAL Signature Position'][0]->field_name }}<br/>
+                <br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/>{{ $utils['Ministry Name'][0]->field_name }}
             </td>
         </tr>
 

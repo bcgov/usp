@@ -26,7 +26,7 @@
             <h1 v-else class="lead">No results</h1>
         </div>
 
-        <div v-if="showNewModal" class="modal modal-lg fade" id="newInstProgramModal" tabindex="-1" aria-labelledby="newInstProgramModalLabel" aria-hidden="true">
+        <div v-if="showNewModal" class="modal modal-lg fade" id="newInstProgramModal" tabindex="-1" aria-labelledby="newInstProgramModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="editProgram != ''" class="modal modal-lg fade" id="editInstProgramModal" tabindex="0" aria-labelledby="editInstProgramModalLabel" aria-hidden="true">
+        <div v-if="editProgram != ''" class="modal modal-lg fade" id="editInstProgramModal" tabindex="0" aria-labelledby="editInstProgramModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

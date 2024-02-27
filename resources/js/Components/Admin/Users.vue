@@ -44,7 +44,7 @@
     </div>
 
     <div v-if="editUser != ''" class="modal modal-lg fade" id="editUserModal" tabindex="-1"
-         aria-labelledby="editUserModalLabel" aria-hidden="true">
+         aria-labelledby="editUserModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

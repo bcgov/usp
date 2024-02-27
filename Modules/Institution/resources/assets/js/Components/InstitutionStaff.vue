@@ -52,7 +52,7 @@
             </div>
             <h1 v-else class="lead">No results</h1>
         </div>
-        <div v-if="editStaff == ''" class="modal modal-lg fade" id="newStaffModal" tabindex="-1" aria-labelledby="newStaffModalLabel" aria-hidden="true">
+        <div v-if="editStaff == ''" class="modal modal-lg fade" id="newStaffModal" tabindex="-1" aria-labelledby="newStaffModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

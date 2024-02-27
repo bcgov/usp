@@ -55,7 +55,7 @@
             </div>
 
 
-        <div class="modal modal-lg fade" id="newFedCapModal" tabindex="-1" aria-labelledby="newFedCapModalLabel" aria-hidden="true">
+        <div class="modal modal-lg fade" id="newFedCapModal" tabindex="-1" aria-labelledby="newFedCapModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
