@@ -7,6 +7,7 @@ use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
 use App\Models\Util;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -70,6 +71,7 @@ class VerifyUpdatedAttestation
                 $this->storePdf($attestation->id);
                 $cap->draft_attestations -= 1;
                 $cap->issued_attestations += 1;
+                $attestation->issued_by_user_guid = Auth::user()->guid;
             }else{
                 $attestation->status = 'Draft';
                 $attestation->save();
@@ -97,7 +99,6 @@ class VerifyUpdatedAttestation
         $dob = Carbon::createFromFormat('Y-m-d', $attestation->dob);
         if ($dob->gte($today)) {
             $attestation->dob = '1770-07-07';
-            $attestation->save();
         }
 
         $expiryDate = Carbon::createFromFormat('Y-m-d', $attestation->expiry_date);
@@ -107,8 +108,8 @@ class VerifyUpdatedAttestation
         $startDate = Carbon::createFromFormat('Y-m-d', $instCap->start_date);
         if ($expiryDate->gt($endDate) || $expiryDate->lt($startDate) || $expiryDate->lt($today)) {
             $attestation->expiry_date = $instCap->end_date;
-            $attestation->save();
         }
+        $attestation->save();
 
     }
 

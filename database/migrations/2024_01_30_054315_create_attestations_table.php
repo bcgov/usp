@@ -48,6 +48,7 @@ return new class extends Migration
             $table->date('expiry_date')->default(now()->addDays(30));
 
             $table->string('created_by_user_guid')->nullable();
+            $table->string('issued_by_user_guid')->nullable();
             $table->string('last_touch_by_user_guid')->nullable();
 
             $table->softDeletes();
