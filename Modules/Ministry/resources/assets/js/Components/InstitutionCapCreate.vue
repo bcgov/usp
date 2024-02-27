@@ -3,29 +3,35 @@
         <div class="modal-body">
             <div class="row g-3">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputSd" class="form-label" value="Federal Cap"/>
                     <Select @change="updateFedCap" class="form-select" id="inputSd" v-model="newInstitutionCapForm.fed_cap_id">
                         <option></option>
                         <option v-for="f in fedCaps" :value="f.id">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputStatus" class="form-label" value="Active?"/>
                     <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.active_status">
-                        <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <Label for="inputStatus" class="form-label" value="Confirmed?"/>
+                    <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.confirmed">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
                     <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="newInstitutionCapForm.total_attestations"/>
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
                     </div>
                 </div>
+
                 <div v-if="allowProgramCap && activeInstCap !== null" class="col-md-12">
                     <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>
                     <Select class="form-select" id="inputProgram" v-model="newInstitutionCapForm.program_id">
@@ -95,7 +101,8 @@ export default {
                 total_attestations: "",
                 active_status: "",
                 comment: "",
-                external_comment: ""
+                external_comment: "",
+                confirmed: ""
             },
             selectedFedCap: '',
             allowProgramCap: false

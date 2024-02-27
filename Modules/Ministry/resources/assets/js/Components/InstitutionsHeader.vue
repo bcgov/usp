@@ -22,13 +22,13 @@
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">
-            Active Cap Total
+            Cap Total
         </th>
         <th scope="col" style="min-width: 100px;">
-            Active Cap Issued
+            Issued
         </th>
         <th scope="col" style="min-width: 100px;">
-            Active Cap Remaining
+            Remaining
         </th>
     </tr>
 </template>

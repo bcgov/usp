@@ -45,7 +45,7 @@ class InstitutionEditRequest extends FormRequest
             'guid' => 'required',
             'dli' => 'required|unique:institutions,dli,'.$this->id,
             'name' => 'required|unique:institutions,name,'.$this->id,
-            'bceid_business_guid' => 'required|unique:institutions,bceid_business_guid,'.$this->id,
+            //'bceid_business_guid' => 'required|unique:institutions,bceid_business_guid,'.$this->id,
             'legal_name' => 'nullable',
             'address1' => 'required',
             'address2' => 'nullable',

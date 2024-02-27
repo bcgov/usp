@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('api_id')->nullable();
             $table->string('api_key')->nullable();
             $table->string('last_touch_by_user_guid')->nullable();
+            $table->boolean('info_sharing_agreement')->default(false)->comment('ministry received acceptance for the cap from institution');
+            $table->string('comment')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
