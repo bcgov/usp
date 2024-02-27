@@ -69,7 +69,7 @@
                 </div>
 
                 <a :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
-                    <i class="bi bi-box-arrow-down"></i>
+                    {{attestation.issued_by_name}}<br/><i class="bi bi-box-arrow-down"></i>
                 </a>
 
             </div>
