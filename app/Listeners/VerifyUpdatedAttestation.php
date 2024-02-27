@@ -102,17 +102,11 @@ class VerifyUpdatedAttestation
 
         $expiryDate = Carbon::createFromFormat('Y-m-d', $attestation->expiry_date);
 
-        // Check if the expiry date is greater than $instCap's end date
+        // validate expiry date
         $endDate = Carbon::createFromFormat('Y-m-d', $instCap->end_date);
-        if ($expiryDate->gt($endDate)) {
-            $attestation->expiry_date = $instCap->end_date;
-            $attestation->save();
-        }
-
-        // Check if the expiry date is less than $instCap's start date
         $startDate = Carbon::createFromFormat('Y-m-d', $instCap->start_date);
-        if ($expiryDate->lt($startDate)) {
-            $attestation->expiry_date = $instCap->start_date;
+        if ($expiryDate->gt($endDate) || $expiryDate->lt($startDate) || $expiryDate->lt($today)) {
+            $attestation->expiry_date = $instCap->end_date;
             $attestation->save();
         }
 
