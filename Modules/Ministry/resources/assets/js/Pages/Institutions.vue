@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-        <div class="modal modal-lg fade" id="newInstModal" tabindex="-1" aria-labelledby="newInstModalLabel" aria-hidden="true">
+        <div class="modal modal-lg fade" id="newInstModal" tabindex="-1" aria-labelledby="newInstModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

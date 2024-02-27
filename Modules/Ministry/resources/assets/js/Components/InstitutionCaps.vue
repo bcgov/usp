@@ -72,7 +72,7 @@
 
     </div>
     <div v-if="editCap == ''" class="modal modal-lg fade" id="newInstCapModal" tabindex="-1"
-         aria-labelledby="newInstCapModalLabel" aria-hidden="true">
+         aria-labelledby="newInstCapModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -84,7 +84,7 @@
         </div>
     </div>
     <div v-if="allowProgramCap && editCap != ''" class="modal modal-lg fade" id="editInstCapModal" tabindex="0"
-         aria-labelledby="editInstCapModalLabel" aria-hidden="true">
+         aria-labelledby="editInstCapModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

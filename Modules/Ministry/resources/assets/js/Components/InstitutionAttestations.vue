@@ -45,7 +45,7 @@
             <h1 v-else class="lead">No results.</h1>
 
             </div>
-        <div v-if="showNewModal" class="modal modal-lg fade" id="newAtteModal" tabindex="-1" aria-labelledby="newAtteModalLabel" aria-hidden="true">
+        <div v-if="showNewModal" class="modal modal-lg fade" id="newAtteModal" tabindex="-1" aria-labelledby="newAtteModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="showEditModal" class="modal modal-lg fade" id="editAtteModal" tabindex="0" aria-labelledby="editAtteModalLabel" aria-hidden="true">
+        <div v-if="showEditModal" class="modal modal-lg fade" id="editAtteModal" tabindex="0" aria-labelledby="editAtteModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                     <InstitutionAttestationEdit v-bind="$attrs" :cap="capStat.instCap" :institutions="institutions" :countries="countries" :institution="results" :attestation="editRow" />
             </div>

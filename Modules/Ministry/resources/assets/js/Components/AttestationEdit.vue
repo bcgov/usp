@@ -1,11 +1,77 @@
 <template>
     <form v-if="editAtteForm != null" class="card-body">
         <div class="modal-body">
-            <div v-if="attestation.status !== 'Draft'" class="text-center">
+            <div v-if="attestation.status !== 'Draft'" class="row g-3">
+                <div class="col-md-6 text-break">
+                    <Label for="inputFirstName" value="First Name"/>
+                    {{editAtteForm.first_name}}
+                </div>
+                <div class="col-md-6 text-break">
+                    <Label for="inputLastName" value="Last Name"/>
+                    {{ editAtteForm.last_name }}
+                </div>
+                <div class="col-md-6 text-break">
+                    <Label for="inputAddress1" value="Address 1"/>
+                    {{ editAtteForm.address1 }}
+                </div>
+                <div class="col-md-6 text-break">
+                    <Label for="inputAddress2" value="Address 2"/>
+                    {{ editAtteForm.address2 }}
+                </div>
+
+                <div class="col-md-4 text-break">
+                    <Label for="inputProgram" value="Institution Program"/>
+                    {{ editAtteForm.program_guid }}
+                </div>
+                <div class="col-md-4 text-break">
+                    <Label for="inputStudentNumber" value="Student Number"/>
+                    {{ editAtteForm.student_number }}
+                </div>
+                <div class="col-md-4 text-break">
+                    <Label for="inputStudentId" value="Passport/Travel Doc. ID"/>
+                    {{ editAtteForm.id_number }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputDob" value="Date of Birth"/>
+                    {{ editAtteForm.dob }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputInPerson" value="> 50% in-person?"/>
+                    {{ editAtteForm.gt_fifty_pct_in_person }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputEmail" value="Email"/>
+                    {{ editAtteForm.email }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputCity" value="City"/>
+                    {{ editAtteForm.city }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputZipCode" value="Postal Code"/>
+                    {{ editAtteForm.zip_code }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputProvince" value="Province / State"/>
+                    {{ editAtteForm.province }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputCountry" value="Country"/>
+                    {{ editAtteForm.country }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputExpiryDate" value="Expiry Date"/>
+                    {{ editAtteForm.expiry_date }}
+                </div>
+
                 <a :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
                     <i class="bi bi-box-arrow-down"></i>
                 </a>
-                <p>Download Attestation</p>
+
             </div>
             <div v-else class="row g-3">
                 <div class="col-md-6">
