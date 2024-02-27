@@ -44,4 +44,15 @@ class Attestation extends Model
     {
         return $this->belongsTo(FedCap::class, 'fed_cap_guid', 'guid');
     }
+
+    /**
+     * Scope a query to only include admin users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIssued($query)
+    {
+        return $query->where('status', 'Issued');
+    }
 }

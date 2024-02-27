@@ -39,6 +39,7 @@ return new class extends Migration
             //both the to/from institutions old cap tables will be switched to status=updated
             //both the to/from institutions new cap tables will have the same guid as the old records
             $table->boolean('active_status')->default(true);
+            $table->boolean('confirmed')->default(false)->comment('ministry received acceptance for the cap from institution');
             $table->text('comment')->nullable();
             $table->text('external_comment')->nullable();
             $table->string('last_touch_by_user_guid')->nullable();

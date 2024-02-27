@@ -10,7 +10,7 @@
             <span>Cap Total</span>
         </th>
         <th scope="col" style="min-width: 80px;">
-            <span>Issued Atte.</span>
+            <span>Issued PAL</span>
         </th>
         <th scope="col">
             <span>Program</span>

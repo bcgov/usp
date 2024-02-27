@@ -21,7 +21,8 @@
                             Attestations
                             <template v-if="capStat != ''">
                                 <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
-                                <span class="badge rounded-pill text-bg-primary me-1">Issued Attestations: {{ capStat.issued }}</span>
+                                <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{ capStat.issued }}</span>
+                                <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{ capStat.instCap.total_attestations - capStat.issued }}</span>
                             </template>
                             <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Attestation</button>
                         </div>
@@ -33,9 +34,9 @@
                                     </thead>
                                     <tbody>
                                     <tr v-for="(row, i) in attestationList">
-                                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.first_name }}</button></td>
-                                        <td>{{ row.last_name }}</td>
-                                        <td>{{ row.dob }}</td>
+                                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.last_name }}</button></td>
+                                        <td>{{ row.first_name }}</td>
+                                        <td>{{ row.id_number }}</td>
                                         <td><span v-if="row.program !== null">{{ row.program.program_name }}</span></td>
                                         <td>
                                             <div>

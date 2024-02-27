@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-md-4">
                     <Label for="inputBceidBizGuid" class="form-label" value="BCeID Business Guid" />
-                    <Input type="text" class="form-control" id="inputBceidBizGuid" v-model="editForm.bceid_business_guid" />
+                    <Input type="text" class="form-control" id="inputBceidBizGuid" v-model="editForm.bceid_business_guid" readonly disabled/>
                 </div>
 
                 <div class="col-md-4">
@@ -48,26 +48,38 @@
                         <option v-for="prov in $attrs.utils['Provinces']" :value="prov.field_name">{{ prov.field_name }}</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+
+                <div class="col-md-3">
                     <Label for="inputPublic" class="form-label" value="Public?" />
                     <Select class="form-select" id="inputPublic" v-model="editForm.public">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputActiveStatus" class="form-label" value="Active?" />
                     <Select class="form-select" id="inputActiveStatus" v-model="editForm.active_status">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputStandingStatus" class="form-label" value="Status - in good standing?" />
                     <Select class="form-select" id="inputStandingStatus" v-model="editForm.standing_status">
                         <option value=""></option>
                         <option v-for="restr in $attrs.utils['Institution Restriction']" :value="restr.field_name">{{ restr.field_name }}</option>
                     </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputInfoSharing" class="form-label" value="Info Sharing Agreement?" />
+                    <Select class="form-select" id="inputInfoSharing" v-model="editForm.info_sharing_agreement">
+                        <option value="true">Provided</option>
+                        <option value="false">Not Provided</option>
+                    </Select>
+                </div>
+                <div class="col-12">
+                    <Label for="inputComment" class="form-label" value="Comments" />
+                    <textarea class="form-control" id="inputComment" v-model="editForm.comment"></textarea>
                 </div>
 
                 <div v-if="editForm.errors != undefined" class="row">
