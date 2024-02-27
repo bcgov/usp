@@ -81,7 +81,6 @@ class VerifyIssuedAttestation
 
         $cap->save();
 
-
         //validate expiry date and dob
         // Get today's date
         $today = Carbon::now()->startOfDay();

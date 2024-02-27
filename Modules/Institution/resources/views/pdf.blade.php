@@ -6,16 +6,21 @@
 
     <title>USPA - International Study Permit</title>
     <style>
+        @font-face {
+            font-family: "DejaVu Sans";
+            src: url("' . public_path('fonts/DejaVuSans.ttf') . '") format("truetype");
+        }
         body{
-            line-height: 1.1rem;
-            font-size: 14px;
+            font-family: "DejaVu Sans", sans-serif;
+            line-height: 1rem;
+            font-size: 13px;
             margin: 130px 30px 30px 30px;
             position: relative;
             /* Ensure the watermark covers the entire page */
             min-height: 100vh;
         }
         header { position: fixed; top: 0px; left: 0px; right: 0px; height: 120px; border-bottom: #0b2e13 1px solid; }
-        footer { font-family: sans-serif; position: fixed; bottom: 12px; left: 0px; right: 0px; height: 80px; font-size: 10px;
+        footer { position: fixed; bottom: 12px; left: 0px; right: 0px; height: 80px; font-size: 9px;
             border-top: #0b2e13 1px solid; line-height: 1rem;}
         td{
             vertical-align: top;
@@ -53,14 +58,14 @@
     </header>
 
     <table>
-        <tr><td>{{ $now_d }}<br/><br/><br/></td></tr>
+        <tr><td>{{ $now_d }}<br/><br/></td></tr>
         <tr>
             <td>
                 Student name: {{ $attestation->first_name }} {{ $attestation->last_name }}<br/>
                 Attestation ID: <strong>{{ $attestation->fed_guid }}</strong><br/>
                 Issue date/time: {{ $attestation->created_at }}<br/>
                 Expiry date: {{ $attestation->expiry_date }}<br/>
-                <br/><br/><br/>
+                <br/><br/>
                 Dear {{ $attestation->first_name }} {{ $attestation->last_name }},<br/><br/>
                 This provincial attestation letter confirms that you have a space within British Columbia’s 2024 allocation period for study permit applications, based on the information that you provided:<br/>
                 <strong>Student:</strong>
@@ -83,8 +88,8 @@
                 provincial attestation letter, or meet an exception as outlined in the Ministerial Instructions, will
                     not be accepted for processing.</strong> Please refer to <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada.html">IRCC’s web site</a> for study permit application information.
 
-                <br/><br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/><br/>{{ $utils['PAL Signature Position'][0]->field_name }}<br/>
-                <br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/>{{ $utils['Ministry Name'][0]->field_name }}
+                <br/><br/><br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/>{{ $utils['PAL Signature Position'][0]->field_name }}
+                <br/>{{ $utils['PAL Signature Division'][0]->field_name }}<br/>{{ $utils['Ministry Name'][0]->field_name }}
             </td>
         </tr>
 

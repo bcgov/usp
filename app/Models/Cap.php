@@ -71,11 +71,10 @@ class Cap extends Model
 
     public function getInstActiveCapStatAttribute()
     {
-        $issuedInstAttestations = 0;
-        if(!$this->attestations->isEmpty()){
-            $issuedInstAttestations = $this->attestations->where('status', 'Issued')
-                ->count();
-        }
+        $issuedInstAttestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $this->institution_guid)
+            ->where('fed_cap_guid', $this->fed_cap_guid)
+            ->count();
 
 
         return ['total' => $this->total_attestations, 'issued' => $issuedInstAttestations,
