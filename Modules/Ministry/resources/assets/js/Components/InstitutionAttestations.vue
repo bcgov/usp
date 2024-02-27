@@ -4,7 +4,8 @@
             Attestations
             <template v-if="capStat != ''">
                 <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
-                <span class="badge rounded-pill text-bg-primary me-1">Issued Attestations: {{ capStat.issued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Issued PAL: {{ capStat.issued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Remaining PAL: {{ capStat.instCap.total_attestations - capStat.issued }}</span>
             </template>
             <button v-if="results.active_caps.length > 0" type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Attestation</button>
         </div>
@@ -16,9 +17,9 @@
                     </thead>
                     <tbody>
                     <tr v-for="(row, i) in attestationList">
-                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.first_name }}</button></td>
-                        <td>{{ row.last_name }}</td>
-                        <td>{{ row.dob }}</td>
+                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.last_name }}</button></td>
+                        <td>{{ row.first_name }}</td>
+                        <td>{{ row.id_number }}</td>
                         <td><Link :href="'/ministry/institutions/' + results.id">{{ results.name }}</Link></td>
                         <td>
                             <div>
@@ -51,13 +52,13 @@
                         <h5 class="modal-title" id="newAtteModalLabel">New Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <InstitutionAttestationCreate :institutions="institutions" :countries="countries" :institution="results" :newAtte="newAtte" />
+                    <InstitutionAttestationCreate :cap="capStat.instCap" :institutions="institutions" :countries="countries" :institution="results" :newAtte="newAtte" />
                 </div>
             </div>
         </div>
         <div v-if="showEditModal" class="modal modal-lg fade" id="editAtteModal" tabindex="0" aria-labelledby="editAtteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                    <InstitutionAttestationEdit v-bind="$attrs" :institutions="institutions" :countries="countries" :institution="results" :attestation="editRow" />
+                    <InstitutionAttestationEdit v-bind="$attrs" :cap="capStat.instCap" :institutions="institutions" :countries="countries" :institution="results" :attestation="editRow" />
             </div>
         </div>
     </div>

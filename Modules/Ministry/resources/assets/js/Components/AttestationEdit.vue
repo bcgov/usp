@@ -53,7 +53,7 @@
 
                 <div class="col-md-3">
                     <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="editAtteForm.dob"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>

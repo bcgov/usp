@@ -2,6 +2,7 @@ import './bootstrap';
 
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
+import { globalMixins } from './globalMixins'; // Import the global mixins file
 
 // @ts-ignore
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'USPA';
@@ -19,9 +20,10 @@ createInertiaApp({
         return require(`./Pages/${name}.vue`).default
     },
     setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .mount(el);
+        const app = createApp({ render: () => h(App, props) })
+            .use(plugin);
+        app.mixin(globalMixins);
+        app.mount(el);
     },
 })
 

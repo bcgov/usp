@@ -7,6 +7,7 @@ use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
 use App\Models\Util;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class VerifyIssuedAttestation
@@ -79,6 +80,35 @@ class VerifyIssuedAttestation
         }
 
         $cap->save();
+
+
+        //validate expiry date and dob
+        // Get today's date
+        $today = Carbon::now()->startOfDay();
+
+        // Check if the dob is gte than today
+        $dob = Carbon::createFromFormat('Y-m-d', $attestation->dob);
+        if ($dob->gte($today)) {
+            $attestation->dob = '1770-07-07';
+            $attestation->save();
+        }
+
+        $expiryDate = Carbon::createFromFormat('Y-m-d', $attestation->expiry_date);
+
+        // Check if the expiry date is greater than $instCap's end date
+        $endDate = Carbon::createFromFormat('Y-m-d', $instCap->end_date);
+        if ($expiryDate->gt($endDate)) {
+            $attestation->expiry_date = $instCap->end_date;
+            $attestation->save();
+        }
+
+        // Check if the expiry date is less than $instCap's start date
+        $startDate = Carbon::createFromFormat('Y-m-d', $instCap->start_date);
+        if ($expiryDate->lt($startDate)) {
+            $attestation->expiry_date = $instCap->start_date;
+            $attestation->save();
+        }
+
     }
 
     private function storePdf($atteId)

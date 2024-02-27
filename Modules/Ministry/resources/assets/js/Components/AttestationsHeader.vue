@@ -1,24 +1,24 @@
 <template>
     <tr>
         <th scope="col">
-            <a href="#" @click="switchSort('first_name')">
-                <span>First Name</span>
-                <em v-if="sortClmn === 'first_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-down"></em>
-            </a>
-        </th>
-        <th scope="col">
             <a href="#" @click="switchSort('last_name')">
                 <span>Last Name</span>
                 <em v-if="sortClmn === 'last_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
+        <th scope="col">
+            <a href="#" @click="switchSort('first_name')">
+                <span>First Name</span>
+                <em v-if="sortClmn === 'first_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-else class="bi bi-sort-alpha-down"></em>
+            </a>
+        </th>
         <th scope="col" style="min-width: 100px;">
-            <a href="#" @click="switchSort('dob')">
-                <span>Date of Birth</span>
-                <em v-if="sortClmn === 'dob' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
-                <em v-else class="bi bi-sort-numeric-down"></em>
+            <a href="#" @click="switchSort('id_number')">
+                <span>Student Number</span>
+                <em v-if="sortClmn === 'id_number' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-else class="bi bi-sort-alpha-up"></em>
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">

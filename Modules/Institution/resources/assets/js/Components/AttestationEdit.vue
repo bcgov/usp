@@ -53,14 +53,13 @@
 
                 <div class="col-md-3">
                     <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="editAtteForm.dob"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
                     <Label for="inputInPerson" class="form-label" value="> 50% in-person?" required="true"/>
                     <Select class="form-select" id="inputInPerson" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
-                        <option></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
@@ -96,7 +95,7 @@
                 </div>
                 <div class="col-md-3">
                     <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
-                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="instCap.start_date" :max="instCap.end_date" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>

@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-md-4">
                     <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="newAtteForm.dob"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
@@ -100,7 +100,7 @@
                 </div>
                 <div class="col-md-4">
                     <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
-                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="computeMaxStartDate" :max="computeMaxExpiryDate" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
@@ -226,7 +226,26 @@ export default {
             });
         }
     },
-
+    computed: {
+        computeMaxExpiryDate: function () {
+            let d = '2040-12-31';
+            if(this.selectedInst !== ''){
+                if(this.selectedInst.active_caps.length > 0){
+                    d = this.selectedInst.active_caps[0].end_date;
+                }
+            }
+            return d;
+        },
+        computeMaxStartDate: function () {
+            let d = '2024-01-01';
+            if(this.selectedInst !== ''){
+                if(this.selectedInst.active_caps.length > 0){
+                    d = this.selectedInst.active_caps[0].start_date;
+                }
+            }
+            return d;
+        }
+    },
     mounted() {
         this.newAtteForm = useForm(this.newAtteFormData);
     }
