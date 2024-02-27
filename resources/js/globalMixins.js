@@ -8,6 +8,18 @@ export const globalMixins = {
             const day = String(today.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         },
+        $getProgramNameFromGuid(programs, program_guid) {
+            let name = '';
+            programs.forEach(program => {
+                if (program.guid === program_guid) {
+                    name = program.program_name;
+                }
+            });
+            return name;
+        },
+        $getYesNo(value) {
+            return value == true ? 'Yes' : 'No';
+        }
 
     }
 };
