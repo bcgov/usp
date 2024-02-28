@@ -99,9 +99,6 @@ class InstitutionController extends Controller
     public function staffUpdateRole(Request $request): \Inertia\Response
     {
         $newRole = Role::where('name', Role::Institution_GUEST)->first();
-        if ($request->input('role') === 'Admin') {
-            $newRole = Role::where('name', Role::Institution_ADMIN)->first();
-        }
         if ($request->input('role') === 'User') {
             $newRole = Role::where('name', Role::Institution_USER)->first();
         }

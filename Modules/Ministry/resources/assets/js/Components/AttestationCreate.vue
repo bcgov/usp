@@ -99,10 +99,13 @@
                     </datalist>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
-                    <Input type="date" :min="computeMaxStartDate" :max="computeMaxExpiryDate" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
-                           :disabled="newAtteForm.program_guid === ''"/>
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                    <Input v-if="selectedInst == ''" type="text"
+                           class="form-control" id="inputExpiryDate" value=""
+                           disabled readonly/>
+                    <Input v-else type="text"
+                           class="form-control" id="inputExpiryDate" v-model="selectedInst.active_caps[0].end_date"
+                           disabled readonly/>
                 </div>
 
 

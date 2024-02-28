@@ -125,7 +125,41 @@ class AttestationController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
 
-        return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
+        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . 'attestation.pdf');
+    }
+
+    public function exportCsv()
+    {
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+
+        $data = Attestation::where('institution_guid', $institution->guid)->orderByDesc('created_at')->get();
+
+        $csvData = [];
+        $csvDataHeader = ['PAL ID', 'PROGRAM NAME', 'STUDENT NUMBER', 'FIRST NAME', 'LAST NAME', 'TRAVEL ID', 'DOB', 'ADDRESS1', 'ADDRESS2', 'EMAIL', 'CITY',
+            'POSTAL CODE', 'PROVINCE', 'COUNTRY', '>50% IN PERSON', 'STATUS', 'EXPIRY DATE', 'ISSUED BY', 'ISSUE DATE'];
+
+        foreach ($data as $d){
+            $csvData[] = [$d->fed_guid, $d->program->program_name, $d->student_number, $d->first_name, $d->last_name, $d->id_number,
+                $d->dob, $d->address1, $d->address2, $d->email, $d->city, $d->zip_code, $d->province, $d->country,
+                $d->gt_fifty_pct_in_person, $d->status, $d->expiry_date, $d->issued_by_name, $d->updated_at];
+        }
+        $output = fopen('php://temp', 'w');
+        // Write CSV headers
+        fputcsv($output, $csvDataHeader);
+
+        // Write CSV rows
+        foreach ($csvData as $row) {
+            fputcsv($output, $row);
+        }
+        rewind($output);
+        $response = Response::make(stream_get_contents($output), 200);
+        $response->header('Content-Type', 'text/csv');
+        $response->header('Content-Disposition', 'attachment; filename="attestations_export.csv"');
+        fclose($output);
+
+        return $response;
+
     }
 
     public function capStat(Request $request){
@@ -146,12 +180,17 @@ class AttestationController extends Controller
 
         $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
 
-        if (request()->filter_first_name !== null) {
-            $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_first_name.'%');
+        if (request()->filter_term !== null && request()->filter_type !== null) {
+            $attestations = match (request()->filter_type) {
+                "student_number" => $attestations->where('student_number', 'ILIKE', '%' . request()->filter_term . '%'),
+                "first_name" => $attestations->where('first_name', 'ILIKE', '%' . request()->filter_term . '%'),
+                "last_name" => $attestations->where('last_name', 'ILIKE', '%' . request()->filter_term . '%'),
+                "travel_id" => $attestations->where('id_number', 'ILIKE', '%' . request()->filter_term . '%'),
+                "city" => $attestations->where('city', 'ILIKE', '%' . request()->filter_term . '%'),
+                "country" => $attestations->where('country', 'ILIKE', '%' . request()->filter_term . '%'),
+            };
         }
-        if (request()->filter_last_name !== null) {
-            $attestations = $attestations->where('last_name', 'ILIKE', '%'.request()->filter_last_name.'%');
-        }
+
 
         if (request()->sort !== null) {
             $attestations = $attestations->orderBy(request()->sort, request()->direction);

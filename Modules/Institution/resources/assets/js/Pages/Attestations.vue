@@ -25,6 +25,7 @@
                                 <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{ capStat.instCap.total_attestations - capStat.issued }}</span>
                             </template>
                             <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Attestation</button>
+                            <a href="/institution/attestations/export" target="_blank" class="btn btn-outline-success btn-sm float-end me-1" title="Export Attestations"><i class="bi bi-filetype-csv"></i></a>
                         </div>
                         <div class="card-body">
                             <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">
@@ -34,9 +35,9 @@
                                     </thead>
                                     <tbody>
                                     <tr v-for="(row, i) in attestationList">
-                                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link pb-0 pt-0">{{ row.last_name }}</button></td>
+                                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link p-0">{{ row.last_name }}</button></td>
                                         <td>{{ row.first_name }}</td>
-                                        <td>{{ row.id_number }}</td>
+                                        <td>{{ row.student_number }}</td>
                                         <td><span v-if="row.program !== null">{{ row.program.program_name }}</span></td>
                                         <td>
                                             <div>

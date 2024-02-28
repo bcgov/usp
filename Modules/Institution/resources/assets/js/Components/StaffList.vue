@@ -27,7 +27,7 @@
                             <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">
                                 <input type="radio" class="btn-check" :name="'btnRadioRole0'+i"
                                        :id="'btnRadioRole0'+i" autocomplete="off" :checked="isAdmin(row.user.roles)">
-                                <label @click.prevent="switchRole(row,'Admin')" class="btn btn-outline-success" :for="'btnRadioRole0'+i">Admin</label>
+                                <label class="btn btn-outline-success" :for="'btnRadioRole0'+i">Admin</label>
 
                                 <input type="radio" class="btn-check" :name="'btnRadioRole1'+i"
                                        :id="'btnRadioRole1'+i" autocomplete="off" :checked="isUser(row.user.roles)">
@@ -39,17 +39,7 @@
                             </div>
 
                         </td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff status">
-                                <input type="radio" class="btn-check" :name="'btnRadioStatus1'+i"
-                                       :id="'btnRadioStatus1'+i" autocomplete="off" :checked="row.status==='Active'">
-                                <label @click.prevent="switchStatus(row,'Active')" class="btn btn-outline-success" :for="'btnRadioStatus1'+i">Active</label>
 
-                                <input type="radio" class="btn-check" :name="'btnRadioStatus2'+i"
-                                       :id="'btnRadioStatus2'+i" autocomplete="off" :checked="row.status!=='Active'">
-                                <label @click.prevent="switchStatus(row,'Inactive')" class="btn btn-outline-success" :for="'btnRadioStatus2'+i">Inactive</label>
-                            </div>
-                        </td>
 
                     </tr>
                     </tbody>
@@ -93,14 +83,6 @@ export default {
         isGuest: function (roles){
             const role = roles.find(role => role.name === "Institution Guest");
             return !!role;
-        },
-        switchStatus: function (staff, status){
-            if(confirm('Are you sure you want to switch this staff member\'s Status to: ' + status)){
-                this.editStaffForm = '';
-                this.editStaffForm = useForm(staff);
-                this.editStaffForm.status = status;
-                this.submitForm();
-            }
         },
         switchRole: function (staff, role){
             if(confirm('Are you sure you want to switch this staff member\'s Role to: ' + role)){

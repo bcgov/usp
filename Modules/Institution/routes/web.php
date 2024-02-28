@@ -26,6 +26,7 @@ Route::prefix('institution')->group(function () {
             Route::post('/attestations', [AttestationController::class, 'store'])->name('attestations.store');
             Route::put('/attestations', [AttestationController::class, 'update'])->name('attestations.update');
             Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
+            Route::get('/attestations/export', [AttestationController::class, 'exportCsv'])->name('attestations.export');
 
             Route::get('/dashboard', [InstitutionController::class, 'index'])->name('dashboard');
             Route::get('/account', [InstitutionController::class, 'show'])->name('show');

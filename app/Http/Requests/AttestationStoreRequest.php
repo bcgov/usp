@@ -91,6 +91,7 @@ class AttestationStoreRequest extends FormRequest
             'zip_code' => Str::upper($this->zip_code),
             'province' => Str::title($this->province),
             'gt_fifty_pct_in_person' => $this->toBoolean($this->gt_fifty_pct_in_person),
+            'expiry_date' => $cap->end_date,
         ]);
 
     }

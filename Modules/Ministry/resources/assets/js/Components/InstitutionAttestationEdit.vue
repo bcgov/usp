@@ -167,10 +167,10 @@
                         </datalist>
                     </div>
                     <div class="col-md-3">
-                        <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
-                        <Input type="date" min="2024-01-01" :max="cap.end_date" placeholder="YYYY-MM-DD"
-                               class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
-                               :disabled="editAtteForm.program_guid === ''"/>
+                        <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                        <Input type="text"
+                               class="form-control" id="inputExpiryDate" v-model="cap.end_date"
+                               disabled readonly/>
                     </div>
 
 
