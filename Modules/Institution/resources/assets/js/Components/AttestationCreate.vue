@@ -10,18 +10,15 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label class="form-label" value="> 50% in-person?" required="true"/>
-                    <Select class="form-select" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </Select>
-                </div>
-                <div class="col-md-4">
                     <Label class="form-label" value="Student Number"/>
                     <Input type="text" class="form-control" v-model="newAtteForm.student_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-
+                <div class="col-md-4">
+                    <Label class="form-label" value="Passport/Travel Doc. ID"/>
+                    <Input type="text" class="form-control" v-model="newAtteForm.id_number"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
                 <div class="col-md-6">
                     <Label class="form-label" value="First Name" required="true"/>
                     <Input type="text" class="form-control" v-model="newAtteForm.first_name"
@@ -45,9 +42,11 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label class="form-label" value="Passport/Travel Doc. ID"/>
-                    <Input type="text" class="form-control" v-model="newAtteForm.id_number"
-                           :disabled="newAtteForm.program_guid === ''"/>
+                    <Label class="form-label" value="> 50% in-person?" required="true"/>
+                    <Select class="form-select" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
                 </div>
                 <div class="col-md-3">
                     <Label class="form-label" value="Date of Birth" required="true"/>
@@ -85,10 +84,10 @@
                     </datalist>
                 </div>
                 <div class="col-md-3">
-                    <Label class="form-label" value="Expiry Date" required="true"/>
-                    <Input type="date" :min="instCap.start_date" :max="instCap.end_date" placeholder="YYYY-MM-DD"
-                           class="form-control" v-model="newAtteForm.expiry_date"
-                           :disabled="newAtteForm.program_guid === ''"/>
+                    <Label class="form-label" value="Expiry Date"/>
+                    <Input type="text"
+                           class="form-control" v-model="instCap.end_date"
+                           disabled readonly/>
                 </div>
 
                 <div v-if="newAtteForm.errors != undefined" class="row">
