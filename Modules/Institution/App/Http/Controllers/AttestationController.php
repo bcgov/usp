@@ -125,7 +125,7 @@ class AttestationController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
 
-        return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
+        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . 'attestation.pdf');
     }
 
     public function capStat(Request $request){
