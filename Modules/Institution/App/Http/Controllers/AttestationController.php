@@ -146,12 +146,17 @@ class AttestationController extends Controller
 
         $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
 
-        if (request()->filter_first_name !== null) {
-            $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_first_name.'%');
+        if (request()->filter_term !== null && request()->filter_type !== null) {
+            $attestations = match (request()->filter_type) {
+                "student_number" => $attestations->where('student_number', 'ILIKE', '%' . request()->filter_term . '%'),
+                "first_name" => $attestations->where('first_name', 'ILIKE', '%' . request()->filter_term . '%'),
+                "last_name" => $attestations->where('last_name', 'ILIKE', '%' . request()->filter_term . '%'),
+                "travel_id" => $attestations->where('id_number', 'ILIKE', '%' . request()->filter_term . '%'),
+                "city" => $attestations->where('city', 'ILIKE', '%' . request()->filter_term . '%'),
+                "country" => $attestations->where('country', 'ILIKE', '%' . request()->filter_term . '%'),
+            };
         }
-        if (request()->filter_last_name !== null) {
-            $attestations = $attestations->where('last_name', 'ILIKE', '%'.request()->filter_last_name.'%');
-        }
+
 
         if (request()->sort !== null) {
             $attestations = $attestations->orderBy(request()->sort, request()->direction);

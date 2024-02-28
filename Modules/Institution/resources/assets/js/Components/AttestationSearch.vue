@@ -1,15 +1,23 @@
 <template>
     <form @submit.prevent="nameFormSubmit" class="m-3">
         <div class="row mb-3">
-            <BreezeLabel class="col-auto col-form-label" for="inputFirstName" value="First Name" />
+            <BreezeLabel class="col-auto col-form-label" for="inputFirstName" value="Search term" />
             <div class="col-12">
-                <BreezeInput type="text" id="inputFirstName" class="form-control" v-model="nameForm.filter_first_name" autocomplete="off" />
+                <BreezeInput type="text" id="inputFirstName" class="form-control" v-model="nameForm.filter_term" autocomplete="off" />
             </div>
         </div>
         <div class="row mb-3">
-            <BreezeLabel class="col-auto col-form-label" for="inputLastName" value="Last Name" />
+            <BreezeLabel class="col-auto col-form-label" for="inputLastName" value="Search type" />
             <div class="col-12">
-                <BreezeInput type="text" id="inputLastName" class="form-control" v-model="nameForm.filter_last_name" autocomplete="off" />
+                <BreezeSelect id="inputType" class="form-control" v-model="nameForm.filter_type">
+                    <option value="student_number">Student Number</option>
+                    <option value="first_name">First Name</option>
+                    <option value="last_name">Last Name</option>
+                    <option value="travel_id">Travel ID</option>
+                    <option value="travel_id">PAL #</option>
+                    <option value="city">City</option>
+                    <option value="country">Country</option>
+                </BreezeSelect>
             </div>
         </div>
         <div class="row mb-3">
@@ -23,6 +31,7 @@
 </template>
 <script setup>
 import BreezeInput from '@/Components/Input.vue';
+import BreezeSelect from '@/Components/Select.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import BreezeButton from '@/Components/Button.vue';
 
@@ -37,14 +46,13 @@ const props = defineProps({
 let searchType = ref('byName');
 
 const nameFormTemplate = {
-    filter_first_name: '',
-    filter_last_name: '',
-    filter_type: props.ftype ?? 'active',
+    filter_term: '',
+    filter_type: 'student_number',
 };
 const nameForm = useForm(nameFormTemplate);
 const nameFormSubmit = () => {
     nameForm.get('/institution/attestations', {
-        onFinish: () => nameForm.reset('inputFirstName', 'inputLastName'),
+        onFinish: () => nameForm.reset('filter_term', 'filter_type'),
     });
 };
 
