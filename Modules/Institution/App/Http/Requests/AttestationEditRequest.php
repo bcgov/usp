@@ -32,6 +32,7 @@ class AttestationEditRequest extends FormRequest
             'fed_cap_guid' => 'required|exists:fed_caps,guid',
             'institution_guid' => 'required|exists:institutions,guid',
             'program_guid' => 'required|exists:programs,guid',
+            'program_name' => 'required|exists:programs,program_name',
             'first_name' => 'required',
             'last_name' => 'required',
             'id_number' => 'nullable',
@@ -60,6 +61,7 @@ class AttestationEditRequest extends FormRequest
     protected function prepareForValidation()
     {
         $user = User::find(Auth::user()->id);
+        $program = Program::where('guid', $this->program_guid)->first();
 
         //get the inst active cap.
         $cap = Cap::where('institution_guid', $user->institution->guid)->active()->where('program_guid', null)->first();
@@ -88,6 +90,7 @@ class AttestationEditRequest extends FormRequest
             'province' => Str::title($this->province),
             'gt_fifty_pct_in_person' => $this->toBoolean($this->gt_fifty_pct_in_person),
             'expiry_date' => $cap->end_date,
+            'program_name' => $program->program_name,
         ]);
 
     }

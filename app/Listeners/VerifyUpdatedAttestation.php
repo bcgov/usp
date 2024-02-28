@@ -72,6 +72,7 @@ class VerifyUpdatedAttestation
                 $cap->draft_attestations -= 1;
                 $cap->issued_attestations += 1;
                 $attestation->issued_by_user_guid = Auth::user()->guid;
+                $attestation->issue_date = Carbon::now()->startOfDay();
             }else{
                 $attestation->status = 'Draft';
                 $attestation->save();
