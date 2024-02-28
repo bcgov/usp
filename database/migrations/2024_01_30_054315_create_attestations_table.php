@@ -30,6 +30,7 @@ return new class extends Migration
             $table->foreign('program_guid')->references('guid')->on('programs')
                 ->onDelete('cascade');
 
+            $table->string('program_name')->nullable();
             $table->string('first_name')->index();
             $table->string('last_name')->index();
             $table->string('id_number');
@@ -46,6 +47,7 @@ return new class extends Migration
 
             $table->string('status')->default('new');
             $table->date('expiry_date')->default(now()->addDays(30));
+            $table->date('issue_date')->nullable();
 
             $table->string('created_by_user_guid')->nullable();
             $table->string('issued_by_user_guid')->nullable();
