@@ -56,6 +56,7 @@ class InstitutionStoreRequest extends FormRequest
             'last_touch_by_user_guid' => 'required|exists:users,guid',
             'comment' => 'nullable',
             'info_sharing_agreement' => 'required|boolean',
+            'category' => 'nullable|exists:utils,field_name',
         ];
     }
 

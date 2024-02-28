@@ -7,41 +7,39 @@
         <form class="card-body" @submit.prevent="submitForm">
             <div class="row g-3">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputName" class="form-label" value="Name" />
                     <Input type="text" class="form-control" id="inputName" v-model="editForm.name" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputCategory" class="form-label" value="Category" />
                     <Select class="form-select" id="inputCategory" v-model="editForm.category">
                         <option></option>
                         <option v-for="cat in $attrs.utils['Institution Category']" :value="cat.field_name">{{ cat.field_name }}</option>
                     </Select>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputAddress1" class="form-label" value="Address 1" />
                     <Input type="text" class="form-control" id="inputAddress1" v-model="editForm.address1" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputBceidBizGuid" class="form-label" value="BCeID Business Guid" />
                     <Input type="text" class="form-control" id="inputBceidBizGuid" v-model="editForm.bceid_business_guid" readonly disabled/>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputDli" class="form-label" value="DLI #" />
                     <Input type="text" class="form-control" id="inputDli" v-model="editForm.dli" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputPrimaryContact" class="form-label" value="Primary Contact" />
                     <Input type="text" class="form-control" id="inputPrimaryContact" v-model="editForm.primary_contact" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputPrimaryEmail" class="form-label" value="Primary Email" />
                     <Input type="email" class="form-control" id="inputPrimaryEmail" v-model="editForm.primary_email" />
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputCity" class="form-label" value="City" />
                     <Input type="text" class="form-control" id="inputCity" v-model="editForm.city" />
                 </div>
