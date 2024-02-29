@@ -18,21 +18,13 @@ if [ -f /vault/secrets/test-secrets.env ]; then
 fi
 echo "ENV_ARG: ${ENV_ARG}"
 
-#echo "Install composer"
-#rm -rf vendor
-#rm -f composer.lock
-#composer install
-
-#echo "Update artisan"
-#php artisan key:generate --force
-php artisan dump-auto
+echo "Install composer"
+composer dump-auto
 
 chmod 766 /var/www/html/probe-check.sh
 
-#echo "Run NPM:"
-#npm install --prefix /var/www/html/
+echo "Permissions setup for NPM:"
 chmod -R a+w node_modules
-#npm run --prefix /var/www/html/ prod
 
 echo "Starting apache:"
 /usr/sbin/apache2ctl start
