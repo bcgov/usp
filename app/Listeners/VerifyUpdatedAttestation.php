@@ -7,7 +7,9 @@ use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
 use App\Models\Util;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class VerifyUpdatedAttestation
 {
@@ -60,10 +62,17 @@ class VerifyUpdatedAttestation
                 \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: ' . $issuedProgAttestations . ' >= ' . $instCap->total_attestations);
                 $valid = false;
             }
+
+            if($attestation->gt_fifty_pct_in_person == false){
+                $valid = false;
+            }
+
             if($valid){
                 $this->storePdf($attestation->id);
                 $cap->draft_attestations -= 1;
                 $cap->issued_attestations += 1;
+                $attestation->issued_by_user_guid = Auth::user()->guid;
+                $attestation->issue_date = Carbon::now()->startOfDay();
             }else{
                 $attestation->status = 'Draft';
                 $attestation->save();
@@ -82,6 +91,26 @@ class VerifyUpdatedAttestation
             $capCap->draft_attestations -= 1;
             $capCap->save();
         }
+
+        //validate expiry date and dob
+        // Get today's date
+        $today = Carbon::now()->startOfDay();
+
+        // Check if the dob is gte than today
+        $dob = Carbon::createFromFormat('Y-m-d', $attestation->dob);
+        if ($dob->gte($today)) {
+            $attestation->dob = '1770-07-07';
+        }
+
+        $expiryDate = Carbon::createFromFormat('Y-m-d', $attestation->expiry_date);
+
+        // validate expiry date
+        $endDate = Carbon::createFromFormat('Y-m-d', $instCap->end_date);
+        $startDate = Carbon::createFromFormat('Y-m-d', $instCap->start_date);
+        if ($expiryDate->gt($endDate) || $expiryDate->lt($startDate) || $expiryDate->lt($today)) {
+            $attestation->expiry_date = $instCap->end_date;
+        }
+        $attestation->save();
 
     }
 

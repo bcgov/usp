@@ -57,7 +57,7 @@
                 </div>
                 <div class="col-md-3">
                     <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="newAtteForm.dob"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputZipCode" class="form-label" value="Zip Code"/>
+                    <Label for="inputZipCode" class="form-label" value="Postal Code"/>
                     <Input type="text" class="form-control" id="inputZipCode" v-model="newAtteForm.zip_code"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
@@ -91,10 +91,10 @@
                     </datalist>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
-                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputExpiryDate" v-model="newAtteForm.expiry_date"
-                           :disabled="newAtteForm.program_guid === ''"/>
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                    <Input type="text"
+                           class="form-control" id="inputExpiryDate" v-model="cap.end_date"
+                           disabled readonly/>
                 </div>
 
 
@@ -138,7 +138,8 @@ export default {
     props: {
         newAtte: Object|null,
         institution: Object,
-        countries: Object
+        countries: Object,
+        cap: Object
     },
     data() {
         return {
@@ -162,7 +163,7 @@ export default {
                 province: "",
                 country: "",
                 status: "",
-                expiry_date: "",
+                expiry_date: this.cap.end_date,
                 gt_fifty_pct_in_person: ""
             },
         }

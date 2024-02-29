@@ -1,13 +1,13 @@
 <template>
     <tr>
         <th scope="col">
-            <span>First Name</span>
-        </th>
-        <th scope="col">
             <span>Last Name</span>
         </th>
         <th scope="col">
-            <span>Date of Birth</span>
+            <span>First Name</span>
+        </th>
+        <th scope="col">
+            <span>Student Number</span>
         </th>
         <th scope="col">
             <span>Institution</span>

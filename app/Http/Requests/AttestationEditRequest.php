@@ -21,6 +21,11 @@ class AttestationEditRequest extends FormRequest
         return $this->user()->can('update', $attestation);
     }
 
+    public function message()
+    {
+        return 'The :attribute must be a date before today.';
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -33,11 +38,12 @@ class AttestationEditRequest extends FormRequest
             'fed_cap_guid' => 'required|exists:fed_caps,guid',
             'institution_guid' => 'required|exists:institutions,guid',
             'program_guid' => 'required|exists:programs,guid',
+            'program_name' => 'required|exists:programs,program_name',
             'first_name' => 'required',
             'last_name' => 'required',
             'id_number' => 'nullable',
             'student_number' => 'nullable',
-            'dob' => 'required|date_format:Y-m-d',
+            'dob' => 'required|date_format:Y-m-d|before:today',
             'email' => 'required|email',
             'address1' => 'required',
             'address2' => 'nullable',
@@ -84,6 +90,8 @@ class AttestationEditRequest extends FormRequest
             'zip_code' => Str::upper($this->zip_code),
             'province' => Str::title($this->province),
             'gt_fifty_pct_in_person' => $this->toBoolean($this->gt_fifty_pct_in_person),
+            'expiry_date' => $cap->end_date,
+            'program_name' => $program->program_name,
         ]);
     }
 

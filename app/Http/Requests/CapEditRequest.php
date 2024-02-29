@@ -69,6 +69,7 @@ class CapEditRequest extends FormRequest
             'comment' => 'nullable',
             'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
+            'confirmed' => 'required|boolean',
         ];
     }
 
@@ -100,6 +101,7 @@ class CapEditRequest extends FormRequest
             'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
                 $fedCap->total_attestations : $this->total_attestations),
             'active_status' => $this->toBoolean($this->active_status),
+            'confirmed' => $this->toBoolean($this->confirmed),
         ]);
     }
 

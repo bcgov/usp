@@ -41,6 +41,7 @@ class CapStoreRequest extends FormRequest
             'comment' => 'nullable',
             'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
+            'confirmed' => 'required|boolean',
         ];
     }
 
@@ -75,6 +76,7 @@ class CapStoreRequest extends FormRequest
             'issued_attestations' => 0,
             'draft_attestations' => 0,
             'active_status' => $this->toBoolean($this->active_status),
+            'confirmed' => $this->toBoolean($this->confirmed),
         ]);
     }
 

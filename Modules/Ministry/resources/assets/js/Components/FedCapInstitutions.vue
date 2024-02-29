@@ -13,10 +13,10 @@
                             <span>Institution</span>
                         </th>
                         <th scope="col" style="min-width: 120px;">
-                            <span>Total Atte.</span>
+                            <span>Total PAL</span>
                         </th>
                         <th scope="col" style="min-width: 80px;">
-                            <span>Issued Atte.</span>
+                            <span>Issued PAL</span>
                         </th>
                     </tr>
                     </thead>

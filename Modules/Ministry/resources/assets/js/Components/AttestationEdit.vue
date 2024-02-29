@@ -1,11 +1,77 @@
 <template>
     <form v-if="editAtteForm != null" class="card-body">
         <div class="modal-body">
-            <div v-if="attestation.status !== 'Draft'" class="text-center">
+            <div v-if="attestation.status !== 'Draft'" class="row g-3">
+                <div class="col-md-6 text-break">
+                    <Label for="inputFirstName" class="fw-bold" value="First Name"/>
+                    {{editAtteForm.first_name}}
+                </div>
+                <div class="col-md-6 text-break">
+                    <Label for="inputLastName" class="fw-bold" value="Last Name"/>
+                    {{ editAtteForm.last_name }}
+                </div>
+                <div class="col-md-6 text-break">
+                    <Label for="inputAddress1" class="fw-bold" value="Address 1"/>
+                    {{ editAtteForm.address1 }}
+                </div>
+                <div class="col-md-6 text-break">
+                    <Label for="inputAddress2" class="fw-bold" value="Address 2"/>
+                    {{ editAtteForm.address2 }}
+                </div>
+
+                <div class="col-md-4 text-break">
+                    <Label for="inputProgram" class="fw-bold" value="Institution Program"/>
+                    {{ $getProgramNameFromGuid(institution.programs, editAtteForm.program_guid) }}
+                </div>
+                <div class="col-md-4 text-break">
+                    <Label for="inputStudentNumber" class="fw-bold" value="Student Number"/>
+                    {{ editAtteForm.student_number }}
+                </div>
+                <div class="col-md-4 text-break">
+                    <Label for="inputStudentId" class="fw-bold" value="Passport/Travel Doc. ID"/>
+                    {{ editAtteForm.id_number }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputDob" class="fw-bold" value="Date of Birth"/>
+                    {{ editAtteForm.dob }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputInPerson" class="fw-bold" value="> 50% in-person?"/>
+                    {{ $getYesNo(editAtteForm.gt_fifty_pct_in_person) }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputEmail" class="fw-bold" value="Email"/>
+                    {{ editAtteForm.email }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputCity" class="fw-bold" value="City"/>
+                    {{ editAtteForm.city }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputZipCode" class="fw-bold" value="Postal Code"/>
+                    {{ editAtteForm.zip_code }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputProvince" class="fw-bold" value="Province / State"/>
+                    {{ editAtteForm.province }}
+                </div>
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputCountry" class="fw-bold" value="Country"/>
+                    {{ editAtteForm.country }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputExpiryDate" class="fw-bold" value="Expiry Date"/>
+                    {{ editAtteForm.expiry_date }}
+                </div>
+
                 <a :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
-                    <i class="bi bi-box-arrow-down"></i>
+                    {{attestation.issued_by_name}}<br/><i class="bi bi-box-arrow-down"></i>
                 </a>
-                <p>Download Attestation</p>
+
             </div>
             <div v-else class="row g-3">
                 <div class="col-md-6">
@@ -33,10 +99,9 @@
                     <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
                         <template v-if="institution !== ''">
-                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
-                        <template v-for="c in institution.programs">
-                            <option v-if="c.active_status" :value="c.guid">{{ c.program_name}}</option>
-                        </template>
+                            <template v-for="c in institution.programs">
+                                <option v-if="c.active_status" :value="c.guid">{{ c.program_name}}</option>
+                            </template>
                         </template>
                     </Select>
                 </div>
@@ -53,7 +118,7 @@
 
                 <div class="col-md-3">
                     <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" max="2020-12-31" placeholder="YYYY-MM-DD"
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="editAtteForm.dob"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
@@ -78,7 +143,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputZipCode" class="form-label" value="Zip Code"/>
+                    <Label for="inputZipCode" class="form-label" value="Postal Code"/>
                     <Input type="text" class="form-control" id="inputZipCode" v-model="editAtteForm.zip_code"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
@@ -97,10 +162,11 @@
                     </datalist>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" required="true"/>
-                    <Input type="date" min="2024-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputExpiryDate" v-model="editAtteForm.expiry_date"
-                           :disabled="editAtteForm.program_guid === ''"/>
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>
+                    <Input type="text"
+                           class="form-control" id="inputExpiryDate" v-model="institution.active_caps[0].end_date"
+                           disabled readonly/>
+
                 </div>
 
 

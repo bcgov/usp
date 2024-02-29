@@ -13,11 +13,9 @@ use App\Models\Cap;
 use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\Institution;
-use App\Models\Util;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class AttestationController extends Controller
@@ -142,7 +140,7 @@ class AttestationController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
 
-        return $pdf->download(mt_rand().'-'.$attestation->guid.'-attestation.pdf');
+        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . 'attestation.pdf');
     }
 
     private function paginateAtte()

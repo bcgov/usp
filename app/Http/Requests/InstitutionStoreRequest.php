@@ -54,6 +54,9 @@ class InstitutionStoreRequest extends FormRequest
             'active_status' => 'required|boolean',
             'standing_status' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
+            'comment' => 'nullable',
+            'info_sharing_agreement' => 'required|boolean',
+            'category' => 'nullable|exists:utils,field_name',
         ];
     }
 
@@ -71,6 +74,7 @@ class InstitutionStoreRequest extends FormRequest
             'last_touch_by_user_guid' => $this->user()->guid,
             'postal_code' => Str::upper(str_replace(' ', '', $this->postal_code)),
             'primary_email' => Str::lower(str_replace(' ', '', $this->primary_email)),
+            'info_sharing_agreement' => $this->toBoolean($this->info_sharing_agreement),
         ]);
     }
 

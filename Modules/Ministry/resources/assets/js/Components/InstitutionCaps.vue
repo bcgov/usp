@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div class="card mb-3">
+    <div v-if="allowProgramCap" class="card mb-3">
         <div class="card-header">
             Program Caps
         </div>
@@ -69,33 +69,33 @@
             </div>
             <h1 v-else class="lead">No results</h1>
         </div>
-        <div v-if="editCap == ''" class="modal modal-lg fade" id="newInstCapModal" tabindex="-1"
-             aria-labelledby="newInstCapModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="newInstCapModalLabel">New Institution Cap</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <InstitutionCapCreate v-bind="$attrs" :fedCaps="fedCaps" :results="results" :activeInstCap="activeInstCap"/>
+
+    </div>
+    <div v-if="editCap == ''" class="modal modal-lg fade" id="newInstCapModal" tabindex="-1"
+         aria-labelledby="newInstCapModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newInstCapModalLabel">New Institution Cap</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-        </div>
-        <div v-if="editCap != ''" class="modal modal-lg fade" id="editInstCapModal" tabindex="0"
-             aria-labelledby="editInstCapModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editInstCapModalLabel">Edit Institution Cap</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <InstitutionCapEdit v-bind="$attrs" @close="closeEditForm" :cap="editCap" :fedCaps="fedCaps"
-                                        :results="results" :activeInstCap="activeInstCap"/>
-                </div>
+                <InstitutionCapCreate v-bind="$attrs" :fedCaps="fedCaps" :results="results" :activeInstCap="activeInstCap"/>
             </div>
         </div>
     </div>
-
+    <div v-if="allowProgramCap && editCap != ''" class="modal modal-lg fade" id="editInstCapModal" tabindex="0"
+         aria-labelledby="editInstCapModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editInstCapModalLabel">Edit Institution Cap</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <InstitutionCapEdit v-bind="$attrs" @close="closeEditForm" :cap="editCap" :fedCaps="fedCaps"
+                                    :results="results" :activeInstCap="activeInstCap"/>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
 import {Link} from '@inertiajs/vue3';
@@ -118,7 +118,8 @@ export default {
         return {
             editCap: '',
             capStat: '',
-            activeInstCap: null
+            activeInstCap: null,
+            allowProgramCap: false
         }
     },
     methods: {

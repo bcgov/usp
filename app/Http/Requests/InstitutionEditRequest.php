@@ -45,7 +45,7 @@ class InstitutionEditRequest extends FormRequest
             'guid' => 'required',
             'dli' => 'required|unique:institutions,dli,'.$this->id,
             'name' => 'required|unique:institutions,name,'.$this->id,
-            'bceid_business_guid' => 'required|unique:institutions,bceid_business_guid,'.$this->id,
+            //'bceid_business_guid' => 'required|unique:institutions,bceid_business_guid,'.$this->id,
             'legal_name' => 'nullable',
             'address1' => 'required',
             'address2' => 'nullable',
@@ -59,6 +59,9 @@ class InstitutionEditRequest extends FormRequest
             'active_status' => 'required|boolean',
             'standing_status' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
+            'comment' => 'nullable',
+            'info_sharing_agreement' => 'required|boolean',
+            'category' => 'nullable|exists:utils,field_name',
         ];
     }
 
@@ -75,6 +78,7 @@ class InstitutionEditRequest extends FormRequest
             'last_touch_by_user_guid' => $this->user()->guid,
             'postal_code' => Str::upper(str_replace(' ', '', $this->postal_code)),
             'primary_email' => Str::lower(str_replace(' ', '', $this->primary_email)),
+            'info_sharing_agreement' => $this->toBoolean($this->info_sharing_agreement),
         ]);
     }
 
