@@ -37,7 +37,7 @@ class IsActive
         }
 
         //active user must have at least an Institution USER role
-        if (!is_null($user->roles()->first())) {
+        if (is_null($user->roles()->first())) {
 
             $role = Role::where('name', Role::Institution_GUEST)->first();
             $user->roles()->attach($role);
