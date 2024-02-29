@@ -70,7 +70,7 @@
                 This provincial attestation letter confirms that you have a space within British Columbia’s 2024 allocation period for study permit applications, based on the information that you provided:<br/>
                 <strong>Student:</strong>
                 <ul>
-                    <li>Student Name (as it appears on valid passport /identity document): {{ $attestation->last_name }}, {{ $attestation->first_name }}</li>
+                    <li>Student Name: {{ $attestation->last_name }}, {{ $attestation->first_name }}</li>
                     <li>Student Date of Birth: {{ $attestation->dob }}</li>
                     <li>Student's Current Residence Address: {{ $attestation->address1 }}, {{ $attestation->city }}, {{ $attestation->country }}</li>
                 </ul>

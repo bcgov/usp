@@ -37,7 +37,7 @@ class IsActive
         }
 
         //active user must have at least an Institution USER role
-        if ($user->roles->isEmpty()) {
+        if (!is_null($user->roles()->first())) {
 
             $role = Role::where('name', Role::Institution_GUEST)->first();
             $user->roles()->attach($role);
@@ -55,6 +55,14 @@ class IsActive
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact Ministry staff. Your institution is inactive.',
+            ]);
+        }
+
+        if (! $user->hasActiveIsa()) {
+            return Inertia::render('Auth/Login', [
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Please contact Ministry staff. Missing ISA.',
             ]);
         }
 

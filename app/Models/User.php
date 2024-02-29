@@ -50,7 +50,7 @@ class User extends Authenticatable
     }
 
     /**
-     * The roles that belong to the user.
+     * Check if the user has an active institution.
      */
     public function hasActiveInstitution()
     {
@@ -59,6 +59,18 @@ class User extends Authenticatable
         }
 
         return $this->institution->active_status === true;
+    }
+
+    /**
+     * Check if the user has an institution with Info Sharing agreement TRUE
+     */
+    public function hasActiveIsa()
+    {
+        if (is_null($this->institution)) {
+            return false;
+        }
+
+        return $this->institution->info_sharing_agreement === true;
     }
 
     /**
