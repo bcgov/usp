@@ -10,11 +10,11 @@
             <BreezeLabel class="col-auto col-form-label" for="inputLastName" value="Search type" />
             <div class="col-12">
                 <BreezeSelect id="inputType" class="form-control" v-model="nameForm.filter_type">
-                    <option value="student_number">Student Number</option>
-                    <option value="first_name">First Name</option>
-                    <option value="last_name">Last Name</option>
+                    <option value="snumber">Student Number</option>
+                    <option value="fname">First Name</option>
+                    <option value="lname">Last Name</option>
                     <option value="travel_id">Travel ID</option>
-                    <option value="travel_id">PAL #</option>
+                    <option value="pal_id">PAL #</option>
                     <option value="city">City</option>
                     <option value="country">Country</option>
                 </BreezeSelect>

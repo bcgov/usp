@@ -14,7 +14,7 @@ class Institution extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['guid', 'dli', 'name', 'legal_name', 'address1', 'address2', 'primary_contact',
+    protected $fillable = ['guid', 'dli', 'name', 'legal_name', 'address1', 'address2', 'primary_contact', 'category',
         'primary_email', 'city', 'postal_code', 'province', 'public', 'active_status', 'standing_status',
         'api_id', 'api_key', 'bceid_business_guid', 'last_touch_by_user_guid', 'comment', 'info_sharing_agreement',];
 

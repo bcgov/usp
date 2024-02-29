@@ -38,7 +38,7 @@ class AttestationStoreRequest extends FormRequest
             'last_name' => 'required',
             'id_number' => 'nullable',
             'student_number' => 'nullable',
-            'dob' => 'required|date_format:Y-m-d',
+            'dob' => 'required|date_format:Y-m-d|before:today',
             'email' => 'required|email',
             'address1' => 'required',
             'address2' => 'nullable',

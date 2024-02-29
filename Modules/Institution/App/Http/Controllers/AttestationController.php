@@ -182,15 +182,15 @@ class AttestationController extends Controller
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
             $attestations = match (request()->filter_type) {
-                "student_number" => $attestations->where('student_number', 'ILIKE', '%' . request()->filter_term . '%'),
-                "first_name" => $attestations->where('first_name', 'ILIKE', '%' . request()->filter_term . '%'),
-                "last_name" => $attestations->where('last_name', 'ILIKE', '%' . request()->filter_term . '%'),
+                "snumber" => $attestations->where('student_number', 'ILIKE', '%' . request()->filter_term . '%'),
+                "fname" => $attestations->where('first_name', 'ILIKE', '%' . request()->filter_term . '%'),
+                "lname" => $attestations->where('last_name', 'ILIKE', '%' . request()->filter_term . '%'),
                 "travel_id" => $attestations->where('id_number', 'ILIKE', '%' . request()->filter_term . '%'),
+                "pal_id" => $attestations->where('fed_guid', 'ILIKE', '%' . request()->filter_term . '%'),
                 "city" => $attestations->where('city', 'ILIKE', '%' . request()->filter_term . '%'),
                 "country" => $attestations->where('country', 'ILIKE', '%' . request()->filter_term . '%'),
             };
         }
-
 
         if (request()->sort !== null) {
             $attestations = $attestations->orderBy(request()->sort, request()->direction);

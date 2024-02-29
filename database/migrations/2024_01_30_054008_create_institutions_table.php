@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('bceid_business_guid');
             $table->string('dli')->nullable();
             $table->string('name');
+            $table->string('category')->nullable();
             $table->string('legal_name')->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
