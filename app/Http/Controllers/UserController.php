@@ -249,11 +249,11 @@ class UserController extends Controller
             $user->last_name = Str::title($provider_user['family_name']);
             $user->email = Str::lower($provider_user['email']);
             $user->disabled = false;
-            $user->idir_username = Str::upper($provider_user['idir_username']) ?? null;
-            $user->bceid_username = Str::upper($provider_user['bceid_username']) ?? null;
-            $user->idir_user_guid = Str::upper($provider_user['idir_user_guid']) ?? null;
-            $user->bceid_user_guid = Str::upper($provider_user['bceid_user_guid']) ?? null;
-            $user->bceid_business_guid = Str::upper($provider_user['bceid_business_guid']) ?? null;
+            $user->idir_username = isset($provider_user['idir_username']) ? Str::upper($provider_user['idir_username']) : null;
+            $user->bceid_username = isset($provider_user['bceid_username']) ? Str::upper($provider_user['bceid_username']) : null;
+            $user->idir_user_guid = isset($provider_user['idir_user_guid']) ? Str::upper($provider_user['idir_user_guid']) : null;
+            $user->bceid_user_guid = isset($provider_user['bceid_user_guid']) ? Str::upper($provider_user['bceid_user_guid']) : null;
+            $user->bceid_business_guid = isset($provider_user['bceid_business_guid']) ? Str::upper($provider_user['bceid_business_guid']) : null;
             $user->password = Hash::make(Str::lower($provider_user['email']));
             $user->save();
             $this->checkRoles($user, $type);
@@ -270,6 +270,8 @@ class UserController extends Controller
     {
         $user = User::find($user->id);
         $institutionStaff = InstitutionStaff::where('bceid_business_guid', $user->bceid_business_guid)->with('institution')->first();
+
+        // If the ministry did not setup any user with that bceid_business_guid then don't auto register
         if (! is_null($institutionStaff)) {
             $staff = new InstitutionStaff();
             $staff->guid = Str::orderedUuid()->getHex();
