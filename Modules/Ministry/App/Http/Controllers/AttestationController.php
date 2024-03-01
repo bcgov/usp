@@ -13,6 +13,7 @@ use App\Models\Cap;
 use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\Institution;
+use Dompdf\Options;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -139,6 +140,7 @@ class AttestationController extends Controller
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env("PDF_KEY"));
 
         return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . 'attestation.pdf');
     }
