@@ -18,8 +18,8 @@ class StoreTracker
     public function handle(TrackerTriggered $event): void
     {
         $tracker = new Tracker();
-        $tracker->user_guid = $event->user->guid;
-        $tracker->user_name = $event->user->first_name;
+        $tracker->user_guid = $event->userGuid;
+        $tracker->user_name = $event->userName;
         $tracker->action = $event->action;
         $tracker->model_name = $event->modelName;
         $tracker->model_id = $event->model->id;
