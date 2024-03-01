@@ -6,6 +6,7 @@ use App\Events\AttestationIssued;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
+use App\Models\Tracker;
 use App\Models\Util;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,15 @@ class VerifyIssuedAttestation
         $cap = $event->cap;
         $attestation = $event->attestation;
         $status = $event->status;
+
+
+        $tracker = new Tracker();
+        $tracker->user_guid = Auth::user()->guid;
+        $tracker->user_name = Auth::user()->first_name;
+        $tracker->action = 'issued';
+        $tracker->model_name = 'Attestation';
+        $tracker->model_data = $attestation;
+        $tracker->save();
 
         //do not restrict creating draft attestations
 

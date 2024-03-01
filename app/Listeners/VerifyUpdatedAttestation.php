@@ -6,6 +6,7 @@ use App\Events\AttestationDraftUpdated;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
+use App\Models\Tracker;
 use App\Models\Util;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -23,6 +24,22 @@ class VerifyUpdatedAttestation
         $attestation = $event->attestation;
         $status = $event->status;
         $oldAttestation = $event->oldAttestation;
+
+        $tracker = new Tracker();
+        $tracker->user_guid = Auth::user()->guid;
+        $tracker->user_name = Auth::user()->first_name;
+        $tracker->action = 'before_update';
+        $tracker->model_name = 'Attestation';
+        $tracker->model_data = $oldAttestation;
+        $tracker->save();
+
+        $tracker = new Tracker();
+        $tracker->user_guid = Auth::user()->guid;
+        $tracker->user_name = Auth::user()->first_name;
+        $tracker->action = 'after_update';
+        $tracker->model_name = 'Attestation';
+        $tracker->model_data = $attestation;
+        $tracker->save();
 
         //do not restrict creating draft attestations
 

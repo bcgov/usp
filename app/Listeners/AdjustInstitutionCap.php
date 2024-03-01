@@ -7,6 +7,8 @@ use App\Models\Attestation;
 use App\Models\Cap;
 use App\Models\Institution;
 use App\Models\Program;
+use App\Models\Tracker;
+use Illuminate\Support\Facades\Auth;
 
 class AdjustInstitutionCap
 {
@@ -18,6 +20,14 @@ class AdjustInstitutionCap
         // Get the new cap from the event
         $cap = $event->cap;
         $institution = Institution::where('guid', $cap->institution_guid)->first();
+
+        $tracker = new Tracker();
+        $tracker->user_guid = Auth::user()->guid;
+        $tracker->user_name = Auth::user()->first_name;
+        $tracker->action = 'created';
+        $tracker->model_name = 'Cap';
+        $tracker->model_data = $cap;
+        $tracker->save();
 
         \Log::info('Cap Listeners started');
         // Get the federal cap and check if we have hit the cap for issued attestations

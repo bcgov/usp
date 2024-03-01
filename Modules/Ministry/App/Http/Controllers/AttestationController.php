@@ -139,8 +139,8 @@ class AttestationController extends Controller
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
-
-        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . 'attestation.pdf');
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env("PDF_KEY"));
+        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf');
     }
 
     private function paginateAtte()
