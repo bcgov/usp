@@ -58,12 +58,14 @@ class Attestation extends Model
         return $query->where('status', 'Issued');
     }
 
-
     public function getIssuedByNameAttribute()
     {
-        if(is_null($this->issued_by_user_guid)) return null;
+        if (is_null($this->issued_by_user_guid)) {
+            return null;
+        }
 
         $user = User::where('guid', $this->issued_by_user_guid)->first();
-        return $user->first_name . ' ' . $user->last_name;
+
+        return $user->first_name.' '.$user->last_name;
     }
 }

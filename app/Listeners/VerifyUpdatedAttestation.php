@@ -7,11 +7,10 @@ use App\Events\TrackerTriggered;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
-use App\Models\Tracker;
 use App\Models\Util;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class VerifyUpdatedAttestation
 {
@@ -51,8 +50,8 @@ class VerifyUpdatedAttestation
                 ->count();
 
             // If we hit or acceded the inst cap limit for issued attestations
-            if($issuedInstAttestations > $instCap->total_attestations){
-                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: ' . $issuedInstAttestations . ' >= ' . $instCap->total_attestations);
+            if ($issuedInstAttestations > $instCap->total_attestations) {
+                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
@@ -63,26 +62,26 @@ class VerifyUpdatedAttestation
                 ->count();
 
             // If we hit or acceded the inst cap limit for issued attestations
-            if($issuedProgAttestations > $cap->total_attestations){
-                \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: ' . $issuedProgAttestations . ' >= ' . $instCap->total_attestations);
+            if ($issuedProgAttestations > $cap->total_attestations) {
+                \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: '.$issuedProgAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
-            if($attestation->gt_fifty_pct_in_person == false){
+            if ($attestation->gt_fifty_pct_in_person == false) {
                 $valid = false;
             }
 
-            if($valid){
+            if ($valid) {
                 $this->storePdf($attestation->id);
                 $cap->draft_attestations -= 1;
                 $cap->issued_attestations += 1;
                 $attestation->issued_by_user_guid = Auth::user()->guid;
                 $attestation->issue_date = Carbon::now()->startOfDay();
-            }else{
+            } else {
                 $attestation->status = 'Draft';
                 $attestation->save();
             }
-        }else{
+        } else {
             $attestation->status = 'Draft';
             $attestation->save();
         }
@@ -117,10 +116,8 @@ class VerifyUpdatedAttestation
         }
         $attestation->save();
 
-
         event(new TrackerTriggered(Auth::user()->guid, Auth::user()->first_name, 'after_update',
             'Attestation', $attestation));
-
 
     }
 

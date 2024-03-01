@@ -65,7 +65,7 @@ class CapEditRequest extends FormRequest
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
             'active_status' => 'required|boolean',
-            'total_attestations' => 'required|numeric|gte:' . $noAttes,
+            'total_attestations' => 'required|numeric|gte:'.$noAttes,
             'comment' => 'nullable',
             'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',

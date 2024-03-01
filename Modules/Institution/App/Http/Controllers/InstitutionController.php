@@ -31,7 +31,7 @@ class InstitutionController extends Controller
             ->first();
 
         $capTotal = 0;
-        if(!is_null($instCap)){
+        if (! is_null($instCap)) {
             $capTotal = $instCap->total_attestations;
             $issuedInstAttestations = Attestation::where('status', 'Issued')
                 ->where('institution_guid', $institution->guid)

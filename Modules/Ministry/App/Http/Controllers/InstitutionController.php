@@ -51,7 +51,7 @@ class InstitutionController extends Controller
         $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();
 
         return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
-            'institutions' => $institutions, 'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get(),]);
+            'institutions' => $institutions, 'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get(), ]);
     }
 
     /**

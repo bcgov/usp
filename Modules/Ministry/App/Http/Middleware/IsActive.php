@@ -51,6 +51,7 @@ class IsActive
                 'status' => 'Please contact Ministry Admin to verify your access.',
             ]);
         }
+
         return $next($request);
     }
 }
