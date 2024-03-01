@@ -30,7 +30,9 @@ class InstitutionController extends Controller
             ->where('program_guid', null)
             ->first();
 
+        $capTotal = 0;
         if(!is_null($instCap)){
+            $capTotal = $instCap->total_attestations;
             $issuedInstAttestations = Attestation::where('status', 'Issued')
                 ->where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
@@ -38,7 +40,7 @@ class InstitutionController extends Controller
         }
 
         return Inertia::render('Institution::Dashboard', ['results' => $institution,
-            'capTotal' => $instCap->total_attestations ?? 0,
+            'capTotal' => $capTotal,
             'issued' => $issuedInstAttestations]);
     }
 
