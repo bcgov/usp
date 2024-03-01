@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AttestationIssued;
+use App\Events\TrackerTriggered;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
@@ -24,14 +25,6 @@ class VerifyIssuedAttestation
         $attestation = $event->attestation;
         $status = $event->status;
 
-
-        $tracker = new Tracker();
-        $tracker->user_guid = Auth::user()->guid;
-        $tracker->user_name = Auth::user()->first_name;
-        $tracker->action = 'issued';
-        $tracker->model_name = 'Attestation';
-        $tracker->model_data = $attestation;
-        $tracker->save();
 
         //do not restrict creating draft attestations
 
@@ -113,6 +106,8 @@ class VerifyIssuedAttestation
             $attestation->expiry_date = $instCap->end_date;
         }
         $attestation->save();
+        event(new TrackerTriggered(Auth::user()->guid, Auth::user()->first_name, 'issued',
+            'Attestation', $attestation));
 
     }
 

@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\InstitutionCapCreated;
+use App\Events\TrackerTriggered;
 use App\Models\Attestation;
 use App\Models\Cap;
 use App\Models\Institution;
@@ -21,13 +22,6 @@ class AdjustInstitutionCap
         $cap = $event->cap;
         $institution = Institution::where('guid', $cap->institution_guid)->first();
 
-        $tracker = new Tracker();
-        $tracker->user_guid = Auth::user()->guid;
-        $tracker->user_name = Auth::user()->first_name;
-        $tracker->action = 'created';
-        $tracker->model_name = 'Cap';
-        $tracker->model_data = $cap;
-        $tracker->save();
 
         \Log::info('Cap Listeners started');
         // Get the federal cap and check if we have hit the cap for issued attestations
@@ -120,5 +114,9 @@ class AdjustInstitutionCap
                 ->where('total_attestations', '>', $cap->total_attestations)
                 ->update(['total_attestations' => $cap->total_attestations]);
         }
+
+        event(new TrackerTriggered(Auth::user()->guid, Auth::user()->first_name, 'created',
+            'Cap', $cap));
+
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AttestationDraftUpdated;
+use App\Events\TrackerTriggered;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
@@ -25,21 +26,8 @@ class VerifyUpdatedAttestation
         $status = $event->status;
         $oldAttestation = $event->oldAttestation;
 
-        $tracker = new Tracker();
-        $tracker->user_guid = Auth::user()->guid;
-        $tracker->user_name = Auth::user()->first_name;
-        $tracker->action = 'before_update';
-        $tracker->model_name = 'Attestation';
-        $tracker->model_data = $oldAttestation;
-        $tracker->save();
-
-        $tracker = new Tracker();
-        $tracker->user_guid = Auth::user()->guid;
-        $tracker->user_name = Auth::user()->first_name;
-        $tracker->action = 'after_update';
-        $tracker->model_name = 'Attestation';
-        $tracker->model_data = $attestation;
-        $tracker->save();
+        event(new TrackerTriggered(Auth::user()->guid, Auth::user()->first_name, 'before_update',
+            'Attestation', $oldAttestation));
 
         //do not restrict creating draft attestations
 
@@ -128,6 +116,11 @@ class VerifyUpdatedAttestation
             $attestation->expiry_date = $instCap->end_date;
         }
         $attestation->save();
+
+
+        event(new TrackerTriggered(Auth::user()->guid, Auth::user()->first_name, 'after_update',
+            'Attestation', $attestation));
+
 
     }
 
