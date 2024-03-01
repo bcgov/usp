@@ -229,14 +229,14 @@ class UserController extends Controller
     {
         $valid = '200';
         if (isset($provider_user['idir_username']) && $provider_user['idir_username']) {
-            $check = User::where('idir_username', $provider_user['idir_username'])->first();
+            $check = User::where('idir_username', Str::upper($provider_user['idir_username']))->first();
             if(!is_null($check)){
                 $valid = "This IDIR is already in use. Please contact the admin.";
             }
         }
 
         elseif (isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
-            $check = User::where('bceid_username', $provider_user['bceid_username'])->first();
+            $check = User::where('bceid_username', Str::upper($provider_user['bceid_username']))->first();
             if(!is_null($check)){
                 $valid = "This BCeID is already in use. Please contact the admin.";
             }
@@ -245,16 +245,16 @@ class UserController extends Controller
         if($valid === "200"){
             $user = new User();
             $user->guid = Str::orderedUuid()->getHex();
-            $user->first_name = $provider_user['given_name'];
-            $user->last_name = $provider_user['family_name'];
-            $user->email = $provider_user['email'];
+            $user->first_name = Str::title($provider_user['given_name']);
+            $user->last_name = Str::title($provider_user['family_name']);
+            $user->email = Str::lower($provider_user['email']);
             $user->disabled = false;
-            $user->idir_username = $provider_user['idir_username'] ?? null;
-            $user->bceid_username = $provider_user['bceid_username'] ?? null;
-            $user->idir_user_guid = $provider_user['idir_user_guid'] ?? null;
-            $user->bceid_user_guid = $provider_user['bceid_user_guid'] ?? null;
-            $user->bceid_business_guid = $provider_user['bceid_business_guid'] ?? null;
-            $user->password = Hash::make($provider_user['email']);
+            $user->idir_username = Str::upper($provider_user['idir_username']) ?? null;
+            $user->bceid_username = Str::upper($provider_user['bceid_username']) ?? null;
+            $user->idir_user_guid = Str::upper($provider_user['idir_user_guid']) ?? null;
+            $user->bceid_user_guid = Str::upper($provider_user['bceid_user_guid']) ?? null;
+            $user->bceid_business_guid = Str::upper($provider_user['bceid_business_guid']) ?? null;
+            $user->password = Hash::make(Str::lower($provider_user['email']));
             $user->save();
             $this->checkRoles($user, $type);
 
@@ -277,9 +277,9 @@ class UserController extends Controller
             $staff->institution_guid = $institutionStaff->institution->guid;
             $staff->bceid_business_guid = $user->bceid_business_guid;
             $staff->bceid_user_guid = $user->bceid_user_guid;
-            $staff->bceid_user_id = $provider_user['bceid_username'];
-            $staff->bceid_user_name = $provider_user['name'];
-            $staff->bceid_user_email = $provider_user['email'];
+            $staff->bceid_user_id = Str::upper($provider_user['bceid_username']);
+            $staff->bceid_user_name = Str::title($provider_user['name']);
+            $staff->bceid_user_email = Str::lower($provider_user['email']);
             $staff->save();
         }
     }
