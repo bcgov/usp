@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tracker', function (Blueprint $table) {
+        Schema::create('trackers', function (Blueprint $table) {
             $table->id();
             $table->string('user_guid', 32)->index();
             $table->string('user_name', 50);
             $table->string('action', 50);
             $table->string('model_name', 50);
+            $table->bigInteger('model_id');
             $table->text('model_data');
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tracker');
+        Schema::dropIfExists('trackers');
     }
 };

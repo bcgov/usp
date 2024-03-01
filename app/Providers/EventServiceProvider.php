@@ -7,9 +7,11 @@ use App\Events\AttestationIssued;
 use App\Events\FederalCapCreated;
 use App\Events\InstitutionCapCreated;
 use App\Events\StaffRoleChanged;
+use App\Events\TrackerTriggered;
 use App\Listeners\AdjustInstitutionCap;
 use App\Listeners\SendActiveRoleNotification;
 use App\Listeners\SetupNewFederalCap;
+use App\Listeners\StoreTracker;
 use App\Listeners\VerifyIssuedAttestation;
 use App\Listeners\VerifyUpdatedAttestation;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -36,6 +38,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         FederalCapCreated::class => [
             SetupNewFederalCap::class,
+        ],
+        TrackerTriggered::class => [
+            StoreTracker::class,
         ],
     ];
 

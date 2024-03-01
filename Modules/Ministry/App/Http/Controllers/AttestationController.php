@@ -139,7 +139,7 @@ class AttestationController extends Controller
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
-        $pdf->getCanvas()->get_cpdf()->setEncryption('', env("PDF_KEY"));
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env("PDF_KEY"),['print']);
         return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf');
     }
 
