@@ -170,7 +170,7 @@ class UserController extends Controller
 
                 Auth::login($user);
 
-                return Redirect::route('institution.attestations.index');
+                return Redirect::route('institution.dashboard');
             }
 
             return Redirect::route('login');

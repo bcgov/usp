@@ -47,7 +47,7 @@ let searchType = ref('byName');
 
 const nameFormTemplate = {
     filter_term: '',
-    filter_type: 'student_number',
+    filter_type: 'snumber',
 };
 const nameForm = useForm(nameFormTemplate);
 const nameFormSubmit = () => {
