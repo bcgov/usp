@@ -40,7 +40,7 @@ class InstitutionStaff extends Model
     public function getIsAdminAttribute()
     {
         $admin = false;
-        if(Auth::check()){
+        if (Auth::check()) {
             foreach (Auth::user()->roles as $role) {
                 if ($role->name === Role::Institution_ADMIN) {
                     $admin = true;

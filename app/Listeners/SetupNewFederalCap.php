@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Listeners;
 
 use App\Events\FederalCapCreated;
@@ -19,8 +20,8 @@ class SetupNewFederalCap
             ->where('status', 'Active')
             ->update(['status' => 'Completed', 'last_touch_by_user_guid' => Auth::user()->guid]);
         $oldFedCaps = FedCap::where('id', '!=', $fedCap->id)->get();
-        foreach ($oldFedCaps as $fCap){
-            foreach ($fCap->caps as $instCap){
+        foreach ($oldFedCaps as $fCap) {
+            foreach ($fCap->caps as $instCap) {
                 $instCap->active_status = false;
                 $instCap->save();
             }

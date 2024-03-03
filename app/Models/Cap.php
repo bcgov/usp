@@ -18,7 +18,7 @@ class Cap extends Model
      */
     protected $fillable = ['guid', 'fed_cap_guid', 'institution_guid', 'program_guid', 'start_date', 'end_date',
         'total_attestations', 'status', 'comment', 'external_comment', 'last_touch_by_user_guid', 'parent_cap_guid',
-        'issued_attestations', 'draft_attestations', 'confirmed',];
+        'issued_attestations', 'draft_attestations', 'confirmed', ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -68,14 +68,12 @@ class Cap extends Model
         return $query->active()->where('program_guid', '!=', null);
     }
 
-
     public function getInstActiveCapStatAttribute()
     {
         $issuedInstAttestations = Attestation::where('status', 'Issued')
             ->where('institution_guid', $this->institution_guid)
             ->where('fed_cap_guid', $this->fed_cap_guid)
             ->count();
-
 
         return ['total' => $this->total_attestations, 'issued' => $issuedInstAttestations,
             'remain' => $this->total_attestations - $issuedInstAttestations];

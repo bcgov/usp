@@ -124,8 +124,9 @@ class AttestationController extends Controller
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
-        $pdf->getCanvas()->get_cpdf()->setEncryption('', env("PDF_KEY"),['print']);
-        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf');
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+
+        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
     public function exportCsv()
@@ -139,7 +140,7 @@ class AttestationController extends Controller
         $csvDataHeader = ['PAL ID', 'PROGRAM NAME', 'STUDENT NUMBER', 'FIRST NAME', 'LAST NAME', 'TRAVEL ID', 'DOB', 'ADDRESS1', 'ADDRESS2', 'EMAIL', 'CITY',
             'POSTAL CODE', 'PROVINCE', 'COUNTRY', '>50% IN PERSON', 'STATUS', 'EXPIRY DATE', 'ISSUED BY', 'ISSUE DATE'];
 
-        foreach ($data as $d){
+        foreach ($data as $d) {
             $csvData[] = [$d->fed_guid, $d->program->program_name, $d->student_number, $d->first_name, $d->last_name, $d->id_number,
                 $d->dob, $d->address1, $d->address2, $d->email, $d->city, $d->zip_code, $d->province, $d->country,
                 $d->gt_fifty_pct_in_person, $d->status, $d->expiry_date, $d->issued_by_name, $d->updated_at];
@@ -162,7 +163,8 @@ class AttestationController extends Controller
 
     }
 
-    public function capStat(Request $request){
+    public function capStat(Request $request)
+    {
         $instCap = Cap::where('institution_guid', $request->input('institution_guid'))
             ->active()
             ->where('program_guid', null)
@@ -172,6 +174,7 @@ class AttestationController extends Controller
             ->where('institution_guid', $instCap->institution_guid)
             ->where('fed_cap_guid', $instCap->fed_cap_guid)
             ->count();
+
         return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
     }
 
@@ -182,13 +185,13 @@ class AttestationController extends Controller
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
             $attestations = match (request()->filter_type) {
-                "snumber" => $attestations->where('student_number', 'ILIKE', '%' . request()->filter_term . '%'),
-                "fname" => $attestations->where('first_name', 'ILIKE', '%' . request()->filter_term . '%'),
-                "lname" => $attestations->where('last_name', 'ILIKE', '%' . request()->filter_term . '%'),
-                "travel_id" => $attestations->where('id_number', 'ILIKE', '%' . request()->filter_term . '%'),
-                "pal_id" => $attestations->where('fed_guid', 'ILIKE', '%' . request()->filter_term . '%'),
-                "city" => $attestations->where('city', 'ILIKE', '%' . request()->filter_term . '%'),
-                "country" => $attestations->where('country', 'ILIKE', '%' . request()->filter_term . '%'),
+                'snumber' => $attestations->where('student_number', 'ILIKE', '%'.request()->filter_term.'%'),
+                'fname' => $attestations->where('first_name', 'ILIKE', '%'.request()->filter_term.'%'),
+                'lname' => $attestations->where('last_name', 'ILIKE', '%'.request()->filter_term.'%'),
+                'travel_id' => $attestations->where('id_number', 'ILIKE', '%'.request()->filter_term.'%'),
+                'pal_id' => $attestations->where('fed_guid', 'ILIKE', '%'.request()->filter_term.'%'),
+                'city' => $attestations->where('city', 'ILIKE', '%'.request()->filter_term.'%'),
+                'country' => $attestations->where('country', 'ILIKE', '%'.request()->filter_term.'%'),
             };
         }
 

@@ -7,7 +7,6 @@ use App\Events\TrackerTriggered;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
-use App\Models\Tracker;
 use App\Models\Util;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +23,6 @@ class VerifyIssuedAttestation
         $cap = $event->cap;
         $attestation = $event->attestation;
         $status = $event->status;
-
 
         //do not restrict creating draft attestations
 
@@ -48,8 +46,8 @@ class VerifyIssuedAttestation
                 ->count();
 
             // If we hit or acceded the inst cap limit for issued attestations
-            if($issuedInstAttestations > $instCap->total_attestations){
-                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: ' . $issuedInstAttestations . ' >= ' . $instCap->total_attestations);
+            if ($issuedInstAttestations > $instCap->total_attestations) {
+                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
@@ -60,26 +58,26 @@ class VerifyIssuedAttestation
                 ->count();
 
             // If we hit or acceded the inst cap limit for issued attestations
-            if($issuedProgAttestations > $cap->total_attestations){
-                \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: ' . $issuedProgAttestations . ' >= ' . $instCap->total_attestations);
+            if ($issuedProgAttestations > $cap->total_attestations) {
+                \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: '.$issuedProgAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
-            if($attestation->gt_fifty_pct_in_person == false){
+            if ($attestation->gt_fifty_pct_in_person == false) {
                 $valid = false;
             }
 
-            if($valid) {
+            if ($valid) {
                 $this->storePdf($attestation->id);
                 $cap->issued_attestations += 1;
                 $attestation->issued_by_user_guid = Auth::user()->guid;
                 $attestation->issue_date = Carbon::now()->startOfDay();
-            }else{
+            } else {
                 $attestation->status = 'Draft';
                 $attestation->save();
                 $cap->draft_attestations += 1;
             }
-        }else{
+        } else {
             $attestation->status = 'Draft';
             $attestation->save();
             $cap->draft_attestations += 1;

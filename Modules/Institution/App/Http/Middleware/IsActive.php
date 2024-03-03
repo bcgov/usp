@@ -7,8 +7,8 @@ use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
 
 class IsActive
 {
@@ -84,6 +84,7 @@ class IsActive
                 'status' => 'Please contact your Institution Admin to verify your access.',
             ]);
         }
+
         return $next($request);
     }
 }

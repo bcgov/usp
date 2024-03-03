@@ -71,7 +71,7 @@ class AttestationController extends Controller
 
     public function storeAttestations(AttestationStoreRequest $request, $page = null): RedirectResponse|\Illuminate\Routing\Redirector
     {
-        list($error, $inst) = $this->store($request);
+        [$error, $inst] = $this->store($request);
 
         if ($page === 'institution') {
             if (! is_null($error)) {
@@ -98,7 +98,7 @@ class AttestationController extends Controller
         //1. update only draft attestations
         $check1 = Attestation::where('id', $request->id)->where('status', 'Draft')->first();
 
-        if (! is_null($check1) ) {
+        if (! is_null($check1)) {
             $cap = Cap::where('guid', $request->cap_guid)->first();
 
             Attestation::where('id', $request->id)->update($request->validated());
@@ -139,8 +139,9 @@ class AttestationController extends Controller
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML(base64_decode($storedPdf->content));
-        $pdf->getCanvas()->get_cpdf()->setEncryption('', env("PDF_KEY"),['print']);
-        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf');
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+
+        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
     private function paginateAtte()

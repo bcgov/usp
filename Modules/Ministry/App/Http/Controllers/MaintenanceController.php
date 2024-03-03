@@ -40,7 +40,6 @@ class MaintenanceController extends Controller
         return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $staff, 'page' => 'staff']);
     }
 
-
     /**
      * Display a listing of the resource.
      *

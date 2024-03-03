@@ -117,13 +117,13 @@ class UserController extends Controller
             //if it is a new IDIR or BCeID user, register the user first
             if (is_null($user)) {
                 $valid = $this->newUser($provider_user, $type);
-                if($valid == '200'){
+                if ($valid == '200') {
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
                         'status' => 'Please contact Admin to grant you access.',
                     ]);
-                }else{
+                } else {
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -131,7 +131,7 @@ class UserController extends Controller
                     ]);
                 }
 
-            //if the user has been disabled
+                //if the user has been disabled
             } elseif ($user->disabled === true) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
@@ -230,19 +230,17 @@ class UserController extends Controller
         $valid = '200';
         if (isset($provider_user['idir_username']) && $provider_user['idir_username']) {
             $check = User::where('idir_username', Str::upper($provider_user['idir_username']))->first();
-            if(!is_null($check)){
-                $valid = "This IDIR is already in use. Please contact the admin.";
+            if (! is_null($check)) {
+                $valid = 'This IDIR is already in use. Please contact the admin.';
             }
-        }
-
-        elseif (isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
+        } elseif (isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
             $check = User::where('bceid_username', Str::upper($provider_user['bceid_username']))->first();
-            if(!is_null($check)){
-                $valid = "This BCeID is already in use. Please contact the admin.";
+            if (! is_null($check)) {
+                $valid = 'This BCeID is already in use. Please contact the admin.';
             }
         }
 
-        if($valid === "200"){
+        if ($valid === '200') {
             $user = new User();
             $user->guid = Str::orderedUuid()->getHex();
             $user->first_name = Str::title($provider_user['given_name']);
