@@ -14,7 +14,6 @@
                         <th scope="col">User ID</th>
                         <th scope="col">GUID</th>
                         <th scope="col">Role</th>
-                        <th scope="col">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -27,7 +26,7 @@
                             <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">
                                 <input type="radio" class="btn-check" :name="'btnRadioRole0'+i"
                                        :id="'btnRadioRole0'+i" autocomplete="off" :checked="isAdmin(row.user.roles)">
-                                <label class="btn btn-outline-success" :for="'btnRadioRole0'+i">Admin</label>
+                                <label class="btn btn-outline-success disabled" :for="'btnRadioRole0'+i">Admin</label>
 
                                 <input type="radio" class="btn-check" :name="'btnRadioRole1'+i"
                                        :id="'btnRadioRole1'+i" autocomplete="off" :checked="isUser(row.user.roles)">

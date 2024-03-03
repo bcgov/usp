@@ -63,8 +63,8 @@
                                         <strong>{{institution.active_status}}</strong>
                                     </div>
                                     <div class="col-md-4">
-                                        <Label for="inputStandingStatus" class="form-label" value="Status - in good standing?" />
-                                        <strong>{{institution.standing_status}}</strong>
+                                        <Label for="inputStandingStatus" class="form-label" value="ISA Provided?" />
+                                        <strong>{{institution.info_sharing_agreement}}</strong>
                                     </div>
 
 
