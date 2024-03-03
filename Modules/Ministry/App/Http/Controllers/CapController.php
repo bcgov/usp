@@ -46,7 +46,7 @@ class CapController extends Controller
                 ', Total: '.$check->total_attestations.', Issued Attestations: '.$check->issued_attestations;
 
             $cap = Cap::create($request->validated());
-            $cap->comment = is_null($check->comment) ? $cap->comment . ". " . $comment : $check->comment.'. '.$cap->comment . ". " . $comment;
+            $cap->comment = is_null($check->comment) ? $cap->comment.'. '.$comment : $check->comment.'. '.$cap->comment.'. '.$comment;
             $cap->save();
 
             event(new InstitutionCapCreated($cap));
@@ -54,6 +54,7 @@ class CapController extends Controller
         }
 
         $institution = Institution::where('id', $request->institution_id)->first();
+
         return redirect(route('ministry.institutions.show', [$institution->id, 'caps']));
     }
 
@@ -83,7 +84,8 @@ class CapController extends Controller
         return redirect(route('ministry.institutions.show', [$institution->id, 'caps']));
     }
 
-    public function capStat(Request $request){
+    public function capStat(Request $request)
+    {
         $instCap = Cap::where('institution_guid', $request->input('institution_guid'))
             ->active()
             ->where('program_guid', null)
@@ -93,6 +95,7 @@ class CapController extends Controller
             ->where('institution_guid', $instCap->institution_guid)
             ->where('fed_cap_guid', $instCap->fed_cap_guid)
             ->count();
+
         return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
     }
 }

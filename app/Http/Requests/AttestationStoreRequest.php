@@ -148,6 +148,6 @@ class AttestationStoreRequest extends FormRequest
         }
 
         // Construct the next value
-        return "BC" . $year_prefix . "-" . sprintf("%03d", $next_numeric_part);
+        return 'BC'.$year_prefix.'-'.sprintf('%03d', $next_numeric_part);
     }
 }

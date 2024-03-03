@@ -3,12 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\TrackerTriggered;
-use App\Models\Attestation;
-use App\Models\Cap;
-use App\Models\Institution;
-use App\Models\Program;
 use App\Models\Tracker;
-use Illuminate\Support\Facades\Auth;
 
 class StoreTracker
 {

@@ -2,19 +2,21 @@
 
 namespace App\Events;
 
-use App\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 
 class TrackerTriggered
 {
     use Dispatchable, SerializesModels;
 
     public $userGuid;
+
     public $userName;
+
     public $action;
+
     public $modelName;
+
     public $model;
 
     /**
