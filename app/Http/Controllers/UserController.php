@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AjaxRequest;
+use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\Role;
 use App\Models\User;
@@ -256,8 +257,11 @@ class UserController extends Controller
             $user->save();
             $this->checkRoles($user, $type);
 
-            if (array_key_exists('bceid_business_guid', $provider_user)) {
+            if(isset($provider_user['bceid_business_guid'])) {
+                \Log::info('isset $provider_user');
                 $this->checkInstitutionStaff($user, $provider_user);
+            }else{
+                \Log::info('net set $provider_user');
             }
         }
 
@@ -267,21 +271,36 @@ class UserController extends Controller
     private function checkInstitutionStaff($user, $provider_user)
     {
         $user = User::find($user->id);
-        $institutionStaff = InstitutionStaff::where('bceid_business_guid', $user->bceid_business_guid)->with('institution')->first();
+        $institution = Institution::where('bceid_business_guid', $user->bceid_business_guid)->first();
+        $institutionStaff = InstitutionStaff::where('bceid_user_guid', $user->bceid_user_guid)->with('institution')->first();
 
         // If the ministry did not setup any user with that bceid_business_guid then don't auto register
-        if (! is_null($institutionStaff)) {
+        if (! is_null($institution) && is_null($institutionStaff)) {
+            \Log::info('$institution is not null and staff is');
+
             $staff = new InstitutionStaff();
             $staff->guid = Str::orderedUuid()->getHex();
             $staff->user_guid = $user->guid;
-            $staff->institution_guid = $institutionStaff->institution->guid;
+            $staff->institution_guid = $institution->guid;
             $staff->bceid_business_guid = $user->bceid_business_guid;
             $staff->bceid_user_guid = $user->bceid_user_guid;
             $staff->bceid_user_id = Str::upper($provider_user['bceid_username']);
             $staff->bceid_user_name = Str::title($provider_user['name']);
             $staff->bceid_user_email = Str::lower($provider_user['email']);
+            $staff->status = 'Active';
             $staff->save();
+        }else{
+            \Log::info('$institution no go');
         }
+
+        if(is_null($institution)){
+            \Log::info('no institution for bceid_business_guid: ' . $user->bceid_business_guid);
+        }
+        if(is_null($institutionStaff)){
+            \Log::info('no staff for bceid_business_guid: ' . $user->bceid_business_guid);
+        }
+
+
     }
 
     //new user to be assigned as guest
