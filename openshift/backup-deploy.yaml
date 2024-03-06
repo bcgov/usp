@@ -435,7 +435,7 @@ parameters:
     displayName: Backup Volume Size
     description: The size of the persistent volume used for restoring and verifying backups, e.g. 512Mi, 1Gi, 2Gi.  Ensure this is sized correctly.  It should be large enough to contain your largest database.
     required: true
-    value: 200Mi
+    value: 500Mi
   - name: VERIFICATION_VOLUME_CLASS
     displayName: Backup Volume Class
     description: The class of the persistent volume used for restoring and verifying backups; netapp-file-standard, netapp-block-standard.

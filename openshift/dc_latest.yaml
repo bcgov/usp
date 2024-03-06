@@ -90,6 +90,15 @@ objects:
                 requests:
                   cpu: ${CPU_REQUESTS}
                   memory: ${MEM_REQUESTS}
+              lifecycle:
+                postStart:
+                  exec:
+                    command:
+                      - /bin/bash
+                      - '-c'
+                      - >
+                        touch /var/www/html/storage/logs/laravel.log && tail -f
+                        /var/www/html/storage/logs/laravel.log > /proc/1/fd/2 &
               livenessProbe:
                 exec:
                   command:
