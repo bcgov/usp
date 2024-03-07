@@ -42,24 +42,6 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label class="form-label" value="> 50% in-person?" required="true"/>
-                    <Select class="form-select" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </Select>
-                </div>
-                <div class="col-md-3">
-                    <Label class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
-                           class="form-control" v-model="newAtteForm.dob"
-                           :disabled="newAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
-                    <Label class="form-label" value="Email" required="true"/>
-                    <Input type="email" class="form-control" v-model="newAtteForm.email"
-                           :disabled="newAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
                     <Label class="form-label" value="City" required="true"/>
                     <Input type="text" class="form-control" v-model="newAtteForm.city"
                            :disabled="newAtteForm.program_guid === ''"/>
@@ -83,6 +65,25 @@
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
                 </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="> 50% in-person?" required="true"/>
+                    <Select class="form-select" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Date of Birth" required="true"/>
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
+                           class="form-control" v-model="newAtteForm.dob"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Email" required="true"/>
+                    <Input type="email" class="form-control" v-model="newAtteForm.email"
+                           :disabled="newAtteForm.program_guid === ''"/>
+                </div>
+
                 <div class="col-md-3">
                     <Label class="form-label" value="Expiry Date"/>
                     <Input type="text"
