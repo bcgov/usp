@@ -162,21 +162,11 @@ class MaintenanceController extends Controller
     public function reportsSummaryFetch(Request $request)
     {
         $fromDate = $request->from_date;
-        $toDate = $request->to_date;
+        $toDate = $request->to_date . " 23:59:59";
 
         $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
         $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
 
-        $results = Attestation::whereBetween('created_at', [$fromDate, $toDate])->get();
-
-        foreach ($results as $att) {
-            $reportType = $this->getReportType($att->institution->category);
-
-            if($reportType === 'public')
-                $this->updateReport($att, $publicReport);
-            if($reportType === 'private')
-                $this->updateReport($att, $privateReport);
-        }
 
         //add missing inst that have not issued any att.
 
@@ -187,6 +177,17 @@ class MaintenanceController extends Controller
                 $this->addEmptyInst($inst, $publicReport);
             if($instType === 'private')
                 $this->addEmptyInst($inst, $privateReport);
+        }
+
+        $results = Attestation::whereBetween('created_at', [$fromDate, $toDate])->get();
+
+        foreach ($results as $att) {
+            $reportType = $this->getReportType($att->institution->category);
+
+            if($reportType === 'public')
+                $this->updateReport($att, $publicReport);
+            if($reportType === 'private')
+                $this->updateReport($att, $privateReport);
         }
 
         return response()->json([
@@ -210,15 +211,15 @@ class MaintenanceController extends Controller
 
         if(!array_key_exists($att->institution->category, $report)){
             $report[$att->institution->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+            $report['total'] += $att->institution->activeCaps[0]->total_attestations;
+            $report[$att->institution->category]['total'] += $att->institution->activeCaps[0]->total_attestations;
         }
         if(!array_key_exists($att->institution->name, $report[$att->institution->category]['instList'])){
             $report[$att->institution->category]['instList'][$att->institution->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
         }
         $report[$att->institution->category]['instList'][$instName]['total'] = $att->institution->activeCaps[0]->total_attestations;
         $report[$att->institution->category]['instList'][$instName][$status]++;
-        $report[$att->institution->category]['total'] += $att->institution->activeCaps[0]->total_attestations;
         $report[$att->institution->category][$status]++;
-        $report['total'] += $att->institution->activeCaps[0]->total_attestations;
         $report[$status]++;
 
         ksort($report[$att->institution->category]['instList']);

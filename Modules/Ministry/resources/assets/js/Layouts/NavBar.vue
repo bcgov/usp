@@ -51,6 +51,12 @@ nav.navbar .beta-icon{
                         </NavLink>
                     </li>
                     <li class="nav-item">
+                        <NavLink class="nav-link" href="/ministry/reports/summary"
+                                 :class="{ 'active': $page.url.indexOf('/reports') > -1 }">
+                            Reports
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
                         <NavLink class="nav-link" href="/ministry/maintenance/staff"
                                  :class="{ 'active': $page.url.indexOf('maintenance') > -1 }">
                             Maintenance
