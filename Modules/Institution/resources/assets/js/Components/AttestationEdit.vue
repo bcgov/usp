@@ -35,18 +35,6 @@
                 </div>
 
                 <div class="col-md-3 text-break">
-                    <Label for="inputInPerson" class="fw-bold" value="> 50% in-person?"/>
-                    {{ $getYesNo(editAtteForm.gt_fifty_pct_in_person) }}
-                </div>
-                <div class="col-md-3 text-break">
-                    <Label for="inputDob" class="fw-bold" value="Date of Birth"/>
-                    {{ editAtteForm.dob }}
-                </div>
-                <div class="col-md-3 text-break">
-                    <Label for="inputEmail" class="fw-bold" value="Email"/>
-                    {{ editAtteForm.email }}
-                </div>
-                <div class="col-md-3 text-break">
                     <Label for="inputCity" class="fw-bold" value="City"/>
                     {{ editAtteForm.city }}
                 </div>
@@ -62,6 +50,20 @@
                 <div class="col-md-3 text-break">
                     <Label for="inputCountry" class="fw-bold" value="Country"/>
                     {{ editAtteForm.country }}
+                </div>
+
+
+                <div class="col-md-3 text-break">
+                    <Label for="inputInPerson" class="fw-bold" value="> 50% in-person?"/>
+                    {{ $getYesNo(editAtteForm.gt_fifty_pct_in_person) }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputDob" class="fw-bold" value="Date of Birth"/>
+                    {{ editAtteForm.dob }}
+                </div>
+                <div class="col-md-3 text-break">
+                    <Label for="inputEmail" class="fw-bold" value="Email"/>
+                    {{ editAtteForm.email }}
                 </div>
                 <div class="col-md-3 text-break">
                     <Label for="inputExpiryDate" class="fw-bold" value="Expiry Date"/>
@@ -115,24 +117,6 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?" required="true"/>
-                    <Select class="form-select" id="inputInPerson" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </Select>
-                </div>
-                <div class="col-md-3">
-                    <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
-                           class="form-control" id="inputDob" v-model="editAtteForm.dob"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
-                    <Label for="inputEmail" class="form-label" value="Email" required="true"/>
-                    <Input type="email" class="form-control" id="inputEmail" v-model="editAtteForm.email"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
                     <Label for="inputCity" class="form-label" value="City" required="true"/>
                     <Input type="text" class="form-control" id="inputCity" v-model="editAtteForm.city"
                            :disabled="editAtteForm.program_guid === ''"/>
@@ -155,6 +139,25 @@
                     <datalist id="datalistOptionsInputCountry">
                         <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
                     </datalist>
+                </div>
+
+                <div class="col-md-3">
+                    <Label for="inputInPerson" class="form-label" value="> 50% in-person?" required="true"/>
+                    <Select class="form-select" id="inputInPerson" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
+                           class="form-control" id="inputDob" v-model="editAtteForm.dob"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputEmail" class="form-label" value="Email" required="true"/>
+                    <Input type="email" class="form-control" id="inputEmail" v-model="editAtteForm.email"
+                           :disabled="editAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-3">
                     <Label for="inputExpiryDate" class="form-label" value="Expiry Date"/>

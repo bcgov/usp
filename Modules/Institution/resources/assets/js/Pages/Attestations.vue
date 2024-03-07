@@ -47,7 +47,7 @@
                                                 <span v-if="row.status === 'Denied'" class="badge rounded-pill text-bg-danger">Denied</span>
                                             </div>
                                         </td>
-                                        <td>{{ formatDate(row.created_at) }}</td>
+                                        <td>{{ row.issue_date }}</td>
                                         <td>{{ row.expiry_date }}</td>
                                         <td class="text-center">
                                             <a v-if="row.status !== 'Draft'" :href="'/institution/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary">

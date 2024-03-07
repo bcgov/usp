@@ -33,7 +33,7 @@
         </th>
 
         <th scope="col" style="min-width: 100px;">
-            <a href="#" @click="switchSort('created_at')">
+            <a href="#" @click="switchSort('issue_date')">
                 <span>Issue Date</span>
                 <em v-if="sortClmn === 'created_at' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi-sort-numeric-down"></em>

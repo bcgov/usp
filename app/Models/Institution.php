@@ -27,12 +27,12 @@ class Institution extends Model
 
     public function attestations()
     {
-        return $this->hasMany(Attestation::class, 'institution_guid', 'guid')->orderBy('created_at', 'asc');
+        return $this->hasMany(Attestation::class, 'institution_guid', 'guid')->orderBy('created_at');
     }
 
     public function programs()
     {
-        return $this->hasMany(Program::class, 'institution_guid', 'guid');
+        return $this->hasMany(Program::class, 'institution_guid', 'guid')->orderBy('program_name');
     }
 
     public function caps()
