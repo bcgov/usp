@@ -220,9 +220,10 @@ export default {
         }
     },
     mounted() {
-        this.reportData = this.results;
+        //this.reportData = this.results;
         this.toDate = this.$getFormattedDate();
         this.fromDate = this.$getFormattedDate();
+        this.submitForm();
     }
 }
 

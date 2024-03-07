@@ -143,61 +143,60 @@ class MaintenanceController extends Controller
     public function reportsSummary(Request $request): \Inertia\Response
     {
 
-        $publicReport = [
-            'total' => 0,
-            'issued' => 0,
-            'draft' => 0,
-        ];
-        $publicInst = Institution::whereIn('category', ['College', 'Teaching University', 'University'])->with('activeInstCaps','attestations')->orderBy('name')->get();
-        foreach ($publicInst as $inst){
-            if(!array_key_exists($inst->category, $publicReport)){
-                $publicReport[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
-            }
-            $publicReport[$inst->category]['instList'][$inst->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
-            foreach ($inst->activeInstCaps as $cap){
-                $publicReport[$inst->category]['instList'][$inst->name]['total'] = $cap->total_attestations;
-                $publicReport[$inst->category]['instList'][$inst->name]['issued'] = $cap->issued_attestations;
-                $publicReport[$inst->category]['instList'][$inst->name]['draft'] = $cap->draft_attestations;
+//        $publicReport = [
+//            'total' => 0,
+//            'issued' => 0,
+//            'draft' => 0,
+//        ];
+//        $publicInst = Institution::whereIn('category', ['College', 'Teaching University', 'University'])->with('activeInstCaps','attestations')->orderBy('name')->get();
+//        foreach ($publicInst as $inst){
+//            if(!array_key_exists($inst->category, $publicReport)){
+//                $publicReport[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+//            }
+//            $publicReport[$inst->category]['instList'][$inst->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
+//            foreach ($inst->activeInstCaps as $cap){
+//                $publicReport[$inst->category]['instList'][$inst->name]['total'] = $cap->total_attestations;
+//                $publicReport[$inst->category]['instList'][$inst->name]['issued'] = $cap->issued_attestations;
+//                $publicReport[$inst->category]['instList'][$inst->name]['draft'] = $cap->draft_attestations;
+//
+//                $publicReport[$inst->category]['total'] += $cap->total_attestations;
+//                $publicReport[$inst->category]['issued'] += $cap->issued_attestations;
+//                $publicReport[$inst->category]['draft'] += $cap->draft_attestations;
+//
+//                $publicReport['total'] += $cap->total_attestations;
+//                $publicReport['issued'] += $cap->issued_attestations;
+//                $publicReport['draft'] += $cap->draft_attestations;
+//            }
+//        }
+//
+//
+//        $privateReport = [
+//            'total' => 0,
+//            'issued' => 0,
+//            'draft' => 0,
+//        ];
+//        $privateInst = Institution::whereNotIn('category', ['College', 'Teaching University', 'University'])->with('activeInstCaps','attestations')->orderBy('name')->get();
+//        foreach ($privateInst as $inst){
+//            if(!array_key_exists($inst->category, $privateReport)){
+//                $privateReport[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+//            }
+//            $privateReport[$inst->category]['instList'][$inst->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
+//            foreach ($inst->activeInstCaps as $cap){
+//                $privateReport[$inst->category]['instList'][$inst->name]['total'] = $cap->total_attestations;
+//                $privateReport[$inst->category]['instList'][$inst->name]['issued'] = $cap->issued_attestations;
+//                $privateReport[$inst->category]['instList'][$inst->name]['draft'] = $cap->draft_attestations;
+//
+//                $privateReport[$inst->category]['total'] += $cap->total_attestations;
+//                $privateReport[$inst->category]['issued'] += $cap->issued_attestations;
+//                $privateReport[$inst->category]['draft'] += $cap->draft_attestations;
+//
+//                $privateReport['total'] += $cap->total_attestations;
+//                $privateReport['issued'] += $cap->issued_attestations;
+//                $privateReport['draft'] += $cap->draft_attestations;
+//            }
+//        }
 
-                $publicReport[$inst->category]['total'] += $cap->total_attestations;
-                $publicReport[$inst->category]['issued'] += $cap->issued_attestations;
-                $publicReport[$inst->category]['draft'] += $cap->draft_attestations;
-
-                $publicReport['total'] += $cap->total_attestations;
-                $publicReport['issued'] += $cap->issued_attestations;
-                $publicReport['draft'] += $cap->draft_attestations;
-            }
-        }
-
-
-        $privateReport = [
-            'total' => 0,
-            'issued' => 0,
-            'draft' => 0,
-        ];
-        $privateInst = Institution::whereNotIn('category', ['College', 'Teaching University', 'University'])->with('activeInstCaps','attestations')->orderBy('name')->get();
-        foreach ($privateInst as $inst){
-            if(!array_key_exists($inst->category, $privateReport)){
-                $privateReport[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
-            }
-            $privateReport[$inst->category]['instList'][$inst->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
-            foreach ($inst->activeInstCaps as $cap){
-                $privateReport[$inst->category]['instList'][$inst->name]['total'] = $cap->total_attestations;
-                $privateReport[$inst->category]['instList'][$inst->name]['issued'] = $cap->issued_attestations;
-                $privateReport[$inst->category]['instList'][$inst->name]['draft'] = $cap->draft_attestations;
-
-                $privateReport[$inst->category]['total'] += $cap->total_attestations;
-                $privateReport[$inst->category]['issued'] += $cap->issued_attestations;
-                $privateReport[$inst->category]['draft'] += $cap->draft_attestations;
-
-                $privateReport['total'] += $cap->total_attestations;
-                $privateReport['issued'] += $cap->issued_attestations;
-                $privateReport['draft'] += $cap->draft_attestations;
-            }
-        }
-
-        return Inertia::render('Ministry::Reports', ['results' => ['publicReport' => $publicReport,
-            'privateReport' => $privateReport], 'page' => 'summary']);
+        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'summary']);
     }
 
     /**

@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <ReportsSummary v-if="page === 'summary'" :results="results"></ReportsSummary>
+                        <ReportsSummary v-if="page === 'summary'"></ReportsSummary>
                         <ReportsDetail v-if="page === 'detail'" :results="results"></ReportsDetail>
                     </div>
                 </div>
