@@ -6,12 +6,15 @@ use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
+use App\Models\Attestation;
+use App\Models\Institution;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Response;
 
 class MaintenanceController extends Controller
 {
@@ -130,4 +133,82 @@ class MaintenanceController extends Controller
 
         return Redirect::route('ministry.maintenance.utils.list');
     }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response::render
+     */
+    public function reportsSummary(Request $request): \Inertia\Response
+    {
+        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'summary']);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response::render
+     */
+    public function reportsDetail(Request $request): \Inertia\Response
+    {
+        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'detail']);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function reportsSummaryFetch(Request $request)
+    {
+        $fromDate = $request->from_date;
+        $toDate = $request->to_date;
+
+        $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
+        $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
+
+        $results = Attestation::whereBetween('created_at', [$fromDate, $toDate])->get();
+
+        foreach ($results as $att) {
+            $reportType = $this->getReportType($att);
+
+            if($reportType === 'public')
+                $this->updateReport($att, $publicReport);
+            if($reportType === 'private')
+                $this->updateReport($att, $privateReport);
+        }
+
+        return response()->json([
+            'status' => true,
+            'body' => [
+                'publicReport' => $publicReport,
+                'privateReport' => $privateReport
+            ]
+        ]);
+    }
+
+    private function getReportType($att)
+    {
+        return in_array($att->institution->category, ['College', 'Teaching University', 'University']) ? 'public' : 'private';
+    }
+
+    private function updateReport($att, &$report)
+    {
+        $instName = $att->institution->name;
+        $status = $att->status === 'Issued' ? 'issued' : 'draft';
+
+        if(!array_key_exists($att->institution->category, $report)){
+            $report[$att->institution->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+        }
+        if(!array_key_exists($att->institution->name, $report[$att->institution->category]['instList'])){
+            $report[$att->institution->category]['instList'][$att->institution->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
+        }
+        $report[$att->institution->category]['instList'][$instName]['total']++;
+        $report[$att->institution->category]['instList'][$instName][$status]++;
+        $report[$att->institution->category]['total']++;
+        $report[$att->institution->category][$status]++;
+        $report['total']++;
+        $report[$status]++;
+    }
+
 }
