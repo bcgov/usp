@@ -170,12 +170,23 @@ class MaintenanceController extends Controller
         $results = Attestation::whereBetween('created_at', [$fromDate, $toDate])->get();
 
         foreach ($results as $att) {
-            $reportType = $this->getReportType($att);
+            $reportType = $this->getReportType($att->institution->category);
 
             if($reportType === 'public')
                 $this->updateReport($att, $publicReport);
             if($reportType === 'private')
                 $this->updateReport($att, $privateReport);
+        }
+
+        //add missing inst that have not issued any att.
+
+        $institutions = Institution::whereHas('activeCaps')->get();
+        foreach ($institutions as $inst){
+            $instType = $this->getReportType($inst->category);
+            if($instType === 'public')
+                $this->addEmptyInst($inst, $publicReport);
+            if($instType === 'private')
+                $this->addEmptyInst($inst, $privateReport);
         }
 
         return response()->json([
@@ -187,9 +198,9 @@ class MaintenanceController extends Controller
         ]);
     }
 
-    private function getReportType($att)
+    private function getReportType($category)
     {
-        return in_array($att->institution->category, ['College', 'Teaching University', 'University']) ? 'public' : 'private';
+        return in_array($category, ['College', 'Teaching University', 'University']) ? 'public' : 'private';
     }
 
     private function updateReport($att, &$report)
@@ -214,4 +225,19 @@ class MaintenanceController extends Controller
 
     }
 
+    private function addEmptyInst($inst, &$report)
+    {
+        if(!array_key_exists($inst->category, $report)){
+            $report[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+        }
+        if(!array_key_exists($inst->name, $report[$inst->category]['instList'])){
+            $report[$inst->category]['instList'][$inst->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
+        }
+        $report[$inst->category]['instList'][$inst->name]['total'] = $inst->activeCaps[0]->total_attestations;
+        $report[$inst->category]['total'] += $inst->activeCaps[0]->total_attestations;
+        $report['total'] += $inst->activeCaps[0]->total_attestations;
+
+        ksort($report[$inst->category]['instList']);
+
+    }
 }
