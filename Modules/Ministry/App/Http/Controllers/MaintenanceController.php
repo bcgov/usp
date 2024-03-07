@@ -203,12 +203,15 @@ class MaintenanceController extends Controller
         if(!array_key_exists($att->institution->name, $report[$att->institution->category]['instList'])){
             $report[$att->institution->category]['instList'][$att->institution->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
         }
-        $report[$att->institution->category]['instList'][$instName]['total']++;
+        $report[$att->institution->category]['instList'][$instName]['total'] = $att->institution->activeCaps[0]->total_attestations;
         $report[$att->institution->category]['instList'][$instName][$status]++;
-        $report[$att->institution->category]['total']++;
+        $report[$att->institution->category]['total'] += $att->institution->activeCaps[0]->total_attestations;
         $report[$att->institution->category][$status]++;
-        $report['total']++;
+        $report['total'] += $att->institution->activeCaps[0]->total_attestations;
         $report[$status]++;
+
+        ksort($report[$att->institution->category]['instList']);
+
     }
 
 }
