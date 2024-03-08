@@ -21,7 +21,7 @@
                             <td>
                                 <button @click="editUtil(cat, i)" type="button" class="btn btn-link text-start" data-bs-toggle="modal" data-bs-target="#editUtilModal">{{ row.field_name }}</button>
                             </td>
-                            <td>{{ row.description }}</td>
+                            <td>{{ row.field_description }}</td>
                             <td>
                                 <span v-if="row.active_flag" class="badge rounded-pill text-bg-success">True</span>
                                 <span v-else class="badge rounded-pill text-bg-danger">False</span>
