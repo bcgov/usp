@@ -190,6 +190,25 @@ class AttestationController extends Controller
         return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
     }
 
+
+    public function duplicateStudent(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+
+        $instCap = Cap::where('institution_guid', $institution->guid)
+            ->active()
+            ->where('program_guid', null)
+            ->first();
+
+        $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
+            ->where('fed_cap_guid', $instCap->fed_cap_guid)
+            ->where('student_number', $request->input('student_number'))
+            ->count();
+
+        return Response::json(['status' => true, 'body' => ['count' => $issuedInstAttestations]]);
+    }
+
     private function paginateAtte($institution)
     {
 

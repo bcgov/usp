@@ -10,8 +10,8 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label class="form-label" value="Student Number"/>
-                    <Input type="text" class="form-control" v-model="newAtteForm.student_number"
+                    <label class="form-label">Student Number <strong v-if="duplicate" class="text-danger">DUPLICATE</strong></label>
+                    <Input @focusout="checkDuplicate" type="text" class="form-control" v-model="newAtteForm.student_number"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
                 <div class="col-md-4">
@@ -139,6 +139,7 @@ export default {
     },
     data() {
         return {
+            duplicate: false,
             randomId: '',
             newAtteForm: null,
             newAtteFormData: {
@@ -165,7 +166,21 @@ export default {
         }
     },
     methods: {
+        checkDuplicate: function (){
+            this.duplicate = false;
 
+            if(this.newAtteForm.student_number == '') return false;
+            let vm = this;
+            let data = {
+                student_number: this.newAtteForm.student_number,
+            }
+            axios.post('/institution/api/check/duplicate_student', data)
+                .then(function (response) {
+                    if(response.data.body.count > 0){
+                        this.duplicate = true;
+                    }
+                })
+        },
         submitForm: function (status) {
             this.newAtteForm.status = status;
             if(this.newAtteForm.status !== 'Draft'){
