@@ -253,7 +253,7 @@ export default {
             axios.post('/institution/api/check/duplicate_student', data)
                 .then(function (response) {
                     if(response.data.body.count > 0){
-                        this.duplicate = true;
+                        vm.duplicate = true;
                     }
                 })
         },
