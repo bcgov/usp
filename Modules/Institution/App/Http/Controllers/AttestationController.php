@@ -70,7 +70,9 @@ class AttestationController extends Controller
         $check1 = Attestation::where([
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
             'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
-            'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid])->first();
+            'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid, 'email' => $request->email,
+            'address1' => $request->address1, 'address2' => $request->address2, 'city' => $request->city,
+            'zip_code' => $request->zip_code, 'province' => $request->province, 'country' => $request->country])->first();
 
         if (is_null($check1)) {
             $attestation = Attestation::create($request->validated());
@@ -98,16 +100,26 @@ class AttestationController extends Controller
         //1. update only draft attestations
         $check1 = Attestation::where('id', $request->id)->where('status', 'Draft')->first();
 
-        if (! is_null($check1)) {
+        //2. dont allow duplicate
+        $check2 = Attestation::where([
+            'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
+            'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
+            'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid, 'email' => $request->email,
+            'address1' => $request->address1, 'address2' => $request->address2, 'city' => $request->city,
+            'zip_code' => $request->zip_code, 'province' => $request->province, 'country' => $request->country])->first();
+
+        if(is_null($check1)){
+            $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
+        }
+        elseif(!is_null($check2)){
+            $error = "There's already an attestation for the exact same user.";
+        }else{
             $cap = Cap::where('guid', $request->cap_guid)->first();
 
             Attestation::where('id', $request->id)->update($request->validated());
             $attestation = Attestation::find($request->id);
             $this->authorize('download', $attestation);
             event(new AttestationDraftUpdated($cap, $attestation, $check1, $request->status));
-
-        } else {
-            $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
         }
 
         if (! is_null($error)) {
@@ -176,6 +188,25 @@ class AttestationController extends Controller
             ->count();
 
         return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
+    }
+
+
+    public function duplicateStudent(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+
+        $instCap = Cap::where('institution_guid', $institution->guid)
+            ->active()
+            ->where('program_guid', null)
+            ->first();
+
+        $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
+            ->where('fed_cap_guid', $instCap->fed_cap_guid)
+            ->where('student_number', $request->input('student_number'))
+            ->count();
+
+        return Response::json(['status' => true, 'body' => ['count' => $issuedInstAttestations]]);
     }
 
     private function paginateAtte($institution)

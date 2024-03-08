@@ -23,6 +23,7 @@
                     <div class="col-md-9">
                         <ReportsSummary v-if="page === 'summary'"></ReportsSummary>
                         <ReportsDetail v-if="page === 'detail'" :results="results"></ReportsDetail>
+                        <ReportSources v-if="page === 'sources'"></ReportSources>
                     </div>
                 </div>
             </div>
@@ -35,12 +36,14 @@ import { Head, Link } from '@inertiajs/vue3';
 import ReportsMenu from "../Components/ReportsMenu";
 import ReportsSummary from "../Components/ReportsSummary";
 import ReportsDetail from "../Components/ReportsDetail";
+import ReportSources from "../Components/ReportSources";
 
 export default {
     name: 'Reports',
     components: {
         ReportsSummary,
         ReportsDetail,
+        ReportSources,
         BreezeAuthenticatedLayout, Head, Link, ReportsMenu
     },
     props: {

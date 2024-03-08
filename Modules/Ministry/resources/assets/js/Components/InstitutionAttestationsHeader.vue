@@ -16,10 +16,10 @@
             <span>Status</span>
         </th>
         <th scope="col">
-            <span>Expiry Date</span>
+            <span>Issue Date</span>
         </th>
         <th scope="col">
-            <span>Issue Date</span>
+            <span>Expiry Date</span>
         </th>
     </tr>
 </template>
