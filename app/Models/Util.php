@@ -15,7 +15,7 @@ class Util extends Model
 
     public static function getSortedUtils()
     {
-        $utils = Util::select('id', 'field_name', 'field_type')->where('active_flag', true)->get();
+        $utils = Util::select('id', 'field_name', 'field_type', 'field_description')->where('active_flag', true)->get();
 
         $cat_utils = [];
         $cat_titles = [];

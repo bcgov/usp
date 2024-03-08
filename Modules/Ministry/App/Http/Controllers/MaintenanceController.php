@@ -152,9 +152,81 @@ class MaintenanceController extends Controller
      */
     public function reportsDetail(Request $request): \Inertia\Response
     {
-        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'detail']);
+        $institutions = Institution::select('guid', 'name', 'category')->with('activeCaps')->orderBy('name')->get();
+        $categories = Institution::select('category')->whereNotNull('category')->groupBy('category')->orderBy('category')->get();
+        return Inertia::render('Ministry::Reports', ['results' => ['institutions' => $institutions, 'categories' => $categories], 'page' => 'detail']);
     }
 
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response::render
+     */
+    public function reportSources(Request $request): \Inertia\Response
+    {
+        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'sources']);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response::render
+     */
+    public function reportSourcesFetch(Request $request, $from, $to, $type)
+    {
+        $fromDate = $from;
+        $toDate = $to . " 23:59:59";
+
+        if($type === 'attestation'){
+            $query = "select now(), s.institution_guid, s.fed_guid, s.first_name, s.last_name, s.status, s.issue_date, s.country, i.guid, i.name from attestations s
+join institutions i on i.guid = s.institution_guid where s.created_at between '$fromDate' and '$toDate'";
+        }
+        if($type === 'cap'){
+            $query = "select now(), s.institution_guid, s.fed_cap_guid, s.total_attestations, s.issued_attestations, s.draft_attestations, s.active_status, i.guid,
+       i.name, i.category, i.dli, i.info_sharing_agreement, fc.guid, fc.start_date, fc.end_date, fc.total_attestations, fc.status from caps s
+join institutions i on i.guid = s.institution_guid
+join fed_caps fc on fc.guid = s.fed_cap_guid where fc.status='Active'";
+        }
+        if($type === 'staff'){
+            $query = "select now(), s.institution_guid, s.bceid_user_name, i.guid, i.name from institution_staff s
+join institutions i on i.guid = s.institution_guid where s.created_at between '$fromDate' and '$toDate'";
+        }
+
+        $csvData = [];
+        $csvDataHeader = [];
+        $rows = \DB::select($query);
+        if(sizeof($rows) == 0) return "No results for the date range selected.";
+
+        foreach ($rows[0] as $k => $v){
+            $csvDataHeader[] = $k;
+        }
+
+        foreach ($rows as $d) {
+            $row = [];
+            foreach ($d as $v){
+                $row[] = $v;
+            }
+            $csvData[] = $row;
+        }
+        $output = fopen('php://temp', 'w');
+        // Write CSV headers
+        fputcsv($output, $csvDataHeader);
+
+        // Write CSV rows
+        foreach ($csvData as $row) {
+            fputcsv($output, $row);
+        }
+        rewind($output);
+        $response = Response::make(stream_get_contents($output), 200);
+        $response->header('Content-Type', 'text/csv');
+        $response->header('Content-Disposition', 'attachment; filename=' . $request->type . "_data.csv");
+        fclose($output);
+
+        return $response;
+
+    }
 
     /**
      * Display a listing of the resource.
@@ -239,6 +311,49 @@ class MaintenanceController extends Controller
         $report['total'] += $inst->activeCaps[0]->total_attestations;
 
         ksort($report[$inst->category]['instList']);
+    }
 
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function reportsDetailFetch(Request $request)
+    {
+        $fromDate = $request->from_date;
+        $toDate = $request->to_date . " 23:59:59";
+
+        $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
+        $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
+
+
+        //add missing inst that have not issued any att.
+
+        $institutions = Institution::whereHas('activeCaps')->get();
+        foreach ($institutions as $inst){
+            $instType = $this->getReportType($inst->category);
+            if($instType === 'public')
+                $this->addEmptyInst($inst, $publicReport);
+            if($instType === 'private')
+                $this->addEmptyInst($inst, $privateReport);
+        }
+
+        $results = Attestation::whereBetween('created_at', [$fromDate, $toDate])->get();
+
+        foreach ($results as $att) {
+            $reportType = $this->getReportType($att->institution->category);
+
+            if($reportType === 'public')
+                $this->updateReport($att, $publicReport);
+            if($reportType === 'private')
+                $this->updateReport($att, $privateReport);
+        }
+
+        return response()->json([
+            'status' => true,
+            'body' => [
+                'publicReport' => $publicReport,
+                'privateReport' => $privateReport
+            ]
+        ]);
     }
 }
