@@ -107,7 +107,7 @@ class AttestationController extends Controller
             'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid, 'email' => $request->email,
             'address1' => $request->address1, 'address2' => $request->address2, 'city' => $request->city,
             'zip_code' => $request->zip_code, 'province' => $request->province, 'country' => $request->country])
-            ->where(['id', '!=', $request->id])
+            ->where('id', '!=', $request->id)
             ->first();
 
         if(is_null($check1)){
