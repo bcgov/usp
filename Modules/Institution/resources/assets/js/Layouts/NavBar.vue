@@ -16,6 +16,9 @@ nav.navbar .beta-icon{
 }
 </style>
 <template>
+    <div v-if="alert != ''" class="alert mb-0" :class="alert.field_name">
+        <div class="container-fluid" v-html="alert.field_description"></div>
+    </div>
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow">
         <div class="container-fluid">
             <Link class="navbar-brand" href="/institution/dashboard">
@@ -107,6 +110,7 @@ export default {
             searchType: '',
             searchData: '',
             isAdmin: ref(false),
+            alert: ''
         }
     },
     methods: {
@@ -122,6 +126,9 @@ export default {
                 }
             }
         }
+
+        if(this.$attrs.utils['Ministry Alert on Institution Page'] != undefined)
+            this.alert = this.$attrs.utils['Ministry Alert on Institution Page'][0];
     },
     computed:{
         logoutUrl: function(){
