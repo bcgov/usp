@@ -185,13 +185,19 @@ join institutions i on i.guid = s.institution_guid where s.created_at between '$
         }
         if($type === 'cap'){
             $query = "select now(), s.institution_guid, s.fed_cap_guid, s.total_attestations, s.issued_attestations, s.draft_attestations, s.active_status, i.guid,
-       i.name, i.category, i.dli, i.info_sharing_agreement, fc.guid, fc.start_date, fc.end_date, fc.total_attestations, fc.status from caps s
+       i.name, i.category, i.dli, i.info_sharing_agreement, fc.guid, fc.start_date, fc.end_date, fc.total_attestations as fc_total_attestations, fc.status from caps s
 join institutions i on i.guid = s.institution_guid
 join fed_caps fc on fc.guid = s.fed_cap_guid where fc.status='Active'";
         }
         if($type === 'staff'){
             $query = "select now(), s.institution_guid, s.bceid_user_name, i.guid, i.name from institution_staff s
 join institutions i on i.guid = s.institution_guid where s.created_at between '$fromDate' and '$toDate'";
+        }
+        if($type === 'ircc'){
+            $query = "select i.name, i.dli, p.program_name, a.student_number, a.id_number, a.fed_guid, a.guid, a.first_name, a.last_name, a.address1,
+a.city, a.country, a.dob, a.issue_date, a.expiry_date from attestations a
+join institutions i on i.guid = a.institution_guid
+join programs p on p.guid = a.program_guid where a.created_at between '$fromDate' and '$toDate'";
         }
 
         $csvData = [];
