@@ -20,17 +20,21 @@
             </div>
 
             <div class="row g-3 mb-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/attestation'" target="_blank" class="btn btn-outline-success w-100">
                         <i class="bi bi-filetype-csv h1"></i><br/>Attestation</a>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/cap'" target="_blank" class="btn btn-outline-success w-100">
                         <i class="bi bi-filetype-csv h1"></i><br/>Cap</a>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/staff'" target="_blank" class="btn btn-outline-success w-100">
                         <i class="bi bi-filetype-csv h1"></i><br/>Staff</a>
+                </div>
+                <div class="col-md-3">
+                    <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/ircc'" target="_blank" class="btn btn-outline-success w-100">
+                        <i class="bi bi-filetype-csv h1"></i><br/>IRCC</a>
                 </div>
             </div>
 

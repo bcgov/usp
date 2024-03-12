@@ -80,7 +80,7 @@
                             <td><strong>{{ filteredReport.publicReport.total }}</strong></td>
                             <td><strong>{{ filteredReport.publicReport.issued }}</strong></td>
                             <td><strong>{{ filteredReport.publicReport.draft }}</strong></td>
-                            <td><strong>{{ (filteredReport.publicReport.issued / filteredReport.publicReport.total * 100).toFixed(2) }}%</strong></td>
+                            <td><strong>{{ roundIt(filteredReport.publicReport) }}%</strong></td>
 
                         </tr>
                         <template v-for="(value, name, index) in filteredReport.publicReport">
@@ -97,7 +97,7 @@
                                     <td>{{ row.total }}</td>
                                     <td>{{ row.issued }}</td>
                                     <td>{{ row.draft }}</td>
-                                    <td>{{ (row.issued / row.total * 100).toFixed(2) }}%</td>
+                                    <td>{{ roundIt(row) }}%</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -126,7 +126,7 @@
                             <td><strong>{{ filteredReport.privateReport.total }}</strong></td>
                             <td><strong>{{ filteredReport.privateReport.issued }}</strong></td>
                             <td><strong>{{ filteredReport.privateReport.draft }}</strong></td>
-                            <td><strong>{{ (filteredReport.privateReport.issued / filteredReport.privateReport.total * 100).toFixed(2) }}%</strong></td>
+                            <td><strong>{{ roundIt(filteredReport.privateReport) }}%</strong></td>
 
                         </tr>
                         <template v-for="(value, name, index) in filteredReport.privateReport">
@@ -136,14 +136,14 @@
                                     <td><strong>{{ value.total }}</strong></td>
                                     <td><strong>{{ value.issued }}</strong></td>
                                     <td><strong>{{ value.draft }}</strong></td>
-                                    <td><strong>{{ (value.issued / value.total * 100).toFixed(2) }}%</strong></td>
+                                    <td><strong>{{ roundIt(value) }}%</strong></td>
                                 </tr>
                                 <tr v-for="(row, k, i) in value.instList">
                                     <td>&nbsp;&nbsp;{{ k }}</td>
                                     <td>{{ row.total }}</td>
                                     <td>{{ row.issued }}</td>
                                     <td>{{ row.draft }}</td>
-                                    <td>{{ (row.issued / row.total * 100).toFixed(2) }}%</td>
+                                    <td>{{ roundIt(row) }}%</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -163,7 +163,7 @@
                             <th scope="col">{{ filteredReport.publicReport.total + filteredReport.privateReport.total }}</th>
                             <th scope="col">{{ filteredReport.publicReport.issued + filteredReport.privateReport.issued }}</th>
                             <th scope="col">{{ filteredReport.publicReport.draft + filteredReport.privateReport.draft }}</th>
-                            <th scope="col">{{ (filteredReport.publicReport.issued / filteredReport.publicReport.total * 100).toFixed(2) }}%</th>
+                            <th scope="col">{{ roundIt(filteredReport.publicReport) }}%</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -205,6 +205,10 @@ export default {
         }
     },
     methods: {
+        roundIt: function (report) {
+            if(report.total === 0) return 0;
+            return (report.issued / report.total * 100).toFixed(2);
+        },
         updateCat: function (cat){
             this.filterCat = this.filterCat === cat ? '' : cat;
         },

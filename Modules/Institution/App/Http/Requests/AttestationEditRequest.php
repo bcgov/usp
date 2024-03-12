@@ -86,6 +86,7 @@ class AttestationEditRequest extends FormRequest
             'last_name' => Str::title($this->last_name),
             'email' => Str::lower($this->email),
             'city' => Str::title($this->city),
+            'country' => Str::title($this->country),
             'zip_code' => Str::upper($this->zip_code),
             'province' => Str::title($this->province),
             'gt_fifty_pct_in_person' => $this->toBoolean($this->gt_fifty_pct_in_person),
