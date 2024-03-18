@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use Illuminate\Support\Facades\Session;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -46,6 +47,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
                 'roles' => is_null($user) ? null : $user->roles,
+                'readOnly' => Session::has('read-only'),
             ],
             'utils' => Util::getSortedUtils(),
             'ziggy' => function () {

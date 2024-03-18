@@ -42,6 +42,9 @@
                                 <label @click.prevent="switchStatus(row,'Inactive')" class="btn btn-outline-success" :for="'btnRadioStatus2'+i">Inactive</label>
                             </div>
                         </td>
+                        <td>
+                            <button type="button" class="btn btn-success btn-sm" @click="accessUser(row)">Login</button>
+                        </td>
 
                     </tr>
                     </tbody>
@@ -85,6 +88,11 @@ export default {
         isGuest: function (roles){
             const role = roles.find(role => role.name === "Institution Guest");
             return !!role;
+        },
+        accessUser: function (staff) {
+            if(confirm('You are about to logout from the Ministry and Login to ' + this.results.name + ' as ' + staff.bceid_user_name)){
+                this.$inertia.visit('/ministry/institution_login/' + staff.guid);
+            }
         },
         switchStatus: function (staff, status){
             if(confirm('Are you sure you want to switch this staff member\'s Status to: ' + status)){

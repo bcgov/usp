@@ -187,7 +187,7 @@ join institutions i on i.guid = s.institution_guid where s.created_at between '$
             $query = "select now(), s.institution_guid, s.fed_cap_guid, s.total_attestations, s.issued_attestations, s.draft_attestations, s.active_status, i.guid,
        i.name, i.category, i.dli, i.info_sharing_agreement, fc.guid, fc.start_date, fc.end_date, fc.total_attestations as fc_total_attestations, fc.status from caps s
 join institutions i on i.guid = s.institution_guid
-join fed_caps fc on fc.guid = s.fed_cap_guid where fc.status='Active'";
+join fed_caps fc on fc.guid = s.fed_cap_guid where fc.status='Active' AND s.active_status=true";
         }
         if($type === 'staff'){
             $query = "select now(), s.institution_guid, s.bceid_user_name, i.guid, i.name from institution_staff s

@@ -8,6 +8,7 @@ use App\Models\Program;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class AttestationEditRequest extends FormRequest
@@ -17,6 +18,7 @@ class AttestationEditRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if(Session::has('read-only')) return false;
         $attestation = Attestation::find($this->id);
 
         return $this->user()->can('update', $attestation);

@@ -11,6 +11,7 @@ use App\Models\InstitutionStaff;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class InstitutionStaffController extends Controller
@@ -64,4 +65,27 @@ class InstitutionStaffController extends Controller
             'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get()]);
 
     }
+
+    /**
+     * Login ministry staff to institution.
+     */
+    public function ministryLogin(Request $request, $guid): \Illuminate\Http\RedirectResponse
+    {
+        $staff = InstitutionStaff::where('guid', $guid)->first();
+        if(!is_null($staff)){
+            $user = Auth::user();
+            Auth::logout($user);
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            Auth::login($staff->user);
+            Session::push('read-only', true);
+
+            return to_route('institution.dashboard');
+        }
+        return to_route('ministry/institutions/' . $staff->institution->id . '/staff');
+    }
+
+
 }
