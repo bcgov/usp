@@ -54,7 +54,8 @@ class AttestationController extends Controller
         $attestations = $this->paginateAtte($user->institution);
 
         return Inertia::render('Institution::Attestations', ['error' => null, 'results' => $attestations,
-            'institution' => $user->institution, 'programs' => $user->institution->programs, 'countries' => $this->countries,
+            'institution' => $user->institution,
+            'programs' => $user->institution->activePrograms, 'countries' => $this->countries,
             'instCaps' => $user->institution->activeInstCaps,
             'programCaps' => $user->institution->activeProgramCaps,
             'instCap' => $cap]);

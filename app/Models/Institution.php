@@ -35,6 +35,13 @@ class Institution extends Model
         return $this->hasMany(Program::class, 'institution_guid', 'guid')->orderBy('program_name');
     }
 
+    public function activePrograms()
+    {
+        return $this->hasMany(Program::class, 'institution_guid', 'guid')
+            ->where('active_status', true)
+            ->orderBy('program_name');
+    }
+
     public function caps()
     {
         return $this->hasMany(Cap::class, 'institution_guid', 'guid')->orderByDesc('created_at');
