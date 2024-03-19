@@ -35,7 +35,7 @@
                                     </thead>
                                     <tbody>
                                     <tr v-for="(row, i) in attestationList">
-                                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link p-0">{{ row.last_name }}</button></td>
+                                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link p-0 text-start">{{ row.last_name }}</button></td>
                                         <td>{{ row.first_name }}</td>
                                         <td>{{ row.student_number }}</td>
                                         <td><span v-if="row.program !== null">{{ row.program.program_name }}</span></td>
