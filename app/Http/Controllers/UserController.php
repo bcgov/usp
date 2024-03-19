@@ -141,6 +141,11 @@ class UserController extends Controller
                 ]);
             }
 
+
+            $user->name = $provider_user['name'];
+            $user->save();
+            \Log::info('We got a name: '.$provider_user['name']);
+
             //else the user has access
             if ($type === Role::Ministry_GUEST) {
                 //check if the user is a guest
@@ -244,6 +249,7 @@ class UserController extends Controller
         if ($valid === '200') {
             $user = new User();
             $user->guid = Str::orderedUuid()->getHex();
+            $user->name = Str::title($provider_user['name']);
             $user->first_name = Str::title($provider_user['given_name']);
             $user->last_name = Str::title($provider_user['family_name']);
             $user->email = Str::lower($provider_user['email']);

@@ -19,6 +19,9 @@ nav.navbar .beta-icon{
     <div v-if="alert != ''" class="alert mb-0" :class="alert.field_name">
         <div class="container-fluid" v-html="alert.field_description"></div>
     </div>
+    <div v-if="$attrs.auth.readOnly" class="alert mb-0 alert-warning">
+        <div class="container-fluid">You are in read-only mode.</div>
+    </div>
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow">
         <div class="container-fluid">
             <Link class="navbar-brand" href="/institution/dashboard">

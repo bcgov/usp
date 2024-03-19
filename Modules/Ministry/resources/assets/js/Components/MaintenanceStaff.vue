@@ -11,6 +11,7 @@
                         <tr>
                             <th scope="col">First Name</th>
                             <th scope="col">Last Name</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
                             <th scope="col">Status</th>
@@ -20,6 +21,7 @@
                         <tr v-for="(row, i) in results">
                             <td>{{ row.first_name }}</td>
                             <td>{{ row.last_name}}</td>
+                            <td>{{ row.name}}</td>
                             <td>{{ row.email }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">

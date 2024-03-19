@@ -9,6 +9,7 @@ use App\Models\Program;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class AttestationStoreRequest extends FormRequest
@@ -18,6 +19,7 @@ class AttestationStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if(Session::has('read-only')) return false;
         return $this->user()->can('create', Attestation::class);
     }
 
