@@ -1,13 +1,13 @@
 <template>
     <tr>
-        <th scope="col">
+        <th scope="col" style="min-width: 115px;">
             <a href="#" @click="switchSort('last_name')">
                 <span>Last Name</span>
                 <em v-if="sortClmn === 'last_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
-        <th scope="col">
+        <th scope="col" style="min-width: 115px;">
             <a href="#" @click="switchSort('first_name')">
                 <span>First Name</span>
                 <em v-if="sortClmn === 'first_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
@@ -31,14 +31,14 @@
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
-        <th scope="col" style="min-width: 100px;">
+        <th scope="col" style="min-width: 115px;">
             <a href="#" @click="switchSort('issue_date')">
                 <span>Issue Date</span>
                 <em v-if="sortClmn === 'created_at' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>
-        <th scope="col" style="min-width: 100px;">
+        <th scope="col" style="min-width: 120px;">
             <a href="#" @click="switchSort('expiry_date')">
                 <span>Expiry Date</span>
                 <em v-if="sortClmn === 'expiry_date' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
