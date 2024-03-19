@@ -79,7 +79,7 @@
                     <Label class="form-label" value="Institution Program" required="true"/>
                     <Select class="form-select" v-model="editAtteForm.program_guid">
                         <option></option>
-                        <option v-for="c in institution.programs" :value="c.guid">{{ c.program_name}}</option>
+                        <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
