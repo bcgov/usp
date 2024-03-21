@@ -10,11 +10,11 @@
                     <Label for="inputLastName" class="fw-bold" value="Last Name"/>
                     {{ editAtteForm.last_name }}
                 </div>
-                <div class="col-md-6 text-break">
+                <div class="col-md-12 text-break">
                     <Label for="inputAddress1" class="fw-bold" value="Address 1"/>
                     {{ editAtteForm.address1 }}
                 </div>
-                <div class="col-md-6 text-break">
+                <div class="col-md-12 text-break">
                     <Label for="inputAddress2" class="fw-bold" value="Address 2"/>
                     {{ editAtteForm.address2 }}
                 </div>

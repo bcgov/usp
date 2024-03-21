@@ -30,12 +30,12 @@
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <Label class="form-label" value="Address 1" required="true"/>
                     <Input type="text" class="form-control" v-model="newAtteForm.address1"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <Label class="form-label" value="Address 2"/>
                     <Input type="text" class="form-control" v-model="newAtteForm.address2"
                            :disabled="newAtteForm.program_guid === ''"/>
