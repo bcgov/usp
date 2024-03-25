@@ -104,12 +104,12 @@
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <Label class="form-label" value="Address 1" required="true"/>
                     <Input type="text" class="form-control" v-model="editAtteForm.address1"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <Label class="form-label" value="Address 2"/>
                     <Input type="text" class="form-control" v-model="editAtteForm.address2"
                            :disabled="editAtteForm.program_guid === ''"/>
