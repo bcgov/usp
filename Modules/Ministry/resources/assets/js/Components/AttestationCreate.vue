@@ -40,13 +40,13 @@
                     <Input type="text" class="form-control" id="inputLastName" v-model="newAtteForm.last_name"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <Label for="inputAddress1" class="form-label" value="Address 1" required="true"/>
                     <Input type="text" class="form-control" id="inputAddress1" v-model="newAtteForm.address1"
                            :disabled="newAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <Label for="inputAddress2" class="form-label" value="Address 2"/>
                     <Input type="text" class="form-control" id="inputAddress2" v-model="newAtteForm.address2"
                            :disabled="newAtteForm.program_guid === ''"/>

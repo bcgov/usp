@@ -18,11 +18,11 @@
                         <Label for="inputLastName" class="fw-bold" value="Last Name"/>
                         {{ editAtteForm.last_name }}
                     </div>
-                    <div class="col-md-6 text-break">
+                    <div class="col-md-12 text-break">
                         <Label for="inputAddress1" class="fw-bold" value="Address 1"/>
                         {{ editAtteForm.address1 }}
                     </div>
-                    <div class="col-md-6 text-break">
+                    <div class="col-md-12 text-break">
                         <Label for="inputAddress2" class="fw-bold" value="Address 2"/>
                         {{ editAtteForm.address2 }}
                     </div>
@@ -89,12 +89,12 @@
                         <Input type="text" class="form-control" id="inputLastName" v-model="editAtteForm.last_name"
                                :disabled="editAtteForm.program_guid === ''"/>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <Label for="inputAddress1" class="form-label" value="Address 1" required="true"/>
                         <Input type="text" class="form-control" id="inputAddress1" v-model="editAtteForm.address1"
                                :disabled="editAtteForm.program_guid === ''"/>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <Label for="inputAddress2" class="form-label" value="Address 2"/>
                         <Input type="text" class="form-control" id="inputAddress2" v-model="editAtteForm.address2"
                                :disabled="editAtteForm.program_guid === ''"/>
