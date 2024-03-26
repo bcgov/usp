@@ -180,7 +180,8 @@ class MaintenanceController extends Controller
         $toDate = $to . " 23:59:59";
 
         if($type === 'attestation'){
-            $query = "select now(), s.institution_guid, s.fed_guid, s.first_name, s.last_name, s.status, s.issue_date, s.country, i.guid, i.name from attestations s
+            $query = "select now(), s.institution_guid, s.fed_guid, s.first_name, s.last_name, s.status, s.issue_date,
+       s.country, s.dob, s.student_number, s.id_number, i.guid, i.name from attestations s
 join institutions i on i.guid = s.institution_guid where s.created_at between '$fromDate' and '$toDate'";
         }
         if($type === 'cap'){
@@ -245,27 +246,32 @@ join programs p on p.guid = a.program_guid where a.created_at between '$fromDate
         $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
         $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
 
+        // Fetch institutions with active attestations
+        $institutions = Institution::with(['activeCaps.attestations'])->get();
 
-        //add missing inst that have not issued any att.
-
-        $institutions = Institution::whereHas('activeCaps')->get();
-        foreach ($institutions as $inst){
+        foreach ($institutions as $inst) {
             $instType = $this->getReportType($inst->category);
-            if($instType === 'public')
-                $this->addEmptyInst($inst, $publicReport);
-            if($instType === 'private')
-                $this->addEmptyInst($inst, $privateReport);
+
+            if ($instType === 'public') {
+                $this->addInstToReport($inst, $publicReport);
+            }
+            if ($instType === 'private') {
+                $this->addInstToReport($inst, $privateReport);
+            }
         }
 
-        $results = Attestation::whereBetween('created_at', [$fromDate, $toDate])->get();
+        // Fetch attestations within the specified date range
+        $results = Attestation::with('institution')->whereBetween('created_at', [$fromDate, $toDate])->get();
 
         foreach ($results as $att) {
             $reportType = $this->getReportType($att->institution->category);
 
-            if($reportType === 'public')
+            if ($reportType === 'public') {
                 $this->updateReport($att, $publicReport);
-            if($reportType === 'private')
+            }
+            if ($reportType === 'private') {
                 $this->updateReport($att, $privateReport);
+            }
         }
 
         return response()->json([
@@ -277,48 +283,42 @@ join programs p on p.guid = a.program_guid where a.created_at between '$fromDate
         ]);
     }
 
-    private function getReportType($category)
+    private function addInstToReport($inst, &$report)
     {
-        return in_array($category, ['College', 'Teaching University', 'University']) ? 'public' : 'private';
+        if (!isset($report[$inst->category])) {
+            $report[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+        }
+
+        $total = is_null($inst->activeCaps->first()) ? 0 : $inst->activeCaps->first()->total_attestations;
+        $report[$inst->category]['instList'][$inst->name] = [
+            'total' => $total,
+            'issued' => 0,
+            'draft' => 0
+        ];
+
+        $report[$inst->category]['total'] += $total;
+        $report['total'] += $total;
     }
 
     private function updateReport($att, &$report)
     {
-        $instName = $att->institution->name;
-        $status = $att->status === 'Issued' ? 'issued' : 'draft';
+        $inst = $att->institution;
+        $instName = $inst->name;
+        $status = ($att->status === 'Issued') ? 'issued' : 'draft';
 
-        if(!array_key_exists($att->institution->category, $report)){
-            $report[$att->institution->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
-            $report['total'] += $att->institution->activeCaps[0]->total_attestations;
-            $report[$att->institution->category]['total'] += $att->institution->activeCaps[0]->total_attestations;
+        if (!isset($report[$inst->category])) {
+            $this->addInstToReport($inst, $report);
         }
-        if(!array_key_exists($att->institution->name, $report[$att->institution->category]['instList'])){
-            $report[$att->institution->category]['instList'][$att->institution->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
-        }
-        $report[$att->institution->category]['instList'][$instName]['total'] = $att->institution->activeCaps[0]->total_attestations;
-        $report[$att->institution->category]['instList'][$instName][$status]++;
-        $report[$att->institution->category][$status]++;
+
+        $report[$inst->category]['instList'][$instName][$status]++;
+        $report[$inst->category][$status]++;
         $report[$status]++;
-
-        ksort($report[$att->institution->category]['instList']);
-
     }
 
-    private function addEmptyInst($inst, &$report)
+    private function getReportType($category)
     {
-        if(!array_key_exists($inst->category, $report)){
-            $report[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
-        }
-        if(!array_key_exists($inst->name, $report[$inst->category]['instList'])){
-            $report[$inst->category]['instList'][$inst->name] = ['total' => 0, 'issued' => 0, 'draft' => 0];
-        }
-        $report[$inst->category]['instList'][$inst->name]['total'] = $inst->activeCaps[0]->total_attestations;
-        $report[$inst->category]['total'] += $inst->activeCaps[0]->total_attestations;
-        $report['total'] += $inst->activeCaps[0]->total_attestations;
-
-        ksort($report[$inst->category]['instList']);
+        return in_array($category, ['College', 'Teaching University', 'University']) ? 'public' : 'private';
     }
-
 
     /**
      * Display a listing of the resource.
@@ -328,30 +328,36 @@ join programs p on p.guid = a.program_guid where a.created_at between '$fromDate
         $fromDate = $request->from_date;
         $toDate = $request->to_date . " 23:59:59";
 
+        // Fetch all institutions with active attestations
+        $institutions = Institution::with(['activeCaps.attestations'])->whereHas('activeCaps')->get();
+
+        // Initialize report arrays
         $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
         $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
 
-
-        //add missing inst that have not issued any att.
-
-        $institutions = Institution::whereHas('activeCaps')->get();
-        foreach ($institutions as $inst){
+        // Add missing institutions that have not issued any attestation
+        foreach ($institutions as $inst) {
             $instType = $this->getReportType($inst->category);
-            if($instType === 'public')
-                $this->addEmptyInst($inst, $publicReport);
-            if($instType === 'private')
-                $this->addEmptyInst($inst, $privateReport);
+            if ($instType === 'public') {
+                $this->addInstToReport($inst, $publicReport);
+            }
+            if ($instType === 'private') {
+                $this->addInstToReport($inst, $privateReport);
+            }
         }
 
-        $results = Attestation::whereBetween('created_at', [$fromDate, $toDate])->get();
+        // Fetch attestations within the specified date range
+        $results = Attestation::with('institution')->whereBetween('created_at', [$fromDate, $toDate])->get();
 
+        // Update report based on fetched attestations
         foreach ($results as $att) {
             $reportType = $this->getReportType($att->institution->category);
-
-            if($reportType === 'public')
+            if ($reportType === 'public') {
                 $this->updateReport($att, $publicReport);
-            if($reportType === 'private')
+            }
+            if ($reportType === 'private') {
                 $this->updateReport($att, $privateReport);
+            }
         }
 
         return response()->json([
@@ -362,4 +368,5 @@ join programs p on p.guid = a.program_guid where a.created_at between '$fromDate
             ]
         ]);
     }
+
 }
