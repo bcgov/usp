@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
 use App\Models\Attestation;
+use App\Models\Cap;
 use App\Models\Institution;
+use App\Models\InstitutionStaff;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Util;
@@ -180,51 +182,115 @@ class MaintenanceController extends Controller
         $toDate = $to . " 23:59:59";
 
         if($type === 'attestation'){
-            $query = "select now(), s.institution_guid, s.fed_guid, s.first_name, s.last_name, s.status, s.issue_date,
-       s.country, s.dob, s.student_number, s.id_number, i.guid, i.name from attestations s
-join institutions i on i.guid = s.institution_guid where s.created_at between '$fromDate' and '$toDate'";
+            $rows = Attestation::select(
+                \DB::raw('NOW()'),
+                'attestations.institution_guid',
+                'attestations.fed_guid',
+                'attestations.first_name',
+                'attestations.last_name',
+                'attestations.status',
+                'attestations.issue_date',
+                'attestations.country',
+                'attestations.dob',
+                'attestations.student_number',
+                'attestations.id_number',
+                'institutions.guid',
+                'institutions.name'
+            )
+                ->join('institutions', 'institutions.guid', '=', 'attestations.institution_guid')
+                ->whereBetween('attestations.created_at', [$fromDate, $toDate])
+                ->get();
         }
         if($type === 'cap'){
-            $query = "select now(), s.institution_guid, s.fed_cap_guid, s.total_attestations, s.issued_attestations, s.draft_attestations, s.active_status, i.guid,
-       i.name, i.category, i.dli, i.info_sharing_agreement, fc.guid, fc.start_date, fc.end_date, fc.total_attestations as fc_total_attestations, fc.status from caps s
-join institutions i on i.guid = s.institution_guid
-join fed_caps fc on fc.guid = s.fed_cap_guid where fc.status='Active' AND s.active_status=true";
+            $rows = Cap::select(
+                \DB::raw('NOW()'),
+                'caps.institution_guid',
+                'caps.fed_cap_guid',
+                'caps.total_attestations',
+                'caps.issued_attestations',
+                'caps.draft_attestations',
+                'caps.active_status',
+                'institutions.guid as institution_guid',
+                'institutions.name',
+                'institutions.category',
+                'institutions.dli',
+                'institutions.info_sharing_agreement',
+                'fed_caps.guid as fed_cap_guid',
+                'fed_caps.start_date',
+                'fed_caps.end_date',
+                'fed_caps.total_attestations as fc_total_attestations',
+                'fed_caps.status'
+            )
+                ->join('institutions', 'institutions.guid', '=', 'caps.institution_guid')
+                ->join('fed_caps', 'fed_caps.guid', '=', 'caps.fed_cap_guid')
+                ->where('fed_caps.status', 'Active')
+                ->where('caps.active_status', true)
+                ->get();
         }
         if($type === 'staff'){
-            $query = "select now(), s.institution_guid, s.bceid_user_name, i.guid, i.name from institution_staff s
-join institutions i on i.guid = s.institution_guid where s.created_at between '$fromDate' and '$toDate'";
+            $rows = InstitutionStaff::select(
+                \DB::raw('NOW()'),
+                'institution_staff.institution_guid',
+                'institution_staff.bceid_user_name',
+                'institutions.guid as institution_guid',
+                'institutions.name'
+            )
+                ->join('institutions', 'institutions.guid', '=', 'institution_staff.institution_guid')
+                ->whereBetween('institution_staff.created_at', [$fromDate, $toDate])
+                ->get();
         }
         if($type === 'ircc'){
-            $query = "select i.name, i.dli, p.program_name, a.student_number, a.id_number, a.fed_guid, a.guid, a.first_name, a.last_name, a.address1,
-a.city, a.country, a.dob, a.issue_date, a.expiry_date from attestations a
-join institutions i on i.guid = a.institution_guid
-join programs p on p.guid = a.program_guid where a.created_at between '$fromDate' and '$toDate'";
+            $rows = Attestation::select(
+                'institutions.name as institution_name',
+                'institutions.dli',
+                'programs.program_name',
+                'attestations.student_number',
+                'attestations.id_number',
+                'attestations.fed_guid',
+                'attestations.guid',
+                'attestations.first_name',
+                'attestations.last_name',
+                'attestations.address1',
+                'attestations.city',
+                'attestations.country',
+                'attestations.dob',
+                'attestations.issue_date',
+                'attestations.expiry_date'
+            )
+                ->join('institutions', 'institutions.guid', '=', 'attestations.institution_guid')
+                ->join('programs', 'programs.guid', '=', 'attestations.program_guid')
+                ->whereBetween('attestations.created_at', [$fromDate, $toDate])
+                ->get();
         }
 
         $csvData = [];
         $csvDataHeader = [];
-        $rows = \DB::select($query);
-        if(sizeof($rows) == 0) return "No results for the date range selected.";
+        //$rows = \DB::select($query);
+        if($rows->isEmpty()) return "No results for the date range selected.";
 
-        foreach ($rows[0] as $k => $v){
+        // Capture column names dynamically
+        $attributes = $rows->first()->getAttributes();
+        foreach ($attributes as $k => $v) {
             $csvDataHeader[] = $k;
         }
 
-        foreach ($rows as $d) {
-            $row = [];
-            foreach ($d as $v){
-                $row[] = $v;
+        // Iterate through fetched data to build CSV rows
+        foreach ($rows as $attestation) {
+            $rowData = [];
+            foreach ($attributes as $k => $v) {
+                $rowData[] = $attestation->{$k};
             }
-            $csvData[] = $row;
+            $csvData[] = $rowData;
         }
+
+        // Generate CSV file
         $output = fopen('php://temp', 'w');
-        // Write CSV headers
         fputcsv($output, $csvDataHeader);
 
-        // Write CSV rows
         foreach ($csvData as $row) {
             fputcsv($output, $row);
         }
+
         rewind($output);
         $response = Response::make(stream_get_contents($output), 200);
         $response->header('Content-Type', 'text/csv');
