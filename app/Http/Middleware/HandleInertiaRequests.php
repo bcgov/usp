@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -43,13 +44,17 @@ class HandleInertiaRequests extends Middleware
             $user = User::find(Auth::user()->id);
         }
 
+        $sortedUtils = Cache::remember('sorted_utils', 180, function () {
+            return Util::getSortedUtils();
+        });
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
                 'roles' => is_null($user) ? null : $user->roles,
                 'readOnly' => Session::has('read-only'),
             ],
-            'utils' => Util::getSortedUtils(),
+            'utils' => $sortedUtils,
             'ziggy' => function () {
                 return (new Ziggy)->toArray();
             },
