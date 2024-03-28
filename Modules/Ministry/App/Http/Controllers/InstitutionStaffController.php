@@ -11,6 +11,7 @@ use App\Models\InstitutionStaff;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
@@ -25,9 +26,11 @@ class InstitutionStaffController extends Controller
 
         $institution = Institution::where('guid', $request->institution_guid)->with(['caps', 'staff.user.roles'])->first();
         $fedCaps = FedCap::active()->get();
-
+        $countries = Cache::remember('countries', 180, function () {
+            return Country::where('active', true)->orderBy('name')->get();
+        });
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
-            'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get()]);
+            'fedCaps' => $fedCaps, 'countries' => $countries]);
     }
 
     /**
@@ -60,9 +63,11 @@ class InstitutionStaffController extends Controller
 
         $institution = Institution::where('guid', $request->input('institution_guid'))->with(['caps', 'staff.user.roles'])->first();
         $fedCaps = FedCap::active()->get();
-
+        $countries = Cache::remember('countries', 180, function () {
+            return Country::where('active', true)->orderBy('name')->get();
+        });
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
-            'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get()]);
+            'fedCaps' => $fedCaps, 'countries' => $countries]);
 
     }
 

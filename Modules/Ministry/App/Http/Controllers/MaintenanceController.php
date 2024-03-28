@@ -14,6 +14,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Util;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
@@ -120,6 +121,8 @@ class MaintenanceController extends Controller
     public function utilUpdate(UtilEditRequest $request, Util $util): \Illuminate\Http\RedirectResponse
     {
         $util->update($request->validated());
+        $sortedUtils = Util::getSortedUtils();
+        Cache::put('sorted_utils', $sortedUtils, 180);
 
         return Redirect::route('ministry.maintenance.utils.list');
     }
@@ -132,6 +135,8 @@ class MaintenanceController extends Controller
     public function utilStore(UtilStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
         Util::create($request->validated());
+        $sortedUtils = Util::getSortedUtils();
+        Cache::put('sorted_utils', $sortedUtils, 180);
 
         return Redirect::route('ministry.maintenance.utils.list');
     }

@@ -11,6 +11,7 @@ use App\Models\FedCap;
 use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
@@ -50,8 +51,12 @@ class InstitutionController extends Controller
         $fedCaps = FedCap::active()->get();
         $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();
 
+        $countries = Cache::remember('countries', 180, function () {
+            return Country::where('active', true)->orderBy('name')->get();
+        });
+
         return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
-            'institutions' => $institutions, 'fedCaps' => $fedCaps, 'countries' => Country::orderBy('name')->get(), ]);
+            'institutions' => $institutions, 'fedCaps' => $fedCaps, 'countries' => $countries, ]);
     }
 
     /**
