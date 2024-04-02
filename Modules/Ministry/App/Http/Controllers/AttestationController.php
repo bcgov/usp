@@ -164,7 +164,11 @@ class AttestationController extends Controller
         $attestations = new Attestation();
 
         if (request()->filter_name !== null) {
-            $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_name.'%');
+            $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_name.'%')
+                ->orWhere('last_name', 'ILIKE', '%'.request()->filter_name.'%');
+        }
+        if (request()->filter_pal !== null) {
+            $attestations = $attestations->where('fed_guid', request()->filter_pal);
         }
 
         if (request()->sort !== null) {
