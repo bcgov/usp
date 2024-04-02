@@ -73,6 +73,10 @@ Route::prefix('ministry')->group(function () {
                 Route::get('/utils', [MaintenanceController::class, 'utilList'])->name('utils.list');
                 Route::put('/utils/{util}', [MaintenanceController::class, 'utilUpdate'])->name('utils.update');
                 Route::post('/utils', [MaintenanceController::class, 'utilStore'])->name('utils.store');
+
+                Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.list');
+                Route::put('/faqs/{faq}', [MaintenanceController::class, 'faqUpdate'])->name('faqs.update');
+                Route::post('/faqs', [MaintenanceController::class, 'faqStore'])->name('faqs.store');
             });
 
             Route::get('/reports/summary', [MaintenanceController::class, 'reportsSummary'])->name('reports.summary');

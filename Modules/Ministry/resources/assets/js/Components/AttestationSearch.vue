@@ -7,6 +7,12 @@
             </div>
         </div>
         <div class="row mb-3">
+            <BreezeLabel class="col-auto col-form-label" for="inputPal" value="PAL" />
+            <div class="col-auto">
+                <BreezeInput type="text" id="inputPal" class="form-control" v-model="nameForm.filter_pal" />
+            </div>
+        </div>
+        <div class="row mb-3">
             <div class="col-auto">
                 <BreezeButton class="btn btn-primary" :class="{ 'opacity-25': nameForm.processing }" :disabled="nameForm.processing">
                     Search
@@ -32,12 +38,13 @@ let searchType = ref('byName');
 
 const nameFormTemplate = {
     filter_name: '',
+    filter_pal: '',
     filter_type: props.ftype ?? 'active',
 };
 const nameForm = useForm(nameFormTemplate);
 const nameFormSubmit = () => {
     nameForm.get('/ministry/attestations', {
-        onFinish: () => nameForm.reset('inputName'),
+        onFinish: () => nameForm.reset('inputName', 'inputPal'),
     });
 };
 
