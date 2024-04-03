@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\FaqController;
 use Illuminate\Support\Facades\Route;
 use Modules\Institution\App\Http\Controllers\AttestationController;
 use Modules\Institution\App\Http\Controllers\InstitutionController;
+use Modules\Institution\App\Http\Controllers\MaintenanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +37,9 @@ Route::prefix('institution')->group(function () {
         Route::post('/api/fetch/capStats', [AttestationController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
         Route::post('/api/check/duplicate_student', [AttestationController::class, 'duplicateStudent'])->name('caps.api.check.duplicate-student');
 
-        });
+        Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.index');
+
+    });
 
     Route::group([
         'middleware' => ['institution_admin'],
