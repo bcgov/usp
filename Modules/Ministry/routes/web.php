@@ -52,8 +52,8 @@ Route::prefix('ministry')->group(function () {
         Route::put('/attestations/{page?}', [AttestationController::class, 'updateAttestations'])->name('attestations.update');
         Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 
+        Route::get('/api/fetch/attestations', [InstitutionController::class, 'fetchAttestations'])->name('attestations.api.fetch');
         Route::post('/api/fetch/programs/{program?}', [ProgramController::class, 'fetchPrograms'])->name('programs.api.fetch');
-        Route::post('/api/fetch/attestations/{institution?}', [InstitutionController::class, 'fetchAttestations'])->name('attestations.api.fetch');
         Route::post('/api/fetch/fedcap_inst', [FedCapController::class, 'fetchFedcapInst'])->name('fedcaps.api.fetch.institution-caps');
         Route::post('/api/fetch/capStats', [CapController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
 
