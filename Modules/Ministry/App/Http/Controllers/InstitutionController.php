@@ -46,17 +46,18 @@ class InstitutionController extends Controller
     public function show(Institution $institution, $page = 'details')
     {
         $institution = Institution::where('id', $institution->id)->with(
-            ['caps.program', 'activeCaps', 'staff.user.roles', 'attestations', 'programs']
+            ['caps.program', 'activeCaps', 'staff.user.roles', 'programs']
         )->first();
         $fedCaps = FedCap::active()->get();
-        $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();
+//        $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();
 
         $countries = Cache::remember('countries', 180, function () {
             return Country::where('active', true)->orderBy('name')->get();
         });
 
         return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
-            'institutions' => $institutions, 'fedCaps' => $fedCaps, 'countries' => $countries, ]);
+//            'institutions' => $institutions,
+            'fedCaps' => $fedCaps, 'countries' => $countries, ]);
     }
 
     /**
@@ -64,8 +65,11 @@ class InstitutionController extends Controller
      */
     public function fetchAttestations(Request $request)
     {
-        $attestations = Attestation::where('institution_guid', $request->input('institution_guid'))
-            ->with('institution.activeCaps', 'institution.programs')->orderBy('created_at', 'desc')->get();
+
+        $attestations = Attestation::where('institution_guid', $request->input('g'))
+            ->with('institution.activeCaps', 'institution.programs')
+            ->orderBy('created_at', 'desc')
+            ->paginate(25)->onEachSide(1)->appends(request()->query());
 
         return Response::json(['status' => true, 'body' => $attestations]);
     }
@@ -78,14 +82,6 @@ class InstitutionController extends Controller
         Institution::where('id', $request->id)->update($request->validated());
 
         return Redirect::route('ministry.institutions.show', [$request->id]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     private function paginateInst()
