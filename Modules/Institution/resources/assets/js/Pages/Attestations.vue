@@ -90,7 +90,7 @@
                         <a :href="'/institution/attestations/download/' + editRow.id" target="_blank" class="btn btn-success">
                             Download <i class="bi bi-box-arrow-down"></i>
                         </a>
-                        <button @click="duplicate" type="button" class="btn btn-outline-secondary">Issue Duplicate</button>
+                        <button @click="duplicate" type="button" class="btn btn-outline-secondary">Replicate &amp; Issue</button>
                     </div>
                 </div>
             </div>
@@ -137,7 +137,7 @@ export default {
 
     methods: {
         duplicate: function (){
-            let check = confirm('Are you sure you want to issue a duplicate of this attestation? This will result in ' +
+            let check = confirm('Are you sure you want to replicate and issue this attestation? This will result in ' +
                 'changing the status of the existing one to DECLINED and to use your available CAP to issue the new one if possible.');
             if(check){
                 let duplicateForm = useForm({
