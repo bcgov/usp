@@ -29,6 +29,7 @@ Route::prefix('institution')->group(function () {
             Route::put('/attestations', [AttestationController::class, 'update'])->name('attestations.update');
             Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
             Route::get('/attestations/export', [AttestationController::class, 'exportCsv'])->name('attestations.export');
+        Route::post('/duplicate_attestations', [AttestationController::class, 'duplicate'])->name('attestations.duplicate');
 
             Route::get('/dashboard', [InstitutionController::class, 'index'])->name('dashboard');
             Route::get('/account', [InstitutionController::class, 'show'])->name('show');

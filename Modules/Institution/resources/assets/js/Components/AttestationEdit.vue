@@ -5,7 +5,7 @@
 
                 <div class="col-md-4 text-break">
                     <Label for="inputProgram" class="fw-bold" value="Institution Program"/>
-                    {{ $getProgramNameFromGuid(institution.programs, editAtteForm.program_guid) }}
+                    {{ $getProgramNameFromGuid(programs, editAtteForm.program_guid) }}
                 </div>
                 <div class="col-md-4 text-break">
                     <Label for="inputStudentNumber" class="fw-bold" value="Student Number"/>
@@ -69,9 +69,6 @@
                     {{ editAtteForm.expiry_date }}
                 </div>
 
-                <a :href="'/institution/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
-                    {{attestation.issued_by_name}}<br/><i class="bi bi-box-arrow-down"></i>
-                </a>
             </div>
             <div v-else class="row g-3">
 

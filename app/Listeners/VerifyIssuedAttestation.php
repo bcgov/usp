@@ -68,10 +68,11 @@ class VerifyIssuedAttestation
             }
 
             if ($valid) {
-                $this->storePdf($attestation->id);
                 $cap->issued_attestations += 1;
                 $attestation->issued_by_user_guid = Auth::user()->guid;
                 $attestation->issue_date = Carbon::now()->startOfDay();
+                $attestation->save();
+                $this->storePdf($attestation->id);
             } else {
                 $attestation->status = 'Draft';
                 $attestation->save();
@@ -104,6 +105,12 @@ class VerifyIssuedAttestation
             $attestation->expiry_date = $instCap->end_date;
         }
         $attestation->save();
+
+        // If this attestation has the field copied_from_id set then it is a duplicate and we need to flag the old as DECLINED
+        if(!is_null($attestation->copied_from_id)){
+            Attestation::where('id', $attestation->copied_from_id)->update(['status' => 'Declined']);
+        }
+
         event(new TrackerTriggered(Auth::user()->guid, Auth::user()->first_name, 'issued',
             'Attestation', $attestation));
 

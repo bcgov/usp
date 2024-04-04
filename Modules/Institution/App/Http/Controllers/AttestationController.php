@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Modules\Institution\App\Http\Requests\AttestationDuplicateRequest;
 use Modules\Institution\App\Http\Requests\AttestationEditRequest;
 use Modules\Institution\App\Http\Requests\AttestationStoreRequest;
 use Response;
@@ -128,6 +129,18 @@ class AttestationController extends Controller
         if (! is_null($error)) {
             return redirect(route('institution.attestations.index'))->withErrors(['first_name' => $error]);
         }
+
+        return redirect(route('institution.attestations.index'));
+    }
+
+    /**
+     * Store a duplicate resource in storage.
+     */
+    public function duplicate(AttestationDuplicateRequest $request): RedirectResponse|\Illuminate\Routing\Redirector
+    {
+        $attestation = Attestation::create($request->validated());
+        $this->authorize('download', $attestation);
+        event(new AttestationIssued($attestation->cap, $attestation, $request->status));
 
         return redirect(route('institution.attestations.index'));
     }

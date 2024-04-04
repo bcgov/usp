@@ -26,7 +26,7 @@
                                 <span v-if="row.status === 'Issued'" class="badge rounded-pill text-bg-success">Issued</span>
                                 <span v-if="row.status === 'Draft'" class="badge rounded-pill text-bg-warning">Draft</span>
                                 <span v-if="row.status === 'Received'" class="badge rounded-pill text-bg-primary">Received</span>
-                                <span v-if="row.status === 'Denied'" class="badge rounded-pill text-bg-danger">Denied</span>
+                                <span v-if="row.status === 'Declined'" class="badge rounded-pill text-bg-danger">Declined</span>
                             </div>
                         </td>
                         <td>{{ row.issue_date }}</td>
