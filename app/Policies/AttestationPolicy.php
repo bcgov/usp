@@ -11,7 +11,10 @@ class AttestationPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Institution_USER];
 
@@ -20,19 +23,14 @@ class AttestationPolicy
     }
 
     /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Attestation $model): bool
     {
-        return false;
+        $rolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Institution_USER];
+
+        return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()
+            && $user->disabled === false;
     }
 
     /**
@@ -40,6 +38,9 @@ class AttestationPolicy
      */
     public function download(User $user, Attestation $model): bool
     {
-        return false;
+        $rolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Institution_USER];
+
+        return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()
+            && $user->disabled === false && $model->institution_guid === $user->institution->guid;
     }
 }
