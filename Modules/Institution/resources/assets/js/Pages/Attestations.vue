@@ -44,13 +44,13 @@
                                                 <span v-if="row.status === 'Issued'" class="badge rounded-pill text-bg-success">Issued</span>
                                                 <span v-if="row.status === 'Draft'" class="badge rounded-pill text-bg-warning">Draft</span>
                                                 <span v-if="row.status === 'Received'" class="badge rounded-pill text-bg-primary">Received</span>
-                                                <span v-if="row.status === 'Denied'" class="badge rounded-pill text-bg-danger">Denied</span>
+                                                <span v-if="row.status === 'Declined'" class="badge rounded-pill text-bg-danger">Declined</span>
                                             </div>
                                         </td>
                                         <td>{{ row.issue_date }}</td>
                                         <td>{{ row.expiry_date }}</td>
                                         <td class="text-center">
-                                            <a v-if="row.status !== 'Draft'" :href="'/institution/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                            <a v-if="row.status === 'Issued'" :href="'/institution/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary">
                                                 <i class="bi bi-box-arrow-down"></i>
                                             </a>
                                         </td>
@@ -81,10 +81,17 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editAtteModalLabel">Edit Attestation</h5>
+                        <h5 class="modal-title me-2" id="editAtteModalLabel">Edit Attestation</h5>
+                        <strong>Issued by: {{editRow.issued_by_name}}</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <AttestationEdit :instCap="instCap" :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :attestation="editRow" />
+                    <div v-if="editRow.status === 'Issued'" class="modal-footer justify-content-between">
+                        <a :href="'/institution/attestations/download/' + editRow.id" target="_blank" class="btn btn-success">
+                            Download <i class="bi bi-box-arrow-down"></i>
+                        </a>
+                        <button @click="duplicate" type="button" class="btn btn-outline-secondary">Issue Duplicate</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -99,7 +106,7 @@ import AttestationsHeader from '../Components/AttestationsHeader.vue';
 import AttestationCreate from '../Components/AttestationCreate.vue';
 import AttestationEdit from '../Components/AttestationEdit.vue';
 import Pagination from "@/Components/Pagination";
-import { Link, Head } from '@inertiajs/vue3';
+import {Link, Head, useForm} from '@inertiajs/vue3';
 
 export default {
     name: 'Attestations',
@@ -129,6 +136,30 @@ export default {
     },
 
     methods: {
+        duplicate: function (){
+            let check = confirm('Are you sure you want to issue a duplicate of this attestation? This will result in ' +
+                'changing the status of the existing one to DECLINED and to use your available CAP to issue the new one if possible.');
+            if(check){
+                let duplicateForm = useForm({
+                    formState: null,
+                    formSuccessMsg: 'Form was submitted successfully.',
+                    formFailMsg: 'There was an error submitting this form.',
+                    old_guid: this.editRow.guid,
+                })
+                duplicateForm.formState = null;
+                duplicateForm.post('/institution/duplicate_attestations', {
+                    onSuccess: (response) => {
+                        $("#editAtteModal").modal('hide');
+
+                        this.$inertia.visit('/institution/attestations');
+                    },
+                    onError: () => {
+                        duplicateForm.formState = false;
+                    },
+                    preserveState: true
+                });
+            }
+        },
         openNewForm: function (){
             let vm = this;
             this.showNewModal = true;
@@ -174,9 +205,6 @@ export default {
                     console.log(error);
                 });
         }
-    },
-    computed: {
-
     },
     mounted() {
         this.attestationList = this.results.data;

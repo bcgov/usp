@@ -1,21 +1,25 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Modules\Institution\App\Http\Requests;
 
 use App\Models\Attestation;
 use App\Models\Cap;
 use App\Models\Institution;
 use App\Models\Program;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
-class AttestationStoreRequest extends FormRequest
+class AttestationDuplicateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
+        if(Session::has('read-only')) return false;
         return $this->user()->can('create', Attestation::class);
     }
 
@@ -38,7 +42,7 @@ class AttestationStoreRequest extends FormRequest
             'last_name' => 'required',
             'id_number' => 'nullable',
             'student_number' => 'nullable',
-            'dob' => 'required|date_format:Y-m-d|before:today',
+            'dob' => 'required|date_format:Y-m-d',
             'email' => 'required|email',
             'address1' => 'required',
             'address2' => 'nullable',
@@ -51,6 +55,7 @@ class AttestationStoreRequest extends FormRequest
             'last_touch_by_user_guid' => 'required|exists:users,guid',
             'created_by_user_guid' => 'required|exists:users,guid',
             'gt_fifty_pct_in_person' => 'required|boolean',
+            'copied_from_id' => 'required',
         ];
     }
 
@@ -61,61 +66,51 @@ class AttestationStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        //use the program_guid to check for the cap_guid.
-        $program = Program::where('guid', $this->program_guid)->first();
-        //get the inst active cap.
-        $inst = Institution::where('guid', $program->institution_guid)->active()->first();
-        $cap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', null)->first();
-        //now check if there is a cap against the program
-        $progCap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', $this->program_guid)->first();
-        //if there is a program cap then use it as the cap_guid not the institution cap
-        if (! is_null($progCap)) {
-            $cap = $progCap;
+        $oldAtte = Attestation::where('guid', $this->old_guid)->first();
+        if(!is_null($oldAtte)){
+
+            // Get the inst active cap.
+            $cap = Cap::where('guid', $oldAtte->cap_guid)->active()->first();
+            if(!is_null($cap)){
+
+                // Get the next fed_guid
+                $fedGuid = $this->getFedGuid($cap);
+
+                $this->merge([
+                    'guid' => Str::orderedUuid()->getHex(),
+                    'fed_guid' => $fedGuid,
+                    'institution_guid' => $oldAtte->institution_guid,
+                    'cap_guid' => $oldAtte->cap_guid,
+                    'fed_cap_guid' => $oldAtte->fed_cap_guid,
+                    'program_guid' => $oldAtte->program_guid,
+                    'program_name' => $oldAtte->program_name,
+                    'first_name' => $oldAtte->first_name,
+                    'last_name' => $oldAtte->last_name,
+                    'id_number' => $oldAtte->id_number,
+                    'student_number' => $oldAtte->student_number,
+                    'dob' => $oldAtte->dob,
+                    'email' => $oldAtte->email,
+                    'address1' => $oldAtte->address1,
+                    'address2' => $oldAtte->address2,
+                    'city' => $oldAtte->city,
+                    'zip_code' => $oldAtte->zip_code,
+                    'province' => $oldAtte->province,
+                    'country' => $oldAtte->country,
+                    'expiry_date' => $oldAtte->expiry_date,
+                    'status' => $oldAtte->status,
+                    'last_touch_by_user_guid' => $this->user()->guid,
+                    'created_by_user_guid' => $this->user()->guid,
+                    'gt_fifty_pct_in_person' => $oldAtte->gt_fifty_pct_in_person,
+                    'copied_from_id' => $oldAtte->id,
+                ]);
+            }
         }
-
-        //get the next fed_guid
-        $fedGuid = $this->getFedGuid($cap);
-
-        $this->merge([
-            'guid' => Str::orderedUuid()->getHex(),
-            'fed_guid' => $fedGuid,
-            'cap_guid' => $cap->guid,
-            'fed_cap_guid' => $cap->fed_cap_guid,
-            'created_by_user_guid' => $this->user()->guid,
-            'last_touch_by_user_guid' => $this->user()->guid,
-            'id_number' => Str::upper($this->id_number),
-            'student_number' => Str::upper($this->student_number),
-            'first_name' => Str::title($this->first_name),
-            'last_name' => Str::title($this->last_name),
-            'email' => Str::lower($this->email),
-            'city' => Str::title($this->city),
-            'country' => Str::title($this->country),
-            'zip_code' => Str::upper($this->zip_code),
-            'province' => Str::title($this->province),
-            'gt_fifty_pct_in_person' => $this->toBoolean($this->gt_fifty_pct_in_person),
-            'expiry_date' => $cap->end_date,
-            'program_name' => $program->program_name,
-        ]);
-
-    }
-
-    /**
-     * Convert to boolean
-     *
-     * @return bool
-     */
-    private function toBoolean($booleable)
-    {
-        return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 
     private function getFedGuid(Cap $cap)
     {
         // Retrieve the last record from the database
         $last_attestation = Attestation::orderByDesc('fed_guid')->first();
-
-        // Get the current year
-        //$current_year = date('y');
 
         // Get the year prefix
         $year_prefix = date('y', strtotime($cap->fedCap->start_date));

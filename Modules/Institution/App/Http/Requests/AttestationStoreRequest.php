@@ -51,7 +51,7 @@ class AttestationStoreRequest extends FormRequest
             'province' => 'nullable',
             'country' => 'required',
             'expiry_date' => 'required|date_format:Y-m-d',
-            'status' => 'required|in:Draft,Issued,Received,Denied',
+            'status' => 'required|in:Draft,Issued,Received,Declined',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
             'created_by_user_guid' => 'required|exists:users,guid',
             'gt_fifty_pct_in_person' => 'required|boolean',
