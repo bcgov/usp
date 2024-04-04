@@ -65,6 +65,13 @@ nav.navbar .beta-icon{
                             Staff
                         </NavLink>
                     </li>
+                    <li class="nav-item d-none">
+                        <NavLink class="nav-link" href="/institution/faqs"
+                                 :class="{ 'active': $page.url.indexOf('/faqs') > -1 ||
+                            $page.url.indexOf('/faqs') > -1 }">
+                            FAQ
+                        </NavLink>
+                    </li>
 
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"

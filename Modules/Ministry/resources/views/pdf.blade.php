@@ -63,7 +63,7 @@
             <td>
                 Student name: {{ $attestation->first_name }} {{ $attestation->last_name }}<br/>
                 Attestation ID: <strong>{{ $attestation->fed_guid }}</strong><br/>
-                Issue date/time: {{ $attestation->created_at }}<br/>
+                Issue date: {{ $attestation->issue_date }}<br/>
                 Expiry date: {{ $attestation->expiry_date }}<br/>
                 <br/><br/>
                 Dear {{ $attestation->first_name }} {{ $attestation->last_name }},<br/><br/>

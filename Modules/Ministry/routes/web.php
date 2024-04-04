@@ -52,8 +52,8 @@ Route::prefix('ministry')->group(function () {
         Route::put('/attestations/{page?}', [AttestationController::class, 'updateAttestations'])->name('attestations.update');
         Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
 
+        Route::get('/api/fetch/attestations', [InstitutionController::class, 'fetchAttestations'])->name('attestations.api.fetch');
         Route::post('/api/fetch/programs/{program?}', [ProgramController::class, 'fetchPrograms'])->name('programs.api.fetch');
-        Route::post('/api/fetch/attestations/{institution?}', [InstitutionController::class, 'fetchAttestations'])->name('attestations.api.fetch');
         Route::post('/api/fetch/fedcap_inst', [FedCapController::class, 'fetchFedcapInst'])->name('fedcaps.api.fetch.institution-caps');
         Route::post('/api/fetch/capStats', [CapController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
 
@@ -73,6 +73,10 @@ Route::prefix('ministry')->group(function () {
                 Route::get('/utils', [MaintenanceController::class, 'utilList'])->name('utils.list');
                 Route::put('/utils/{util}', [MaintenanceController::class, 'utilUpdate'])->name('utils.update');
                 Route::post('/utils', [MaintenanceController::class, 'utilStore'])->name('utils.store');
+
+                Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.list');
+                Route::put('/faqs/{faq}', [MaintenanceController::class, 'faqUpdate'])->name('faqs.update');
+                Route::post('/faqs', [MaintenanceController::class, 'faqStore'])->name('faqs.store');
             });
 
             Route::get('/reports/summary', [MaintenanceController::class, 'reportsSummary'])->name('reports.summary');
