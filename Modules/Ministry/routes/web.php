@@ -51,6 +51,7 @@ Route::prefix('ministry')->group(function () {
         Route::post('/attestations/{page?}', [AttestationController::class, 'storeAttestations'])->name('attestations.store');
         Route::put('/attestations/{page?}', [AttestationController::class, 'updateAttestations'])->name('attestations.update');
         Route::get('/attestations/download/{attestation}', [AttestationController::class, 'download'])->name('attestations.download');
+        Route::get('/attestations/rebuild/{attestation}', [AttestationController::class, 'rebuild'])->name('attestations.rebuild');
 
         Route::get('/api/fetch/attestations', [InstitutionController::class, 'fetchAttestations'])->name('attestations.api.fetch');
         Route::post('/api/fetch/programs/{program?}', [ProgramController::class, 'fetchPrograms'])->name('programs.api.fetch');
