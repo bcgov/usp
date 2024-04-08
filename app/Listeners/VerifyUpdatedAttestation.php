@@ -72,11 +72,12 @@ class VerifyUpdatedAttestation
             }
 
             if ($valid) {
-                $this->storePdf($attestation->id);
                 $cap->draft_attestations -= 1;
                 $cap->issued_attestations += 1;
                 $attestation->issued_by_user_guid = Auth::user()->guid;
                 $attestation->issue_date = Carbon::now()->startOfDay();
+                $attestation->save();
+                $this->storePdf($attestation->id);
             } else {
                 $attestation->status = 'Draft';
                 $attestation->save();
