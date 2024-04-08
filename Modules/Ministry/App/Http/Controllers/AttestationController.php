@@ -4,6 +4,7 @@ namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Events\AttestationDraftUpdated;
 use App\Events\AttestationIssued;
+use App\Events\AttestationRebuildPdf;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttestationEditRequest;
 use App\Http\Requests\AttestationStoreRequest;
@@ -146,6 +147,14 @@ class AttestationController extends Controller
             return redirect(route('ministry.attestations.index'));
         }
     }
+
+    public function rebuild(Request $request, Attestation $attestation)
+    {
+        $this->authorize('rebuild', $attestation);
+        event(new AttestationRebuildPdf($attestation));
+        return redirect(route('ministry.attestations.index'));
+    }
+
 
     public function download(Request $request, Attestation $attestation)
     {

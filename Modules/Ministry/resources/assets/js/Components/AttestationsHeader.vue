@@ -14,7 +14,7 @@
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
-        <th scope="col" style="min-width: 100px;">
+        <th scope="col" style="min-width: 160px;">
             <a href="#" @click="switchSort('id_number')">
                 <span>Student Number</span>
                 <em v-if="sortClmn === 'id_number' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
@@ -45,7 +45,7 @@
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>
-        <th></th>
+        <th scope="col" style="min-width: 120px;"></th>
     </tr>
 </template>
 <script>

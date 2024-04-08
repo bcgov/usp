@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use App\Events\AttestationDraftUpdated;
 use App\Events\AttestationIssued;
+use App\Events\AttestationRebuildPdf;
 use App\Events\FederalCapCreated;
 use App\Events\InstitutionCapCreated;
 use App\Events\StaffRoleChanged;
 use App\Events\TrackerTriggered;
 use App\Listeners\AdjustInstitutionCap;
+use App\Listeners\RebuildPdfAttestation;
 use App\Listeners\SendActiveRoleNotification;
 use App\Listeners\SetupNewFederalCap;
 use App\Listeners\StoreTracker;
@@ -41,6 +43,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         TrackerTriggered::class => [
             StoreTracker::class,
+        ],
+        AttestationRebuildPdf::class => [
+            RebuildPdfAttestation::class,
         ],
     ];
 
