@@ -57,7 +57,8 @@ class AttestationPolicy
     {
         $ministryRolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::SUPER_ADMIN];
 
-        if($user->roles()->pluck('name')->intersect($ministryRolesToCheck)->isNotEmpty() && $user->disabled === false){
+        if($model->status === 'Issued' && $user->roles()->pluck('name')->intersect($ministryRolesToCheck)->isNotEmpty()
+            && $user->disabled === false){
             return true;
         }
 

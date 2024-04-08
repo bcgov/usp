@@ -43,11 +43,11 @@
                                             </td>
                                             <td>{{ row.issue_date }}</td>
                                             <td>{{ row.expiry_date }}</td>
-                                            <td class="text-center">
-                                                <a v-if="row.status === 'Issued'" :href="'/ministry/attestations/rebuild/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary me-1">
+                                            <td class="text-end">
+                                                <a v-if="row.status === 'Issued'" :href="'/ministry/attestations/rebuild/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary me-1" title="Rebuild">
                                                     <i class="bi bi-arrow-clockwise"></i>
                                                 </a>
-                                                <a v-if="row.status !== 'Draft'" :href="'/ministry/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                                <a v-if="row.status !== 'Draft'" :href="'/ministry/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary" title="Download">
                                                     <i class="bi bi-box-arrow-down"></i>
                                                 </a>
                                             </td>
