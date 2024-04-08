@@ -45,7 +45,7 @@
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>
-        <th scope="col" style="min-width: 120px;"></th>
+        <th scope="col" style="min-width: 85px;"></th>
     </tr>
 </template>
 <script>
