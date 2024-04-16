@@ -36,6 +36,7 @@ Route::prefix('ministry')->group(function () {
         Route::get('/fed_caps/{fedCap}/{page?}', [FedCapController::class, 'show'])->name('fed_caps.show');
         Route::put('/fed_caps', [FedCapController::class, 'update'])->name('fed_caps.update');
         Route::post('/fed_caps', [FedCapController::class, 'store'])->name('fed_caps.store');
+        Route::post('/fed_caps/default', [FedCapController::class, 'setDefault'])->name('fed_caps.set-default');
 
         Route::put('/caps', [CapController::class, 'update'])->name('caps.update');
         Route::post('/caps', [CapController::class, 'store'])->name('caps.store');

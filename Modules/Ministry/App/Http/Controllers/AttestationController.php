@@ -17,6 +17,7 @@ use App\Models\Institution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class AttestationController extends Controller
@@ -170,7 +171,7 @@ class AttestationController extends Controller
 
     private function paginateAtte()
     {
-        $attestations = new Attestation();
+        $attestations = Attestation::where('fed_cap_guid', Cache::get('global_fed_caps')['default']);
 
         if (request()->filter_name !== null) {
             $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_name.'%')

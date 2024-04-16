@@ -5,14 +5,11 @@ nav.navbar {
     border-bottom: 2px solid #fcba19;
     z-index: 99;
 }
-nav.navbar .beta-icon{
-    color: #fcba19;
-    margin-top: -6px;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 14px;
-    margin-left: 2px;
-    position: absolute;
+nav.navbar .form-select {
+    width: 12%;
+    min-width: 220px;
+    background-color: #015ab3;
+    color: white;
 }
 </style>
 <template>
@@ -20,10 +17,12 @@ nav.navbar .beta-icon{
         <div class="container-fluid">
             <Link class="navbar-brand" href="/ministry/institutions">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-lg-inline fw-light">BCSPA - BC Study Permit Attestation</span>
-                <span aria-label="This application is currently in Beta phase" class="d-none d-lg-inline beta-icon">Beta</span>
+                <span class="d-none d-xl-inline fw-light">BCSPA - BC Study Permit Attestation</span>
             </Link>
-
+            <select @change="updateFedCap" class="form-select form-select-sm" aria-label="Default federal cap">
+                <option value="">Select Federal Cap</option>
+                <option v-for="(cap, i) in activeFedCapList" :value="cap.guid" :selected="selectedFedCapGuid === cap.guid">{{ cap.start_date }} - {{ cap.end_date }}</option>
+            </select>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                     aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -97,7 +96,6 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
-
 export default {
     name: 'NavBar',
     components: {
@@ -110,9 +108,29 @@ export default {
             searchType: '',
             searchData: '',
             isAdmin: ref(false),
+            activeFedCapList: [],
+            selectedFedCapGuid: ''
         }
     },
     methods: {
+        updateFedCap: function (e){
+            console.log(e);
+            console.log(e.target.value)
+            if(e.target.value !== ''){
+                this.selectedFedCapGuid = e.target.value;
+                let data = {
+                    fed_cap_guid: e.target.value
+                }
+                axios.post('/ministry/fed_caps/default', data)
+                    .then(function (response) {
+                        window.location.reload();
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+            }
+        }
     },
     mounted() {
         if(this.$attrs.auth.user.roles != undefined){
@@ -125,7 +143,10 @@ export default {
                 }
             }
         }
-
+        if(this.$attrs.fedCapsData != undefined) {
+            this.activeFedCapList = this.$attrs.fedCapsData.list;
+            this.selectedFedCapGuid = this.$attrs.fedCapsData.default;
+        }
     },
 
     computed:{
