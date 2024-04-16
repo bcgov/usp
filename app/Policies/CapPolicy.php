@@ -33,7 +33,7 @@ class CapPolicy
      */
     public function update(User $user, Cap $model): bool
     {
-        $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN];
+        $rolesToCheck = [Role::Ministry_USER];
 
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }

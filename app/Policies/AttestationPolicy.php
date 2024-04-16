@@ -27,10 +27,17 @@ class AttestationPolicy
      */
     public function update(User $user, Attestation $model): bool
     {
-        $rolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Institution_USER];
+        $ministryRolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::SUPER_ADMIN];
+
+        if($user->roles()->pluck('name')->intersect($ministryRolesToCheck)->isNotEmpty() && $user->disabled === false){
+            return true;
+        }
+
+        $rolesToCheck = [Role::Institution_ADMIN, Role::Institution_USER];
 
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()
-            && $user->disabled === false;
+            && $user->disabled === false && $model->institution_guid === $user->institution->guid;
+
     }
 
     /**

@@ -47,9 +47,7 @@
                                             </button>
                                         </h2>
                                         <div :id="'collapse'+i" class="accordion-collapse collapse" data-bs-parent="#accordionFaq">
-                                            <div class="accordion-body">
-                                                {{ faq.answer }}
-                                            </div>
+                                            <div class="accordion-body" v-html="faq.answer"></div>
                                         </div>
                                     </div>
                                 </div>
