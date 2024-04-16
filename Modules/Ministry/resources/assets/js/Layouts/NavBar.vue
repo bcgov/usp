@@ -21,7 +21,7 @@ nav.navbar .form-select {
             </Link>
             <select @change="updateFedCap" class="form-select form-select-sm" aria-label="Default federal cap">
                 <option value="">Select Federal Cap</option>
-                <option v-for="(cap, i) in activeFedCapList" :value="cap.id" :selected="selectedFedCapId === cap.id">{{ cap.start_date }} - {{ cap.end_date }}</option>
+                <option v-for="(cap, i) in activeFedCapList" :value="cap.guid" :selected="selectedFedCapGuid === cap.guid">{{ cap.start_date }} - {{ cap.end_date }}</option>
             </select>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                     aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,7 @@ export default {
             searchData: '',
             isAdmin: ref(false),
             activeFedCapList: [],
-            selectedFedCapId: ''
+            selectedFedCapGuid: ''
         }
     },
     methods: {
@@ -117,9 +117,9 @@ export default {
             console.log(e);
             console.log(e.target.value)
             if(e.target.value !== ''){
-                this.selectedFedCapId = e.target.value;
+                this.selectedFedCapGuid = e.target.value;
                 let data = {
-                    fed_cap_id: e.target.value
+                    fed_cap_guid: e.target.value
                 }
                 axios.post('/ministry/fed_caps/default', data)
                     .then(function (response) {
@@ -143,9 +143,9 @@ export default {
                 }
             }
         }
-        if(this.$attrs.fedCaps != undefined) {
-            this.activeFedCapList = this.$attrs.fedCaps.list;
-            this.selectedFedCapId = this.$attrs.fedCaps.default;
+        if(this.$attrs.fedCapsData != undefined) {
+            this.activeFedCapList = this.$attrs.fedCapsData.list;
+            this.selectedFedCapGuid = this.$attrs.fedCapsData.default;
         }
     },
 

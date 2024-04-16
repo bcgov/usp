@@ -49,7 +49,7 @@ class Institution extends Model
 
     public function activeCaps()
     {
-        return $this->hasMany(Cap::class, 'institution_guid', 'guid')->active();
+        return $this->hasMany(Cap::class, 'institution_guid', 'guid')->active()->selectedFedcap();
     }
 
     public function activeInstCaps()

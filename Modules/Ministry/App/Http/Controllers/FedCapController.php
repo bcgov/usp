@@ -74,16 +74,16 @@ class FedCapController extends Controller
      */
     public function setDefault(Request $request)
     {
-        $fedCap = FedCap::find($request->input('fed_cap_id'));
+        $fedCap = FedCap::where('guid', $request->input('fed_cap_guid'))->first();
 
         Cache::forget('global_fed_caps');
         Cache::remember('global_fed_caps', now()->addHours(10), function () use ($fedCap) {
-            $fedCaps = FedCap::select('id', 'start_date', 'end_date', 'status')
+            $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
                 ->without(['caps'])
                 ->active()->orderBy('id')->get();
             return [
                 'list' => $fedCaps,
-                'default' => $fedCap->id
+                'default' => $fedCap->guid
             ];
         });
 

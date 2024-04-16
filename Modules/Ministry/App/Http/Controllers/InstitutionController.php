@@ -49,14 +49,12 @@ class InstitutionController extends Controller
             ['caps.program', 'activeCaps', 'staff.user.roles', 'programs']
         )->first();
         $fedCaps = FedCap::active()->get();
-//        $institutions = Institution::whereHas('activeCaps')->active()->with('activeCaps')->get();
 
-        $countries = Cache::remember('countries', 180, function () {
+        $countries = Cache::remember('countries', 380, function () {
             return Country::where('active', true)->orderBy('name')->get();
         });
 
         return Inertia::render('Ministry::Institution', ['page' => $page, 'results' => $institution,
-//            'institutions' => $institutions,
             'fedCaps' => $fedCaps, 'countries' => $countries, ]);
     }
 
@@ -65,8 +63,8 @@ class InstitutionController extends Controller
      */
     public function fetchAttestations(Request $request)
     {
-
         $attestations = Attestation::where('institution_guid', $request->input('g'))
+            ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
             ->with('institution.activeCaps', 'institution.programs')
             ->orderBy('created_at', 'desc')
             ->paginate(25)->onEachSide(1)->appends(request()->query());

@@ -48,13 +48,14 @@ class HandleInertiaRequests extends Middleware
         $sortedUtils = Cache::remember('sorted_utils', 180, function () {
             return Util::getSortedUtils();
         });
+
         $globalFedCaps = Cache::remember('global_fed_caps', now()->addHours(10), function () {
-            $fedCaps = FedCap::select('id', 'start_date', 'end_date', 'status')
+            $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
                 ->without(['caps'])
                 ->active()->orderBy('id')->get();
             return [
                 'list' => $fedCaps,
-                'default' => $fedCaps[0]->id
+                'default' => $fedCaps[0]->guid
                 ];
         });
 
@@ -64,7 +65,7 @@ class HandleInertiaRequests extends Middleware
                 'roles' => is_null($user) ? null : $user->roles,
                 'readOnly' => Session::has('read-only'),
             ],
-            'fedCaps' => [
+            'fedCapsData' => [
                 'list' => $globalFedCaps['list'],
                 'default' => $globalFedCaps['default'],
             ],

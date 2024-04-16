@@ -87,15 +87,18 @@ class CapController extends Controller
     public function capStat(Request $request)
     {
         $instCap = Cap::where('institution_guid', $request->input('institution_guid'))
+            ->selectedFedcap()
             ->active()
             ->where('program_guid', null)
             ->first();
 
-        $issuedInstAttestations = Attestation::where('status', 'Issued')
-            ->where('institution_guid', $instCap->institution_guid)
-            ->where('fed_cap_guid', $instCap->fed_cap_guid)
-            ->count();
+        if(!is_null($instCap)){
+            $issuedInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $instCap->institution_guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->count();
+        }
 
-        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
+        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0]]);
     }
 }
