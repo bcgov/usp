@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\FedCap;
 use App\Models\User;
 use App\Models\Util;
 use Illuminate\Http\Request;
@@ -47,12 +48,25 @@ class HandleInertiaRequests extends Middleware
         $sortedUtils = Cache::remember('sorted_utils', 180, function () {
             return Util::getSortedUtils();
         });
+        $globalFedCaps = Cache::remember('global_fed_caps', now()->addHours(10), function () {
+            $fedCaps = FedCap::select('id', 'start_date', 'end_date', 'status')
+                ->without(['caps'])
+                ->active()->orderBy('id')->get();
+            return [
+                'list' => $fedCaps,
+                'default' => $fedCaps[0]->id
+                ];
+        });
 
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
                 'roles' => is_null($user) ? null : $user->roles,
                 'readOnly' => Session::has('read-only'),
+            ],
+            'fedCaps' => [
+                'list' => $globalFedCaps['list'],
+                'default' => $globalFedCaps['default'],
             ],
             'utils' => $sortedUtils,
             'ziggy' => function () {
