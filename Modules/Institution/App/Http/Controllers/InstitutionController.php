@@ -26,6 +26,7 @@ class InstitutionController extends Controller
         $institution = $user->institution;
 
         $instCap = Cap::where('institution_guid', $institution->guid)
+            ->selectedFedcap()
             ->active()
             ->where('program_guid', null)
             ->first();
