@@ -166,7 +166,9 @@ class AttestationController extends Controller
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
-        $data = Attestation::where('institution_guid', $institution->guid)->orderByDesc('created_at')->get();
+        $data = Attestation::where('institution_guid', $institution->guid)
+            ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->orderByDesc('created_at')->get();
 
         $csvData = [];
         $csvDataHeader = ['PAL ID', 'PROGRAM NAME', 'STUDENT NUMBER', 'FIRST NAME', 'LAST NAME', 'TRAVEL ID', 'DOB', 'ADDRESS1', 'ADDRESS2', 'EMAIL', 'CITY',
@@ -219,16 +221,19 @@ class AttestationController extends Controller
         $institution = $user->institution;
 
         $instCap = Cap::where('institution_guid', $institution->guid)
+            ->selectedFedcap()
             ->active()
             ->where('program_guid', null)
             ->first();
 
-        $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
-            ->where('fed_cap_guid', $instCap->fed_cap_guid)
-            ->where('student_number', $request->input('student_number'))
-            ->count();
+        if(!is_null($instCap)) {
+            $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->where('student_number', $request->input('student_number'))
+                ->count();
+        }
 
-        return Response::json(['status' => true, 'body' => ['count' => $issuedInstAttestations]]);
+        return Response::json(['status' => true, 'body' => ['count' => $issuedInstAttestations ?? 0]]);
     }
 
     private function paginateAtte($institution)
