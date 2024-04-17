@@ -17,18 +17,18 @@ class SetupNewFederalCap
         // Get the new cap from the event
         $fedCap = $event->cap;
 
-        // updates all other fed caps to Completed
-        FedCap::where('id', '!=', $fedCap->id)
-            ->where('status', 'Active')
-            ->update(['status' => 'Completed', 'last_touch_by_user_guid' => Auth::user()->guid]);
-
-        // updates all inst. caps' status to inactive
-        $oldFedCaps = FedCap::where('id', '!=', $fedCap->id)->get();
-        foreach ($oldFedCaps as $fCap) {
-            foreach ($fCap->caps as $instCap) {
-                $instCap->active_status = false;
-                $instCap->save();
-            }
-        }
+//        // updates all other fed caps to Completed
+//        FedCap::where('id', '!=', $fedCap->id)
+//            ->where('status', 'Active')
+//            ->update(['status' => 'Completed', 'last_touch_by_user_guid' => Auth::user()->guid]);
+//
+//        // updates all inst. caps' status to inactive
+//        $oldFedCaps = FedCap::where('id', '!=', $fedCap->id)->get();
+//        foreach ($oldFedCaps as $fCap) {
+//            foreach ($fCap->caps as $instCap) {
+//                $instCap->active_status = false;
+//                $instCap->save();
+//            }
+//        }
     }
 }
