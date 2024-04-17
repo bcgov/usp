@@ -62,6 +62,9 @@ class Cap extends Model
     public function scopeSelectedFedcap($query)
     {
         $guid = Cache::get('global_fed_caps');
+        if(is_null($guid)) {
+            return $query;
+        }
         return $query->where('fed_cap_guid', $guid['default']);
     }
 

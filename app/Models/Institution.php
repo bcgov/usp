@@ -47,6 +47,12 @@ class Institution extends Model
         return $this->hasMany(Cap::class, 'institution_guid', 'guid')->orderByDesc('created_at');
     }
 
+    public function capsByFedcap()
+    {
+        return $this->hasMany(Cap::class, 'institution_guid', 'guid')
+            ->orderByDesc('created_at')->selectedFedcap();
+    }
+
     public function activeCaps()
     {
         return $this->hasMany(Cap::class, 'institution_guid', 'guid')->active()->selectedFedcap();

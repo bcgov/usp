@@ -46,7 +46,7 @@ class InstitutionController extends Controller
     public function show(Institution $institution, $page = 'details')
     {
         $institution = Institution::where('id', $institution->id)->with(
-            ['caps.program', 'activeCaps', 'staff.user.roles', 'programs']
+            ['capsByFedcap.program', 'activeCaps', 'staff.user.roles', 'programs']
         )->first();
         $fedCaps = FedCap::active()->get();
 
@@ -84,8 +84,7 @@ class InstitutionController extends Controller
 
     private function paginateInst()
     {
-        $institutions = new Institution();
-        $institutions = $institutions->with('activeCaps');
+        $institutions = Institution::with('activeCaps');
 
         if (request()->filter_name !== null) {
             $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
