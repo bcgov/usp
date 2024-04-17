@@ -57,11 +57,6 @@ export default {
         countries: Object,
         institutions: Object,
         instCap: Object
-
-    },
-    data() {
-        return {
-        }
-    },
+    }
 }
 </script>
