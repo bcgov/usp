@@ -98,7 +98,6 @@ class CapController extends Controller
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
         }
-
         return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0]]);
     }
 }

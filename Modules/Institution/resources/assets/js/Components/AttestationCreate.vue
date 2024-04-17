@@ -135,7 +135,6 @@ export default {
         error: String|null,
         programs: Object,
         instCap: Object
-
     },
     data() {
         return {

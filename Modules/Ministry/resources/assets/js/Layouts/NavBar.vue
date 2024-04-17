@@ -114,8 +114,6 @@ export default {
     },
     methods: {
         updateFedCap: function (e){
-            console.log(e);
-            console.log(e.target.value)
             if(e.target.value !== ''){
                 this.selectedFedCapGuid = e.target.value;
                 let data = {

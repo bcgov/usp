@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Institution\App\Http\Controllers\AttestationController;
 use Modules\Institution\App\Http\Controllers\InstitutionController;
 use Modules\Institution\App\Http\Controllers\MaintenanceController;
+use Modules\Ministry\App\Http\Controllers\FedCapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,8 @@ Route::prefix('institution')->group(function () {
         Route::post('/api/check/duplicate_student', [AttestationController::class, 'duplicateStudent'])->name('caps.api.check.duplicate-student');
 
         Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.index');
+
+        Route::post('/fed_caps/default', [FedCapController::class, 'setDefault'])->name('fed_caps.set-default');
 
     });
 
