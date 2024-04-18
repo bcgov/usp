@@ -164,7 +164,7 @@ export default {
                 for (let j = 0; j < row.cells.length; j++) {
                     // Append cell value to CSV string
                     const cellValue = this.cleanCellValue(row.cells[j].innerHTML);
-                    csv += cellValue + ",";
+                    csv += '"' + cellValue.replace(/"/g, '""') + '",';
                 }
 
                 // Remove trailing comma and add line break
