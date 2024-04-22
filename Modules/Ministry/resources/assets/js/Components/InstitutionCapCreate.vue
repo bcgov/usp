@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button @click="submitForm" type="button" class="btn me-2 btn-outline-success float-end" :disabled="newInstitutionCapForm.processing">
+            <button @click="submitForm" type="button" class="btn btn-sm btn-success" :disabled="newInstitutionCapForm.processing">
                 Create Institution Cap
             </button>
         </div>

@@ -102,7 +102,7 @@
             </div>
             <div class="card-footer mt-3">
                 <button type="button" class="btn me-2 btn-secondary" @click="back">Back</button>
-                <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="editForm.processing">Update Institution</button>
+                <button type="submit" class="btn me-2 btn-success float-end" :disabled="editForm.processing">Update Institution</button>
             </div>
             <FormSubmitAlert :form-state="editForm.formState"
                              :success-msg="'Institution record was updated successfully.'"></FormSubmitAlert>

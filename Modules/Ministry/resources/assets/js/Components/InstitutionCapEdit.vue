@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="editInstitutionCapForm.processing">
+            <button type="submit" class="btn btn-sm btn-success" :disabled="editInstitutionCapForm.processing">
                 Update Institution Cap
             </button>
         </div>
