@@ -242,6 +242,7 @@ class AttestationController extends Controller
 //        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
         $attestations = Attestation::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->whereNot('status', 'Cancelled Draft')
             ->with('program');
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
