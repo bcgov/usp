@@ -108,6 +108,7 @@ class AttestationController extends Controller
 
         //2. dont allow duplicate
         $check2 = Attestation::where([
+            'fed_cap_guid' => Cache::get('global_fed_caps')['default'],
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
             'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
             'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid, 'email' => $request->email,
@@ -241,6 +242,7 @@ class AttestationController extends Controller
 //        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
         $attestations = Attestation::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->whereNot('status', 'Cancelled Draft')
             ->with('program');
 
         if (request()->filter_term !== null && request()->filter_type !== null) {

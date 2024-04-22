@@ -122,10 +122,10 @@
             </div>
         </div>
         <div class="modal-footer justify-content-between">
-            <button @click="submitForm('Issued')" type="button" class="btn me-2 btn-outline-warning" :disabled="newAtteForm.processing">
+            <button @click="submitForm('Issued')" type="button" class="btn btn-sm btn-secondary" :disabled="newAtteForm.processing">
                 Issue Attestation
             </button>
-            <button @click="submitForm('Draft')" type="button" class="btn me-2 btn-outline-success" :disabled="newAtteForm.processing">
+            <button @click="submitForm('Draft')" type="button" class="btn btn-sm btn-success" :disabled="newAtteForm.processing">
                 Save Draft Attestation
             </button>
         </div>

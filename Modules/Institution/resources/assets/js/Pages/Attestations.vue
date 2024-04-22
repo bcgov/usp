@@ -93,7 +93,7 @@
                         <a :href="'/institution/attestations/download/' + editRow.id" target="_blank" class="btn btn-success">
                             Download <i class="bi bi-box-arrow-down"></i>
                         </a>
-                        <button @click="duplicate" type="button" class="btn btn-outline-secondary">Replicate &amp; Issue</button>
+                        <button @click="duplicate" type="button" class="btn btn-secondary">Replicate &amp; Issue</button>
                     </div>
                 </div>
             </div>

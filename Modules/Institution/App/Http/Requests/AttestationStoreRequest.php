@@ -2,17 +2,16 @@
 
 namespace Modules\Institution\App\Http\Requests;
 
+use App\Http\Requests\BaseFormRequest;
 use App\Models\Attestation;
 use App\Models\Cap;
-use App\Models\Institution;
 use App\Models\Program;
 use App\Models\User;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
-class AttestationStoreRequest extends FormRequest
+class AttestationStoreRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -51,7 +50,7 @@ class AttestationStoreRequest extends FormRequest
             'province' => 'nullable',
             'country' => 'required',
             'expiry_date' => 'required|date_format:Y-m-d',
-            'status' => 'required|in:Draft,Issued,Received,Declined',
+            'status' => 'required|in:Draft,Issued,Received,Declined,Cancelled Draft',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
             'created_by_user_guid' => 'required|exists:users,guid',
             'gt_fifty_pct_in_person' => 'required|boolean',

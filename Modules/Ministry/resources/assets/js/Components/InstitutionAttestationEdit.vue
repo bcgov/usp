@@ -187,10 +187,10 @@
                 </div>
             </div>
             <div v-if="attestation.status === 'Draft'" class="modal-footer justify-content-between">
-                <button @click="submitForm('Issued')" type="button" class="btn me-2 btn-outline-warning" :disabled="editAtteForm.processing">
+                <button @click="submitForm('Issued')" type="button" class="btn btn-sm btn-secondary" :disabled="editAtteForm.processing">
                     Issue Attestation
                 </button>
-                <button @click="submitForm('Draft')" type="button" class="btn me-2 btn-outline-success" :disabled="editAtteForm.processing">
+                <button @click="submitForm('Draft')" type="button" class="btn btn-sm btn-success" :disabled="editAtteForm.processing">
                     Save Draft Attestation
                 </button>
             </div>
