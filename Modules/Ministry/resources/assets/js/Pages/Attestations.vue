@@ -39,6 +39,7 @@
                                                     <span v-if="row.status === 'Draft'" class="badge rounded-pill text-bg-warning">Draft</span>
                                                     <span v-if="row.status === 'Received'" class="badge rounded-pill text-bg-primary">Received</span>
                                                     <span v-if="row.status === 'Declined'" class="badge rounded-pill text-bg-danger">Declined</span>
+                                                    <span v-if="row.status === 'Cancelled Draft'" class="badge rounded-pill text-bg-secondary">Cancelled Draft</span>
                                                 </div>
                                             </td>
                                             <td>{{ row.issue_date }}</td>
@@ -47,7 +48,7 @@
                                                 <a v-if="row.status === 'Issued'" :href="'/ministry/attestations/rebuild/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary me-1" title="Rebuild">
                                                     <i class="bi bi-arrow-clockwise"></i>
                                                 </a>
-                                                <a v-if="row.status !== 'Draft'" :href="'/ministry/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary" title="Download">
+                                                <a v-if="row.status === 'Issued' || row.status === 'Declined'" :href="'/ministry/attestations/download/' + row.id" target="_blank" class="btn btn-sm btn-outline-secondary" title="Download">
                                                     <i class="bi bi-box-arrow-down"></i>
                                                 </a>
                                             </td>
