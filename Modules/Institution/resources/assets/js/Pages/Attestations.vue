@@ -19,7 +19,7 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             Attestations
-                            <template v-if="capStat != ''">
+                            <template v-if="capStat != '' && capStat.instCap != null">
                                 <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
                                 <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{ capStat.issued }}</span>
                                 <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{ capStat.instCap.total_attestations - capStat.issued }}</span>
@@ -73,7 +73,10 @@
                         <h5 class="modal-title" id="newAtteModalLabel">New Attestation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <AttestationCreate :instCap="instCap" :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :newAtte="newAtte" />
+                    <div v-if="instCap === null" class="modal-body">
+                        <div class="g-3">You have no active cap</div>
+                    </div>
+                    <AttestationCreate v-else :instCap="instCap" :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :newAtte="newAtte" />
                 </div>
             </div>
         </div>

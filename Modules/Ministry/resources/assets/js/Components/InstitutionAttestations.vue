@@ -2,7 +2,7 @@
     <div class="card mb-3">
         <div class="card-header">
             Attestations
-            <template v-if="capStat != ''">
+            <template v-if="capStat != '' && capStat.instCap != null">
                 <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
                 <span class="badge rounded-pill text-bg-primary me-1">Issued PAL: {{ capStat.issued }}</span>
                 <span class="badge rounded-pill text-bg-primary me-1">Remaining PAL: {{ capStat.instCap.total_attestations - capStat.issued }}</span>

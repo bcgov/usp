@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class Cap extends Model
 {
@@ -56,6 +57,15 @@ class Cap extends Model
     public function scopeActive($query)
     {
         return $query->where('active_status', true);
+    }
+
+    public function scopeSelectedFedcap($query)
+    {
+        $guid = Cache::get('global_fed_caps');
+        if(is_null($guid)) {
+            return $query;
+        }
+        return $query->where('fed_cap_guid', $guid['default']);
     }
 
     public function scopeOnlyInstCaps($query)

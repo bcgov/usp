@@ -2,20 +2,20 @@
     <div class="card mb-3">
         <div class="card-header">
             Institution Caps
-            <template v-if="capStat != ''">
+            <template v-if="capStat != '' && capStat.instCap != null">
                 <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
                 <span class="badge rounded-pill text-bg-primary me-1">Issued Attestations: {{ capStat.issued }}</span>
             </template>
             <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Cap</button>
         </div>
         <div class="card-body">
-            <div v-if="results.caps != null && results.caps.length > 0" class="table-responsive pb-3">
+            <div v-if="results.caps_by_fedcap != null && results.caps_by_fedcap.length > 0" class="table-responsive pb-3">
                 <table class="table table-striped">
                     <thead>
                     <InstitutionCapsHeader></InstitutionCapsHeader>
                     </thead>
                     <tbody>
-                    <template v-for="(row, i) in results.caps">
+                    <template v-for="(row, i) in results.caps_by_fedcap">
                         <tr v-if="row.program_guid === null">
                             <td>{{ row.start_date }}</td>
                             <td>{{ row.end_date }}</td>
@@ -41,14 +41,14 @@
             Program Caps
         </div>
         <div class="card-body">
-            <div v-if="results.caps != null && results.caps.length > 0" class="table-responsive pb-3">
+            <div v-if="results.caps_by_fedcap != null && results.caps_by_fedcap.length > 0" class="table-responsive pb-3">
                 <table class="table table-striped">
                     <thead>
                     <InstitutionCapsProgramHeader></InstitutionCapsProgramHeader>
                     </thead>
                     <tbody>
 
-                    <template v-for="(row, i) in results.caps">
+                    <template v-for="(row, i) in results.caps_by_fedcap">
                         <tr v-if="row.program_guid !== null">
                             <td>{{ row.start_date }}</td>
                             <td>{{ row.end_date }}</td>
@@ -166,7 +166,7 @@ export default {
         this.fetchCapStats();
 
         //look for inst active cap
-        for (const cap of this.results.caps) {
+        for (const cap of this.results.caps_by_fedcap) {
             if (cap.program_guid === null && cap.active_status) {
                 this.activeInstCap = cap;
                 break;
