@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -210,6 +211,7 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
+        Cache::forget('global_fed_caps');
         return Inertia::render('Auth/Login', [
             'loginAttempt' => false,
             'hasAccess' => false,

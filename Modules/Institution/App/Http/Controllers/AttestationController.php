@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Modules\Institution\App\Http\Requests\AttestationDuplicateRequest;
 use Modules\Institution\App\Http\Requests\AttestationEditRequest;
@@ -44,8 +45,11 @@ class AttestationController extends Controller
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
-        $fedCap = FedCap::active()->first();
-        $cap = Cap::where('fed_cap_guid', $fedCap->guid)->active()
+//        $fedCap = FedCap::active()->first();
+
+
+        $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps')['default'])->active()
+//        $cap = Cap::where('fed_cap_guid', $fedCap->guid)->active()
             ->where('program_guid', null)
             ->where('institution_guid', $institution->guid)
             ->first();
@@ -162,7 +166,9 @@ class AttestationController extends Controller
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
-        $data = Attestation::where('institution_guid', $institution->guid)->orderByDesc('created_at')->get();
+        $data = Attestation::where('institution_guid', $institution->guid)
+            ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->orderByDesc('created_at')->get();
 
         $csvData = [];
         $csvDataHeader = ['PAL ID', 'PROGRAM NAME', 'STUDENT NUMBER', 'FIRST NAME', 'LAST NAME', 'TRAVEL ID', 'DOB', 'ADDRESS1', 'ADDRESS2', 'EMAIL', 'CITY',
@@ -194,16 +200,18 @@ class AttestationController extends Controller
     public function capStat(Request $request)
     {
         $instCap = Cap::where('institution_guid', $request->input('institution_guid'))
+            ->selectedFedcap()
             ->active()
             ->where('program_guid', null)
             ->first();
 
-        $issuedInstAttestations = Attestation::where('status', 'Issued')
-            ->where('institution_guid', $instCap->institution_guid)
-            ->where('fed_cap_guid', $instCap->fed_cap_guid)
-            ->count();
-
-        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations]]);
+        if(!is_null($instCap)) {
+            $issuedInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $instCap->institution_guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->count();
+        }
+        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0]]);
     }
 
 
@@ -213,22 +221,27 @@ class AttestationController extends Controller
         $institution = $user->institution;
 
         $instCap = Cap::where('institution_guid', $institution->guid)
+            ->selectedFedcap()
             ->active()
             ->where('program_guid', null)
             ->first();
 
-        $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
-            ->where('fed_cap_guid', $instCap->fed_cap_guid)
-            ->where('student_number', $request->input('student_number'))
-            ->count();
+        if(!is_null($instCap)) {
+            $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->where('student_number', $request->input('student_number'))
+                ->count();
+        }
 
-        return Response::json(['status' => true, 'body' => ['count' => $issuedInstAttestations]]);
+        return Response::json(['status' => true, 'body' => ['count' => $issuedInstAttestations ?? 0]]);
     }
 
     private function paginateAtte($institution)
     {
-
-        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
+//        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
+        $attestations = Attestation::where('institution_guid', $institution->guid)
+            ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->with('program');
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
             $attestations = match (request()->filter_type) {

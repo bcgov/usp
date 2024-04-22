@@ -271,6 +271,7 @@ class MaintenanceController extends Controller
                 ->join('fed_caps', 'fed_caps.guid', '=', 'caps.fed_cap_guid')
                 ->where('fed_caps.status', 'Active')
                 ->where('caps.active_status', true)
+                ->selectedFedcap()
                 ->get();
         }
         if($type === 'staff'){
@@ -311,7 +312,6 @@ class MaintenanceController extends Controller
 
         $csvData = [];
         $csvDataHeader = [];
-        //$rows = \DB::select($query);
         if($rows->isEmpty()) return "No results for the date range selected.";
 
         // Capture column names dynamically
