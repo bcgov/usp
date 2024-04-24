@@ -74,11 +74,14 @@ class AttestationController extends Controller
         $error = null;
         //1. check for duplicate attestations
         $check1 = Attestation::where([
+            'fed_cap_guid' => Cache::get('global_fed_caps')['default'],
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
             'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
             'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid, 'email' => $request->email,
             'address1' => $request->address1, 'address2' => $request->address2, 'city' => $request->city,
-            'zip_code' => $request->zip_code, 'province' => $request->province, 'country' => $request->country])->first();
+            'zip_code' => $request->zip_code, 'province' => $request->province, 'country' => $request->country])
+            ->whereNot('status', 'Cancelled Draft')
+            ->first();
 
         if (is_null($check1)) {
             $attestation = Attestation::create($request->validated());
@@ -115,6 +118,7 @@ class AttestationController extends Controller
             'address1' => $request->address1, 'address2' => $request->address2, 'city' => $request->city,
             'zip_code' => $request->zip_code, 'province' => $request->province, 'country' => $request->country])
             ->where('id', '!=', $request->id)
+            ->whereNot('status', 'Cancelled Draft')
             ->first();
 
         if(is_null($check1)){
@@ -169,6 +173,7 @@ class AttestationController extends Controller
 
         $data = Attestation::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->whereNot('status', 'Cancelled Draft')
             ->orderByDesc('created_at')->get();
 
         $csvData = [];
@@ -231,6 +236,7 @@ class AttestationController extends Controller
             $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->where('student_number', $request->input('student_number'))
+                ->whereNot('status', 'Cancelled Draft')
                 ->count();
         }
 

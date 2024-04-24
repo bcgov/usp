@@ -2,14 +2,14 @@
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 v-if="attestation.status !== 'Draft'" class="modal-title" id="editAtteModalLabel1">Download Attestation</h5>
+            <h5 v-if="attestation.status === 'Issued'" class="modal-title" id="editAtteModalLabel1">Download Attestation</h5>
             <h5 v-else class="modal-title" id="editAtteModalLabel">Edit Attestation</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <form v-if="editAtteForm != null" class="card-body p-0">
             <div class="modal-body">
-                <div v-if="attestation.status !== 'Draft'" class="row g-3">
+                <div v-if="attestation.status === 'Issued' || attestation.status === 'Cancelled Draft'" class="row g-3">
                     <div class="col-md-6 text-break">
                         <Label for="inputFirstName" class="fw-bold" value="First Name"/>
                         {{ editAtteForm.first_name }}
@@ -74,7 +74,7 @@
                         {{ editAtteForm.expiry_date }}
                     </div>
 
-                    <a :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
+                    <a v-if="attestation.status === 'Issued'" :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
                         {{attestation.issued_by_name}}<br/><i class="bi bi-box-arrow-down"></i>
                     </a>
                 </div>
