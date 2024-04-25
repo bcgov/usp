@@ -1,7 +1,7 @@
 <template>
     <form v-if="editAtteForm != null" class="card-body">
         <div class="modal-body">
-            <div v-if="attestation.status !== 'Draft'" class="row g-3">
+            <div v-if="attestation.status === 'Issued' || attestation.status === 'Cancelled Draft'" class="row g-3">
                 <div class="col-md-6 text-break">
                     <Label for="inputFirstName" class="fw-bold" value="First Name"/>
                     {{editAtteForm.first_name}}
@@ -68,11 +68,11 @@
                     {{ editAtteForm.expiry_date }}
                 </div>
 
-                <a :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
+                <a v-if="attestation.status === 'Issued'" :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
                     {{attestation.issued_by_name}}<br/><i class="bi bi-box-arrow-down"></i>
                 </a>
-
             </div>
+
             <div v-else class="row g-3">
                 <div class="col-md-6">
                     <Label for="inputFirstName" class="form-label" value="First Name" required="true"/>
@@ -183,10 +183,10 @@
             </div>
         </div>
         <div v-if="attestation.status === 'Draft'" class="modal-footer justify-content-between">
-            <button @click="submitForm('Issued')" type="button" class="btn me-2 btn-outline-warning" :disabled="editAtteForm.processing">
+            <button @click="submitForm('Issued')" type="button" class="btn btn-sm btn-secondary" :disabled="editAtteForm.processing">
                 Issue Attestation
             </button>
-            <button @click="submitForm('Draft')" type="button" class="btn me-2 btn-outline-success" :disabled="editAtteForm.processing">
+            <button @click="submitForm('Draft')" type="button" class="btn btn-sm btn-success" :disabled="editAtteForm.processing">
                 Save Draft Attestation
             </button>
         </div>

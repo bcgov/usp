@@ -86,7 +86,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn me-2 btn-outline-success" :disabled="newFaqForm.processing">Submit</button>
+                        <button type="submit" class="btn btn-sm btn-success" :disabled="newFaqForm.processing">Submit</button>
                     </div>
                 </form>
             </div>
@@ -142,7 +142,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn me-2 btn-outline-success" :disabled="editFaqForm.processing">Update</button>
+                        <button type="submit" class="btn btn-sm btn-success" :disabled="editFaqForm.processing">Update</button>
                     </div>
                 </form>
             </div>

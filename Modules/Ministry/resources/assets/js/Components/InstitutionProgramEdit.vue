@@ -110,7 +110,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn me-2 btn-outline-success float-end" :disabled="editForm.processing">
+            <button type="submit" class="btn btn-sm btn-success" :disabled="editForm.processing">
                 Update Program
             </button>
         </div>

@@ -176,12 +176,9 @@
             </div>
         </div>
         <div v-if="attestation.status === 'Draft'" class="modal-footer justify-content-between">
-            <button @click="submitForm('Issued')" type="button" class="btn me-2 btn-outline-warning" :disabled="editAtteForm.processing">
-                Issue Attestation
-            </button>
-            <button @click="submitForm('Draft')" type="button" class="btn me-2 btn-outline-success" :disabled="editAtteForm.processing">
-                Save Draft Attestation
-            </button>
+            <button type="button" class="btn btn-danger btn-sm me-auto" @click="submitForm('Cancelled Draft')" :disabled="editAtteForm.processing">Delete Attestation</button>
+            <button type="button" class="btn btn-secondary btn-sm" @click="submitForm('Draft')" :disabled="editAtteForm.processing">Save Draft</button>
+            <button type="button" class="btn btn-success btn-sm" @click="submitForm('Issued')" :disabled="editAtteForm.processing">Issue Attestation</button>
         </div>
         <FormSubmitAlert :form-state="editAtteForm.formState" :success-msg="editAtteForm.formSuccessMsg"
                          :fail-msg="editAtteForm.formFailMsg"></FormSubmitAlert>
@@ -241,8 +238,15 @@ export default {
 
         submitForm: function (status) {
             this.editAtteForm.status = status;
-            if(this.editAtteForm.status !== 'Draft'){
+            if(this.editAtteForm.status === 'Issued'){
                 let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
+                if(!check){
+                    return false;
+                }
+            }
+
+            if(this.editAtteForm.status === 'Cancelled Draft'){
+                let check = confirm('You are about to Cancel this Draft. Are you sure you want to continue?');
                 if(!check){
                     return false;
                 }
