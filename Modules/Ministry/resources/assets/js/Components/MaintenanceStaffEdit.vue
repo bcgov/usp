@@ -58,12 +58,12 @@
                 <BreezeValidationErrors class="p-3" />
 
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-outline-success" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Save
-                    </button>
-                    <Link @click="back" href="#" class="btn btn-outline-primary float-end" :class="{ 'opacity-50': form.processing }" :disabled="form.processing">
+                    <Link @click="back" href="#" class="btn btn-secondary" :class="{ 'opacity-50': form.processing }" :disabled="form.processing">
                         Cancel
                     </Link>
+                    <button type="submit" class="btn btn-success float-end" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        Save
+                    </button>
                 </div>
 
             </div>

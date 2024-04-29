@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button @click="submitForm" type="button" class="btn me-2 btn-outline-success float-end" :disabled="newFedCapForm.processing">
+            <button @click="submitForm" type="button" class="btn btn-sm btn-success" :disabled="newFedCapForm.processing">
                 Create Federal Cap
             </button>
         </div>

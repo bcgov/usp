@@ -130,7 +130,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn me-2 btn-outline-success" :disabled="editUser.processing">Submit</button>
+                        <button type="submit" class="btn btn-sm btn-success" :disabled="editUser.processing">Submit</button>
                     </div>
                     <FormSubmitAlert :form-state="editUser.formState" :success-msg="editUser.formSuccessMsg" :fail-msg="editUser.formFailMsg"></FormSubmitAlert>
                 </form>

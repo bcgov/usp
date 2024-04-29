@@ -53,6 +53,12 @@ class HandleInertiaRequests extends Middleware
             $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
                 ->without(['caps'])
                 ->active()->orderBy('id')->get();
+            if($fedCaps->isEmpty()) {
+                return [
+                    'list' => [],
+                    'default' => null,
+                ];
+            }
             return [
                 'list' => $fedCaps,
                 'default' => $fedCaps[0]->guid

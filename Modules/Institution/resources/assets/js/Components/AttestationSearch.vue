@@ -22,7 +22,7 @@
         </div>
         <div class="row mb-3">
             <div class="col-auto">
-                <BreezeButton class="btn btn-primary" :class="{ 'opacity-25': nameForm.processing }" :disabled="nameForm.processing">
+                <BreezeButton class="btn btn-success" :class="{ 'opacity-25': nameForm.processing }" :disabled="nameForm.processing">
                     Search
                 </BreezeButton>
             </div>

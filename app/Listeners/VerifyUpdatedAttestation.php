@@ -83,7 +83,7 @@ class VerifyUpdatedAttestation
                 $attestation->save();
             }
         } else {
-            $attestation->status = 'Draft';
+            $attestation->status = $status;
             $attestation->save();
         }
 
