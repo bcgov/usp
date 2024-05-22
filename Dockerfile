@@ -102,7 +102,7 @@ RUN apt-get autoclean && apt-get autoremove && apt-get clean && rm -rf /var/lib/
 #fix Action '-D FOREGROUND' failed.
     && a2enmod lbmethod_byrequests \
     && mkdir -p /var/log/php  \
-    && printf 'error_log=/var/log/php/error.log\nlog_errors=1\nerror_reporting=E_ALL\n' > /usr/local/etc/php/conf.d/custom.ini \
+    && printf 'error_log=/var/log/php/error.log\nlog_errors=1\nerror_reporting=E_ALL\nmemory_limit=450M\n' > /usr/local/etc/php/conf.d/custom.ini \
     && mkdir -p /etc/apache2/sites-enabled
 
 # Composer
