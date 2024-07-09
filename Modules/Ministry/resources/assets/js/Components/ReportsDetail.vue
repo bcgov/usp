@@ -163,7 +163,7 @@
                             <th scope="col">{{ filteredReport.publicReport.total + filteredReport.privateReport.total }}</th>
                             <th scope="col">{{ filteredReport.publicReport.issued + filteredReport.privateReport.issued }}</th>
                             <th scope="col">{{ filteredReport.publicReport.draft + filteredReport.privateReport.draft }}</th>
-                            <th scope="col">{{ roundIt(filteredReport.publicReport) }}%</th>
+                            <th scope="col">{{ roundGrandTotal(filteredReport.publicReport, filteredReport.privateReport) }}%</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -208,6 +208,12 @@ export default {
         roundIt: function (report) {
             if(report.total === 0) return 0;
             return (report.issued / report.total * 100).toFixed(2);
+        },
+        roundGrandTotal: function (publicReport, privateReport) {
+            let total = publicReport.total + privateReport.total;
+            let issued = publicReport.issued + privateReport.issued;
+            if(total.total === 0) return 0;
+            return (issued / total * 100).toFixed(2);
         },
         updateCat: function (cat){
             this.filterCat = this.filterCat === cat ? '' : cat;
