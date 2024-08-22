@@ -64,6 +64,7 @@ class UserController extends Controller
             \Log::info('$authUrl: '.$authUrl);
             \Log::info('$provider->getState(): '.$provider->getState());
 
+            config(['session.same_site' => 'lax']);
             return Redirect::to($authUrl);
 
             // Check given state against previously stored one to mitigate CSRF attack
