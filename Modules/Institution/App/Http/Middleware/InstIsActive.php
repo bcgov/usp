@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\App\Http\Middleware;
+namespace Modules\Institution\Http\Middleware;
 
 use App\Models\InstitutionStaff;
 use App\Models\Role;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
-class IsActive
+class InstIsActive
 {
     /**
      * Handle an incoming request.

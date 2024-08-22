@@ -66,10 +66,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'ministry_active' => \Modules\Ministry\App\Http\Middleware\IsActive::class,
-        'ministry_admin' => \Modules\Ministry\App\Http\Middleware\IsAdmin::class,
-        'institution_active' => \Modules\Institution\App\Http\Middleware\IsActive::class,
-        'institution_admin' => \Modules\Institution\App\Http\Middleware\IsAdmin::class,
+        'ministry_active' => \Modules\Ministry\Http\Middleware\IsActive::class,
+        'ministry_admin' => \Modules\Ministry\Http\Middleware\IsAdmin::class,
+        'institution_active' => \Modules\Institution\Http\Middleware\InstIsActive::class,
+        'institution_admin' => \Modules\Institution\Http\Middleware\InstIsAdmin::class,
         'super_admin' => \App\Http\Middleware\SuperAdmin::class,
 
     ];

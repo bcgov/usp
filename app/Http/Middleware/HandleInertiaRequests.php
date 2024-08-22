@@ -8,7 +8,7 @@ use App\Models\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
-use Tightenco\Ziggy\Ziggy;
+use Tighten\Ziggy\Ziggy;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
 

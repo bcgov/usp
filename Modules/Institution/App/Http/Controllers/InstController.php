@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\App\Http\Controllers;
+namespace Modules\Institution\Http\Controllers;
 
 use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class InstitutionController extends Controller
+class InstController extends Controller
 {
     /**
      * Display a listing of the resource.

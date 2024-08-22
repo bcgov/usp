@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Ministry\App\Providers;
+namespace Modules\Ministry\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -10,7 +10,7 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * The module namespace to assume when generating URLs to actions.
      */
-    protected string $moduleNamespace = 'Modules\Ministry\App\Http\Controllers';
+    #protected string $moduleNamespace = 'Modules\Ministry\App\Http\Controllers';
 
     /**
      * Called before routes are registered.
@@ -40,7 +40,6 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes(): void
     {
         Route::middleware('web')
-            ->namespace($this->moduleNamespace)
             ->group(module_path('Ministry', '/routes/web.php'));
     }
 
@@ -53,7 +52,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('api')
             ->middleware('api')
-            ->namespace($this->moduleNamespace)
             ->group(module_path('Ministry', '/routes/api.php'));
     }
 }

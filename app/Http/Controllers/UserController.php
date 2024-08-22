@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Response;
@@ -66,9 +67,26 @@ class UserController extends Controller
             return Redirect::to($authUrl);
 
             // Check given state against previously stored one to mitigate CSRF attack
+//        } elseif ($request->has('state') && empty($request->session()->get('oauth2state'))) {
+//            Session::regenerate(false);
+//
+//            \Log::info('Session ID: ' . Session::getId());
+//            \Log::info('A: oauth2state:' . Session::get('oauth2state'));
+//            \Log::info('empty oauth2state ');
+//            \Log::info('state:' . $request->state);
+//            Session::put('oauth2state', $request->state);
+//            \Log::info('B2: oauth2state:' . Session::get('oauth2state'));
+//
+//            \Log::info(' ');
+//            Session::save();
+//
+//            return redirect()->to('/bceid-login?state='.Session::get('oauth2state').'&session_state='.$request->session_state.
+//            '&code='.$request->code);
+
+        // Check given state against previously stored one to mitigate CSRF attack
         } elseif (! $request->has('state') || ($request->state !== $request->session()->get('oauth2state'))) {
-            $request->session()->forget('oauth2state');
             \Log::info('messed up state '.$request->state.' !== '.$request->session()->get('oauth2state'));
+            $request->session()->forget('oauth2state');
 
             //Invalid state, make sure HTTP sessions are enabled
             return Inertia::render('Auth/Login', [
@@ -77,11 +95,15 @@ class UserController extends Controller
                 'status' => 'We could not log you in. Please contact RequestIT@gov.bc.ca',
             ]);
         } else {
+            \Log::info('We got State: '.$request->state . " and Code: " . $request->code);
+            \Log::info('Session state:' . $request->session()->get('oauth2state'));
+
             // Try to get an access token (using the authorization coe grant)
             try {
                 $token = $provider->getAccessToken('authorization_code', [
                     'code' => $request->code,
                 ]);
+                \Log::info('Token based on code:' . $token);
             } catch (\Exception $e) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,

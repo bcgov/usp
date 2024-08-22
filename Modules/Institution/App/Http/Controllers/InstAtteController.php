@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\App\Http\Controllers;
+namespace Modules\Institution\Http\Controllers;
 
 use App\Events\AttestationDraftUpdated;
 use App\Events\AttestationIssued;
@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
-use Modules\Institution\App\Http\Requests\AttestationDuplicateRequest;
-use Modules\Institution\App\Http\Requests\AttestationEditRequest;
-use Modules\Institution\App\Http\Requests\AttestationStoreRequest;
+use Modules\Institution\Http\Requests\AttestationDuplicateRequest;
+use Modules\Institution\Http\Requests\AttestationEditRequest;
+use Modules\Institution\Http\Requests\AttestationStoreRequest;
 use Response;
 
-class AttestationController extends Controller
+class InstAtteController extends Controller
 {
     protected $countries;
 

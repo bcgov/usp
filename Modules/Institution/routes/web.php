@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\FaqController;
 use Illuminate\Support\Facades\Route;
-use Modules\Institution\App\Http\Controllers\AttestationController;
-use Modules\Institution\App\Http\Controllers\InstitutionController;
-use Modules\Institution\App\Http\Controllers\MaintenanceController;
-use Modules\Ministry\App\Http\Controllers\FedCapController;
+use Modules\Institution\Http\Controllers\InstAtteController;
+use Modules\Institution\Http\Controllers\InstController;
+use Modules\Institution\Http\Controllers\MaintController;
+use Modules\Ministry\Http\Controllers\FedCapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,14 +32,14 @@ Route::prefix('institution')->group(function () {
             Route::get('/attestations/export', [AttestationController::class, 'exportCsv'])->name('attestations.export');
         Route::post('/duplicate_attestations', [AttestationController::class, 'duplicate'])->name('attestations.duplicate');
 
-            Route::get('/dashboard', [InstitutionController::class, 'index'])->name('dashboard');
-            Route::get('/account', [InstitutionController::class, 'show'])->name('show');
+            Route::get('/dashboard', [InstController::class, 'index'])->name('dashboard');
+            Route::get('/account', [InstController::class, 'show'])->name('show');
 
-            Route::get('/caps', [InstitutionController::class, 'caps'])->name('caps.index');
+            Route::get('/caps', [InstController::class, 'caps'])->name('caps.index');
         Route::post('/api/fetch/capStats', [AttestationController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
         Route::post('/api/check/duplicate_student', [AttestationController::class, 'duplicateStudent'])->name('caps.api.check.duplicate-student');
 
-        Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.index');
+        Route::get('/faqs', [MaintController::class, 'faqList'])->name('faqs.index');
 
         Route::post('/fed_caps/default', [FedCapController::class, 'setDefault'])->name('fed_caps.set-default');
 
@@ -48,10 +48,10 @@ Route::prefix('institution')->group(function () {
     Route::group([
         'middleware' => ['institution_admin'],
     ], function () {
-        Route::get('/staff', [InstitutionController::class, 'staffList'])->name('staff.list');
+        Route::get('/staff', [InstController::class, 'staffList'])->name('staff.list');
 
-        Route::put('/staff', [InstitutionController::class, 'staffUpdate'])->name('staff.staffUpdate');
-        Route::put('/roles', [InstitutionController::class, 'staffUpdateRole'])->name('roles.staffUpdateRole');
+        Route::put('/staff', [InstController::class, 'staffUpdate'])->name('staff.staffUpdate');
+        Route::put('/roles', [InstController::class, 'staffUpdateRole'])->name('roles.staffUpdateRole');
 
     });
 });

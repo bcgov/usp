@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Ministry\App\Http\Controllers;
+namespace Modules\Ministry\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionEditRequest;

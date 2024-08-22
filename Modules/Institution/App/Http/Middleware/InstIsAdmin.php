@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\App\Http\Middleware;
+namespace Modules\Institution\Http\Middleware;
 
 use App\Models\Role;
 use Closure;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class IsAdmin
+class InstIsAdmin
 {
     /**
      * Handle an incoming request.

@@ -17,10 +17,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Fed\\": "",
-            "Modules\\Fed\\App\\": "app/",
-            "Modules\\Fed\\Database\\Factories\\": "database/factories/",
-            "Modules\\Fed\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\Fed\\": "App/",
+            "Modules\\Fed\\Database\\Factories\\": "Database/factories/",
+            "Modules\\Fed\\Database\\Seeders\\": "Database/Seeders/"
         }
     },
     "autoload-dev": {
