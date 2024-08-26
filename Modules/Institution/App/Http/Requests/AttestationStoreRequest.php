@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\Http\Requests;
+namespace Modules\Institution\App\Http\Requests;
 
 use App\Http\Requests\BaseFormRequest;
 use App\Models\Attestation;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Ministry\Http\Controllers;
+namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Events\AttestationDraftUpdated;
 use App\Events\AttestationIssued;

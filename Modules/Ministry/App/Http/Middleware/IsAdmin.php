@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Ministry\Http\Middleware;
+namespace Modules\Ministry\App\Http\Middleware;
 
 use App\Models\Role;
 use Closure;

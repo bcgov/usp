@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Institution\Http\Controllers;
+namespace Modules\Institution\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class MaintController extends Controller
+class MaintenanceController extends Controller
 {
     public function faqList(Request $request): \Inertia\Response
     {

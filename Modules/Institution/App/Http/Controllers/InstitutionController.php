@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\Http\Controllers;
+namespace Modules\Institution\App\Http\Controllers;
 
 use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
@@ -14,16 +14,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class InstController extends Controller
+class InstitutionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        \Log::info('InstController');
-        \Log::info(Auth::check());
-
         $issuedInstAttestations = 0;
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;

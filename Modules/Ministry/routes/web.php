@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Ministry\Http\Controllers\AttestationController;
-use Modules\Ministry\Http\Controllers\CapController;
-use Modules\Ministry\Http\Controllers\FedCapController;
-use Modules\Ministry\Http\Controllers\InstitutionController;
-use Modules\Ministry\Http\Controllers\InstitutionStaffController;
-use Modules\Ministry\Http\Controllers\MaintenanceController;
-use Modules\Ministry\Http\Controllers\ProgramController;
+use Modules\Ministry\App\Http\Controllers\AttestationController;
+use Modules\Ministry\App\Http\Controllers\CapController;
+use Modules\Ministry\App\Http\Controllers\FedCapController;
+use Modules\Ministry\App\Http\Controllers\InstitutionController;
+use Modules\Ministry\App\Http\Controllers\InstitutionStaffController;
+use Modules\Ministry\App\Http\Controllers\MaintenanceController;
+use Modules\Ministry\App\Http\Controllers\ProgramController;
 
 /*
 |--------------------------------------------------------------------------

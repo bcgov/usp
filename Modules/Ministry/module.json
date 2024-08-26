@@ -5,7 +5,7 @@
     "keywords": [],
     "priority": 0,
     "providers": [
-        "Modules\\Ministry\\Providers\\MinistryServiceProvider"
+        "Modules\\Ministry\\App\\Providers\\MinistryServiceProvider"
     ],
     "files": []
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\Http\Middleware;
+namespace Modules\Institution\App\Http\Middleware;
 
 use App\Models\Role;
 use Closure;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class InstIsAdmin
+class IsAdmin
 {
     /**
      * Handle an incoming request.
@@ -20,7 +20,6 @@ class InstIsAdmin
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $roles = empty($roles) ? [null] : $roles;
-        \Log::info('InstIsAdmin ');
 
         if (! Auth::check()) {
             return Inertia::render('Auth/Login', [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Institution\Http\Middleware;
+namespace Modules\Institution\App\Http\Middleware;
 
 use App\Models\InstitutionStaff;
 use App\Models\Role;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
-class InstIsActive
+class IsActive
 {
     /**
      * Handle an incoming request.
@@ -22,10 +22,8 @@ class InstIsActive
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $roles = empty($roles) ? [null] : $roles;
-        \Log::info('InstIsActive ');
 
         if (! Auth::check()) {
-            \Log::info('no auth ');
             return redirect()->route('login');
         }
 

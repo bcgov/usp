@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Fed\Http\Controllers\FedController;
+use Modules\Fed\App\Http\Controllers\FedController;
 
 /*
 |--------------------------------------------------------------------------
