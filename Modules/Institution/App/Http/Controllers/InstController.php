@@ -21,6 +21,9 @@ class InstController extends Controller
      */
     public function index()
     {
+        \Log::info('InstController');
+        \Log::info(Auth::check());
+
         $issuedInstAttestations = 0;
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;

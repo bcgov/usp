@@ -22,8 +22,10 @@ class InstIsActive
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $roles = empty($roles) ? [null] : $roles;
+        \Log::info('InstIsActive ');
 
         if (! Auth::check()) {
+            \Log::info('no auth ');
             return redirect()->route('login');
         }
 

@@ -20,6 +20,7 @@ class InstIsAdmin
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $roles = empty($roles) ? [null] : $roles;
+        \Log::info('InstIsAdmin ');
 
         if (! Auth::check()) {
             return Inertia::render('Auth/Login', [

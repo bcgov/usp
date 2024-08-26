@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -60,12 +61,15 @@ class UserController extends Controller
         if (! $request->has('code')) {
             // If we don't have an authorization code then get one
             $authUrl = $provider->getAuthorizationUrl();
-            $request->session()->put('oauth2state', $provider->getState());
-            \Log::info('$authUrl: '.$authUrl);
-            \Log::info('$provider->getState(): '.$provider->getState());
+            $state = $provider->getState();
+            setcookie('oauth2state', $state);
+//            Session::put('oauth2state', $state);
+            \Log::info('1 $authUrl: '.$authUrl);
+            \Log::info('2 $provider->getState(): '.$state);
+            // Store the state in a cookie with a short lifetime (e.g., 5 minutes)
+//            cookie()->queue(cookie('oauth2state', $state, 5)); // Store for 5 minutes
 
-            config(['session.same_site' => 'lax']);
-            return Redirect::to($authUrl);
+            return Redirect::to($authUrl.'&kc_idp_hint=usp');
 
             // Check given state against previously stored one to mitigate CSRF attack
 //        } elseif ($request->has('state') && empty($request->session()->get('oauth2state'))) {
@@ -85,9 +89,13 @@ class UserController extends Controller
 //            '&code='.$request->code);
 
         // Check given state against previously stored one to mitigate CSRF attack
-        } elseif (! $request->has('state') || ($request->state !== $request->session()->get('oauth2state'))) {
-            \Log::info('messed up state '.$request->state.' !== '.$request->session()->get('oauth2state'));
-            $request->session()->forget('oauth2state');
+        } elseif (! $request->has('state') || ($request->state !== $_COOKIE['oauth2state'])) {
+            \Log::info('messed up state '.$request->state.' !== '.Session::get('oauth2state'));
+            \Log::info('3 $provider->getState(): '.$_COOKIE['oauth2state']);
+
+            //$request->session()->forget('oauth2state');
+            // Clear the cookie
+            setcookie('oauth2state', '', -3600);
 
             //Invalid state, make sure HTTP sessions are enabled
             return Inertia::render('Auth/Login', [
@@ -97,7 +105,7 @@ class UserController extends Controller
             ]);
         } else {
             \Log::info('We got State: '.$request->state . " and Code: " . $request->code);
-            \Log::info('Session state:' . $request->session()->get('oauth2state'));
+            \Log::info('Session state:' . $_COOKIE['oauth2state']);
 
             // Try to get an access token (using the authorization coe grant)
             try {
@@ -106,6 +114,7 @@ class UserController extends Controller
                 ]);
                 \Log::info('Token based on code:' . $token);
             } catch (\Exception $e) {
+                setcookie('oauth2state', '', -3600);
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
                     'hasAccess' => false,
@@ -121,6 +130,7 @@ class UserController extends Controller
                 \Log::info('We got a token: '.$token);
                 \Log::info('$provider_user: '.json_encode($provider_user));
             } catch (\Exception $e) {
+                setcookie('oauth2state', '', -3600);
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
                     'hasAccess' => false,
@@ -169,6 +179,7 @@ class UserController extends Controller
             $user->name = $provider_user['name'];
             $user->save();
             \Log::info('We got a name: '.$provider_user['name']);
+            setcookie('oauth2state', '', -3600);
 
             //else the user has access
             if ($type === Role::Ministry_GUEST) {
@@ -183,6 +194,7 @@ class UserController extends Controller
                 }
 
                 Auth::login($user);
+                \Log::info('User is ministry staff ');
 
                 return Redirect::route('ministry.home');
             }
@@ -199,10 +211,14 @@ class UserController extends Controller
                 }
 
                 Auth::login($user);
+                \Log::info('User is institution staff ' . Auth::check());
+                \Log::info(Auth::check());
+                \Log::info(Auth::user()->roles);
 
                 return Redirect::route('institution.dashboard');
             }
 
+            \Log::info('Redirect to Login ');
             return Redirect::route('login');
         }
     }
@@ -235,6 +251,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         Cache::forget('global_fed_caps');
+        setcookie('oauth2state', '', -3600);
         return Inertia::render('Auth/Login', [
             'loginAttempt' => false,
             'hasAccess' => false,
@@ -252,6 +269,7 @@ class UserController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        setcookie('oauth2state', '', -3600);
 
         return redirect('/');
     }
