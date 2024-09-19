@@ -36,6 +36,8 @@ class UserController extends Controller
             'clientSecret' => env('KEYCLOAK_CLIENT_SECRET'),
             'redirectUri' => env('KEYCLOAK_REDIRECT_URI'),
         ]);
+        // This is needed to have the provider logout url formatted correctly
+        $provider->setVersion('24.0.0');
 
         return $this->loginUser($request, $provider, Role::Ministry_GUEST);
     }
@@ -49,6 +51,7 @@ class UserController extends Controller
             'clientSecret' => env('KEYCLOAK_BCEID_CLIENT_SECRET'),
             'redirectUri' => env('KEYCLOAK_BCEID_REDIRECT_URI'),
         ]);
+        $provider->setVersion('24.0.0');
 
         return $this->loginUser($request, $provider, Role::Institution_GUEST);
     }
@@ -60,8 +63,8 @@ class UserController extends Controller
             // If we don't have an authorization code then get one
             $authUrl = $provider->getAuthorizationUrl();
             $request->session()->put('oauth2state', $provider->getState());
-            \Log::info('$authUrl: '.$authUrl);
-            \Log::info('$provider->getState(): '.$provider->getState());
+//            \Log::info('$authUrl: '.$authUrl);
+//            \Log::info('$provider->getState(): '.$provider->getState());
 
             return Redirect::to($authUrl);
 
@@ -95,8 +98,8 @@ class UserController extends Controller
                 // We got an access token, let's now get the user's details
                 $provider_user = $provider->getResourceOwner($token);
                 $provider_user = $provider_user->toArray();
-                \Log::info('We got a token: '.$token);
-                \Log::info('$provider_user: '.json_encode($provider_user));
+//                \Log::info('We got a token: '.$token);
+//                \Log::info('$provider_user: '.json_encode($provider_user));
             } catch (\Exception $e) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
