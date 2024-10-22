@@ -44,6 +44,11 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
+        'api2' => [
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \App\Http\Middleware\Api2Middleware::class,
+        ],
     ];
 
     /**
@@ -71,6 +76,9 @@ class Kernel extends HttpKernel
         'institution_active' => \Modules\Institution\App\Http\Middleware\IsActive::class,
         'institution_admin' => \Modules\Institution\App\Http\Middleware\IsAdmin::class,
         'super_admin' => \App\Http\Middleware\SuperAdmin::class,
+
+        'apiauth' => \App\Http\Middleware\ApiAuth::class,
+
 
     ];
 }
