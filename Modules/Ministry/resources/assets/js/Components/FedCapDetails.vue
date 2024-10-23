@@ -7,12 +7,12 @@
         <form class="card-body" @submit.prevent="submitForm">
             <div class="row g-3">
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <Label for="inputSd" class="form-label" value="Start Date"/>
                     <Input type="date" min="2019-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputSd" v-model="editForm.start_date"/>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <Label for="inputEd" class="form-label" value="End Date"/>
                     <Input type="date" min="2019-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputEd" v-model="editForm.end_date"/>
@@ -22,6 +22,10 @@
                     <Input type="number" class="form-control" id="inputTotalAtte" v-model="editForm.total_attestations"/>
                 </div>
                 <div class="col-md-3">
+                    <Label for="inputTotalResGradAtte" class="form-label" value="Total Reserved Graduate Attest. Allowed"/>
+                    <Input type="number" class="form-control" id="inputTotalResGradAtte" v-model="editForm.total_reserved_graduate_attestations"/>
+                </div>
+                <div class="col-md-2">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editForm.status">
                         <option value=""></option>
