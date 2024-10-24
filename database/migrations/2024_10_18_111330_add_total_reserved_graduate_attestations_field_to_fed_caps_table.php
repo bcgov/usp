@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('fed_caps', function (Blueprint $table) {
-            $table->integer('total_reserved_graduate_attestations')->nullable();
+            $table->integer('total_reserved_graduate_attestations')->default(0);
         });
     }
 
