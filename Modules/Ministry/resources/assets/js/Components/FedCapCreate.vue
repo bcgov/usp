@@ -38,7 +38,8 @@
                     <Label for="inputComment" class="form-label" value="Comment"/>
                     <textarea class="form-control" id="inputComment" v-model="newFedCapForm.comment" rows="3"></textarea>
                 </div>
-
+            </div>
+            <div class="row g-3 mb-3">
                 <div v-if="newFedCapForm.errors != undefined" class="row">
                     <div class="col-12">
                         <div v-if="newFedCapForm.hasErrors == true" class="alert alert-danger mt-3">
@@ -94,6 +95,16 @@ export default {
     },
     methods: {
         submitForm: function () {
+            // Reset error messages
+            this.newFedCapForm.errors = [];
+            this.newFedCapForm.hasErrors = false;
+
+            // Making sur the value entered for Graduate Attest. is lower than Total Attest. value entered.
+            if (parseInt(this.newFedCapForm.total_reserved_graduate_attestations) >= parseInt(this.newFedCapForm.total_attestations)) {
+                this.newFedCapForm.errors.push('Value entered for "Total Reserved Graduate Attest. Allowed" must be lower than "Total Attest. Allowed" value.');
+                this.newFedCapForm.hasErrors = true;
+                return;
+            }
             let check = confirm('You are about to create a new Federal Cap. This will disable the active Federal Cap and all Institution/Program Caps associated with it. Are you sure you want to continue?');
             if(!check){
                 return false;
@@ -102,6 +113,8 @@ export default {
             this.newFedCapForm.formState = null;
             this.newFedCapForm.post('/ministry/fed_caps', {
                 onSuccess: (response) => {
+                    this.newFedCapForm.errors = [];
+                    this.newFedCapForm.hasErrors = false;
                     $("#newFedCapModal").modal('hide');
                     this.newFedCapForm.reset(this.newFedCapFormData);
                     this.$inertia.visit('/ministry/fed_caps/' + this.newFedCap.id);
