@@ -36,6 +36,7 @@ class CapStoreRequest extends FormRequest
             'end_date' => 'required|date_format:Y-m-d',
             'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric',
+            'total_reserved_graduate_attestations' => 'required|numeric|lte:total_attestations',
             'issued_attestations' => 'required|numeric',
             'draft_attestations' => 'required|numeric',
             'comment' => 'nullable',

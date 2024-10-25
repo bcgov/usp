@@ -66,6 +66,7 @@ class CapEditRequest extends FormRequest
             'end_date' => 'required|date_format:Y-m-d',
             'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric|gte:'.$noAttes,
+            'total_reserved_graduate_attestations' => 'required|numeric|lte:total_attestations',
             'comment' => 'nullable',
             'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
