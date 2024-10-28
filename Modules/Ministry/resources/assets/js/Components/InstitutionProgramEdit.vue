@@ -17,7 +17,6 @@
                 <div class="col-md-3">
                     <Label for="inputProgramGraduate" class="form-label" value="Grad./Undergrad. Program" />
                     <Select class="form-select" id="inputProgramGraduate" v-model="editForm.program_graduate">
-                        <option></option>
                         <option :value="true">Graduate</option>
                         <option :value="false">Undergraduate</option>
                     </Select>
@@ -153,6 +152,7 @@ export default {
                 id: "",
                 program_name: "",
                 program_type: "",
+                program_graduate: false,
                 credential: "",
                 total_duration_hrs: "",
                 total_duration_weeks: "",
