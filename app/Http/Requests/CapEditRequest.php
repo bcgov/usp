@@ -43,6 +43,11 @@ class CapEditRequest extends FormRequest
                 ->whereColumn('issued_attestations', '<', 'total_attestations')
                 ->get();
             $noAttes = Attestation::whereIn('cap_guid', $instCapGuids)->count();
+            // Reserved Graduate Attestations
+            $noResGradAttes = Attestation::whereIn('attestations.cap_guid', $instCapGuids)
+                ->join('programs', 'attestations.program_guid', '=', 'programs.guid')
+                ->where('programs.program_graduate', true)
+                ->count();
         }
 
         //if it's a program limit, the edited limit cannot be less than what's already issued of attestations for that program
@@ -66,7 +71,7 @@ class CapEditRequest extends FormRequest
             'end_date' => 'required|date_format:Y-m-d',
             'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric|gte:'.$noAttes,
-            'total_reserved_graduate_attestations' => 'required|numeric|lte:total_attestations',
+            'total_reserved_graduate_attestations' => 'required|numeric|gte:'.$noResGradAttes,
             'comment' => 'nullable',
             'external_comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
