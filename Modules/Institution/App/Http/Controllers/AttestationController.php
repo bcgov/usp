@@ -216,8 +216,16 @@ class AttestationController extends Controller
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
+
+            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $instCap->institution_guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->whereHas('program', function ($query) {
+                    $query->where('program_graduate', true);
+                })
+                ->count();
         }
-        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0]]);
+        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0, 'resGradIssued' => $issuedResGradInstAttestations ?? 0]]);
     }
 
 
@@ -248,8 +256,7 @@ class AttestationController extends Controller
 //        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
         $attestations = Attestation::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
-            ->whereNot('status', 'Cancelled Draft')
-            ->with('program');
+            ->whereNot('status', 'Cancelled Draft');
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
             $attestations = match (request()->filter_type) {
@@ -269,6 +276,9 @@ class AttestationController extends Controller
             $attestations = $attestations->orderBy('created_at', 'desc');
         }
 
-        return $attestations->with('institution.activeCaps', 'institution.programs')->paginate(25)->onEachSide(1)->appends(request()->query());
+        return $attestations->with([
+            'institution.activeCaps',
+            'institution.programs'
+        ])->paginate(25)->onEachSide(1)->appends(request()->query());
     }
 }

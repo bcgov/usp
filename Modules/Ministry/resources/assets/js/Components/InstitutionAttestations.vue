@@ -6,6 +6,9 @@
                 <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
                 <span class="badge rounded-pill text-bg-primary me-1">Issued PAL: {{ capStat.issued }}</span>
                 <span class="badge rounded-pill text-bg-primary me-1">Remaining PAL: {{ capStat.instCap.total_attestations - capStat.issued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Active Res. Grad. Cap Total: {{ capStat.instCap.total_reserved_graduate_attestations}}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Issued Res. Grad. PAL: {{ capStat.resGradIssued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Remaining Res. Grad. PAL: {{ capStat.instCap.total_reserved_graduate_attestations - capStat.resGradIssued  }}</span>
             </template>
 <!--            <button v-if="results.active_caps.length > 0" type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Attestation</button>-->
         </div>
