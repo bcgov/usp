@@ -40,6 +40,33 @@
                             <div class="card-body display-5 m-4">{{ issued }}</div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Total Res. Grad. Attestations Allowed
+                                </div>
+                                <div class="card-body display-5 m-4">{{ capResGradTotal }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Available Res. Grad. Attestations
+                                </div>
+                                <div class="card-body display-5 m-4">{{ capResGradTotal - issuedResGrad }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Issued Res. Grad. Attestations
+                                </div>
+                                <div class="card-body display-5 m-4">{{ issuedResGrad }}</div>
+                            </div>
+                        </div>
+                    </div>
 <!--                    <div class="col-md-6 mb-3">-->
 <!--                        <div class="card text-center">-->
 <!--                            <div class="card-header">-->
@@ -75,7 +102,9 @@ export default {
     props: {
         results: Object,
         capTotal: Object|Number|null,
-        issued: Object|Number|null
+        issued: Object|Number|null,
+        capResGradTotal: Object|Number|null,
+        issuedResGrad: Object|Number|null
     },
     data() {
         return {
