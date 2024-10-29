@@ -45,8 +45,7 @@ class AttestationController extends Controller
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
-//        $fedCap = FedCap::active()->first();
-
+        //        $fedCap = FedCap::active()->first();
 
         $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps')['default'])->active()
 //        $cap = Cap::where('fed_cap_guid', $fedCap->guid)->active()
@@ -121,12 +120,11 @@ class AttestationController extends Controller
             ->whereNot('status', 'Cancelled Draft')
             ->first();
 
-        if(is_null($check1)){
+        if (is_null($check1)) {
             $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
-        }
-        elseif(!is_null($check2)){
+        } elseif (! is_null($check2)) {
             $error = "There's already an attestation for the exact same user.";
-        }else{
+        } else {
             $cap = Cap::where('guid', $request->cap_guid)->first();
 
             Attestation::where('id', $request->id)->update($request->validated());
@@ -211,7 +209,7 @@ class AttestationController extends Controller
             ->where('program_guid', null)
             ->first();
 
-        if(!is_null($instCap)) {
+        if (! is_null($instCap)) {
             $issuedInstAttestations = Attestation::where('status', 'Issued')
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
@@ -225,9 +223,9 @@ class AttestationController extends Controller
                 })
                 ->count();
         }
+
         return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0, 'resGradIssued' => $issuedResGradInstAttestations ?? 0]]);
     }
-
 
     public function duplicateStudent(Request $request)
     {
@@ -240,7 +238,7 @@ class AttestationController extends Controller
             ->where('program_guid', null)
             ->first();
 
-        if(!is_null($instCap)) {
+        if (! is_null($instCap)) {
             $issuedInstAttestations = Attestation::where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->where('student_number', $request->input('student_number'))
@@ -253,7 +251,7 @@ class AttestationController extends Controller
 
     private function paginateAtte($institution)
     {
-//        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
+        //        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
         $attestations = Attestation::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
             ->whereNot('status', 'Cancelled Draft');
@@ -278,7 +276,7 @@ class AttestationController extends Controller
 
         return $attestations->with([
             'institution.activeCaps',
-            'institution.programs'
+            'institution.programs',
         ])->paginate(25)->onEachSide(1)->appends(request()->query());
     }
 }

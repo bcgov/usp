@@ -20,18 +20,19 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
-class AttestationController extends Controller {
-
+class AttestationController extends Controller
+{
     protected $countries;
 
     protected $institutions;
 
     protected $fedCaps;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->fedCaps = FedCap::active()->get();
         $this->countries = Country::select('name')
-            ->where('active', TRUE)
+            ->where('active', true)
             ->get();
         $this->institutions = Institution::whereHas('activeCaps')
             ->active()
@@ -42,22 +43,24 @@ class AttestationController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $attestations = $this->paginateAtte();
 
         return Inertia::render('Ministry::Attestations', [
-            'status' => TRUE,
+            'status' => true,
             'results' => $attestations,
             'institutions' => $this->institutions,
-            'countries' => $this->countries
+            'countries' => $this->countries,
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store($request): ?array {
-        $error = NULL;
+    public function store($request): ?array
+    {
+        $error = null;
         $inst = Institution::where('guid', $request->institution_guid)->first();
         //1. check for duplicate attestations
         $check1 = Attestation::where([
@@ -81,19 +84,19 @@ class AttestationController extends Controller {
         if (is_null($check1)) {
             $attestation = Attestation::create($request->validated());
             event(new AttestationIssued($attestation->cap, $attestation, $request->status));
-        }
-        else {
+        } else {
             $error = "There's already an attestation for the same user.";
         }
 
         return [$error, $inst];
     }
 
-    public function storeAttestations(AttestationStoreRequest $request, $page = NULL): RedirectResponse|\Illuminate\Routing\Redirector {
+    public function storeAttestations(AttestationStoreRequest $request, $page = null): RedirectResponse|\Illuminate\Routing\Redirector
+    {
         [$error, $inst] = $this->store($request);
 
         if ($page === 'institution') {
-            if (!is_null($error)) {
+            if (! is_null($error)) {
                 return redirect(route('ministry.institutions.show', [
                     $inst->id,
                     'attestations',
@@ -104,9 +107,8 @@ class AttestationController extends Controller {
                 $inst->id,
                 'attestations',
             ]));
-        }
-        else {
-            if (!is_null($error)) {
+        } else {
+            if (! is_null($error)) {
                 return redirect(route('ministry.attestations.index'))->withErrors(['first_name' => $error]);
             }
 
@@ -117,8 +119,9 @@ class AttestationController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    private function update(AttestationEditRequest $request): ?string {
-        $error = NULL;
+    private function update(AttestationEditRequest $request): ?string
+    {
+        $error = null;
 
         //1. update only draft attestations
         $check1 = Attestation::where('id', $request->id)
@@ -147,11 +150,9 @@ class AttestationController extends Controller {
 
         if (is_null($check1)) {
             $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
-        }
-        elseif (!is_null($check2)) {
+        } elseif (! is_null($check2)) {
             $error = "There's already an attestation for the exact same user.";
-        }
-        else {
+        } else {
             $cap = Cap::where('guid', $request->cap_guid)->first();
 
             Attestation::where('id', $request->id)
@@ -165,11 +166,12 @@ class AttestationController extends Controller {
         return $error;
     }
 
-    public function updateAttestations(AttestationEditRequest $request, $page = NULL): RedirectResponse|\Illuminate\Routing\Redirector {
+    public function updateAttestations(AttestationEditRequest $request, $page = null): RedirectResponse|\Illuminate\Routing\Redirector
+    {
         $error = $this->update($request);
         $att = Attestation::where('id', $request->id)->first();
         if ($page === 'institution') {
-            if (!is_null($error)) {
+            if (! is_null($error)) {
                 return redirect(route('ministry.institutions.show', [
                     $att->institution->id,
                     'attestations',
@@ -180,9 +182,8 @@ class AttestationController extends Controller {
                 $att->institution->id,
                 'attestations',
             ]));
-        }
-        else {
-            if (!is_null($error)) {
+        } else {
+            if (! is_null($error)) {
                 return redirect(route('ministry.attestations.index'))->withErrors(['first_name' => $error]);
             }
 
@@ -190,14 +191,16 @@ class AttestationController extends Controller {
         }
     }
 
-    public function rebuild(Request $request, Attestation $attestation) {
+    public function rebuild(Request $request, Attestation $attestation)
+    {
         $this->authorize('rebuild', $attestation);
         event(new AttestationRebuildPdf($attestation));
+
         return redirect(route('ministry.attestations.index'));
     }
 
-
-    public function download(Request $request, Attestation $attestation) {
+    public function download(Request $request, Attestation $attestation)
+    {
         $this->authorize('download', $attestation);
         $storedPdf = AttestationPdf::where('attestation_guid', $attestation->guid)
             ->first();
@@ -208,21 +211,22 @@ class AttestationController extends Controller {
             ->get_cpdf()
             ->setEncryption('', env('PDF_KEY'), ['print']);
 
-        return $pdf->download($attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf');
+        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
-    private function paginateAtte() {
+    private function paginateAtte()
+    {
         $attestations = Attestation::where('fed_cap_guid', Cache::get('global_fed_caps')['default']);
 
-        if (request()->filter_name !== NULL) {
-            $attestations = $attestations->where('first_name', 'ILIKE', '%' . request()->filter_name . '%')
-                ->orWhere('last_name', 'ILIKE', '%' . request()->filter_name . '%');
+        if (request()->filter_name !== null) {
+            $attestations = $attestations->where('first_name', 'ILIKE', '%'.request()->filter_name.'%')
+                ->orWhere('last_name', 'ILIKE', '%'.request()->filter_name.'%');
         }
-        if (request()->filter_pal !== NULL) {
+        if (request()->filter_pal !== null) {
             $attestations = $attestations->where('fed_guid', request()->filter_pal);
         }
         if (request()->filter_program) {
-            $attestations->whereHas('program', function($query) {
+            $attestations->whereHas('program', function ($query) {
                 $query->where('program_graduate', request()->filter_program === 'graduate');
             });
         }
@@ -230,21 +234,18 @@ class AttestationController extends Controller {
         if (request()->sort === 'program_graduate') {
             $attestations->join('programs', 'attestations.program_guid', '=', 'programs.guid')
                 ->orderBy('programs.program_graduate', request()->direction ?? 'asc');
-        }
-        elseif (request()->sort !== NULL) {
+        } elseif (request()->sort !== null) {
             $attestations = $attestations->orderBy(request()->sort, request()->direction);
-        }
-        else {
+        } else {
             $attestations = $attestations->orderBy('created_at', 'desc');
         }
 
         return $attestations->with([
             'institution.activeCaps',
             'institution.programs',
-            'program' => function($query) {
+            'program' => function ($query) {
                 $query->select('guid', 'program_name', 'program_graduate');
-            }
+            },
         ])->paginate(25)->onEachSide(1)->appends(request()->query());
     }
-
 }
