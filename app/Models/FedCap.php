@@ -9,7 +9,7 @@ class FedCap extends Model {
 
     use SoftDeletes;
 
-    protected $appends = ['remaining_cap'];
+    protected $appends = ['remaining_cap', 'remaining_reserved_graduate_cap'];
 
     /**
      * The attributes that are mass assignable.
@@ -58,6 +58,19 @@ class FedCap extends Model {
         }
 
         return $this->total_attestations - $total;
+    }
+
+    public function getRemainingReservedGraduateCapAttribute() {
+        $total = 0;
+        foreach ($this->caps as $cap) {
+            $total += $cap->total_reserved_graduate_attestations;
+        }
+
+        if ($total < 0) {
+            return $this->total_reserved_graduate_attestations + $total;
+        }
+
+        return $this->total_reserved_graduate_attestations - $total;
     }
 
     /**
