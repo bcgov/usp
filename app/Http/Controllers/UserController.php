@@ -98,8 +98,8 @@ class UserController extends Controller
                 // We got an access token, let's now get the user's details
                 $provider_user = $provider->getResourceOwner($token);
                 $provider_user = $provider_user->toArray();
-//                \Log::info('We got a token: '.$token);
-//                \Log::info('$provider_user: '.json_encode($provider_user));
+                \Log::info('We got a token: '.$token);
+                \Log::info('$provider_user: '.json_encode($provider_user));
             } catch (\Exception $e) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
@@ -117,6 +117,11 @@ class UserController extends Controller
             if ($type === Role::Institution_GUEST) {
                 $user = User::where('bceid_user_guid', 'ilike', $provider_user['bceid_user_guid'])->first();
                 $failMsg = 'Welcome back! Please contact Institution Admin to grant you access.';
+
+                // Added later to capture business name
+                if (!is_null($user) && is_null($user->bceid_business_name)) {
+                    $user->update(['bceid_business_name' => $provider_user['bceid_business_name']]);
+                }
             }
 
             //if it is a new IDIR or BCeID user, register the user first
@@ -137,7 +142,7 @@ class UserController extends Controller
                 }
 
                 //if the user has been disabled
-            } elseif ($user->disabled === true) {
+            } elseif (!is_null($user) && $user->disabled === true) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
                     'hasAccess' => false,
