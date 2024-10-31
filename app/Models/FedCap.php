@@ -53,10 +53,6 @@ class FedCap extends Model {
             $total += $cap->total_attestations;
         }
 
-        if ($total < 0) {
-            return $this->total_attestations + $total;
-        }
-
         return $this->total_attestations - $total;
     }
 
@@ -64,10 +60,6 @@ class FedCap extends Model {
         $total = 0;
         foreach ($this->caps as $cap) {
             $total += $cap->total_reserved_graduate_attestations;
-        }
-
-        if ($total < 0) {
-            return $this->total_reserved_graduate_attestations + $total;
         }
 
         return $this->total_reserved_graduate_attestations - $total;
