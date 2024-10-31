@@ -21,6 +21,16 @@
             </div>
         </div>
         <div class="row mb-3">
+            <BreezeLabel class="col-auto col-form-label" for="inputProgram" value="Type" />
+            <div class="col-12">
+                <select id="inputProgram" class="form-select" v-model="nameForm.filter_program">
+                    <option value="">All</option>
+                    <option value="graduate">Graduate</option>
+                    <option value="undergraduate">Undergraduate</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
             <div class="col-auto">
                 <BreezeButton class="btn btn-success" :class="{ 'opacity-25': nameForm.processing }" :disabled="nameForm.processing">
                     Search
@@ -48,6 +58,7 @@ let searchType = ref('byName');
 const nameFormTemplate = {
     filter_term: '',
     filter_type: 'snumber',
+    filter_program: '',
 };
 const nameForm = useForm(nameFormTemplate);
 const nameFormSubmit = () => {
