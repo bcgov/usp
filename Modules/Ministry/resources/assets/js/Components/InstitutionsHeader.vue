@@ -30,6 +30,15 @@
         <th scope="col" style="min-width: 100px;">
             Remaining
         </th>
+        <th scope="col" style="min-width: 100px;">
+            Res. Grad. Cap Total
+        </th>
+        <th scope="col" style="min-width: 100px;">
+            Res. Grad. Issued
+        </th>
+        <th scope="col" style="min-width: 100px;">
+            Res. Grad. Remaining
+        </th>
     </tr>
 </template>
 <script>
