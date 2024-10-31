@@ -25,6 +25,9 @@
             <span>Program</span>
         </th>
         <th scope="col" style="min-width: 100px;">
+            <span>Type</span>
+        </th>
+        <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('status')">
                 <span>Status</span>
                 <em v-if="sortClmn === 'status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>

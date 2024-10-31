@@ -3,18 +3,25 @@
         <div class="modal-body">
             <div class="row g-3">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputProgramName" class="form-label" value="Program Name" />
                     <Input type="text" class="form-control" id="inputProgramName" v-model="editForm.program_name" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputProgramType" class="form-label" value="Program Type" />
                     <Select class="form-select" id="inputProgramType" v-model="editForm.program_type">
                         <option></option>
                         <option v-for="stat in $attrs.utils['Program Type']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <Label for="inputProgramGraduate" class="form-label" value="Grad./Undergrad. Program" />
+                    <Select class="form-select" id="inputProgramGraduate" v-model="editForm.program_graduate">
+                        <option :value="true">Graduate</option>
+                        <option :value="false">Undergraduate</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
                     <Label for="inputCredential" class="form-label" value="Credential"/>
                     <Select class="form-select" id="inputCredential" v-model="editForm.credential">
                         <option></option>
@@ -145,6 +152,7 @@ export default {
                 id: "",
                 program_name: "",
                 program_type: "",
+                program_graduate: false,
                 credential: "",
                 total_duration_hrs: "",
                 total_duration_weeks: "",

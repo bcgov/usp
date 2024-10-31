@@ -1,15 +1,16 @@
 <template>
     <form v-if="editInstitutionCapForm != null" class="card-body" @submit.prevent="submitForm">
         <div class="modal-body">
-            <div class="row g-3">
-
-                <div class="col-md-4">
+            <div class="row g-3 mb-3">
+                <div class="col-md-12">
                     <Label for="inputSd" class="form-label" value="Federal Cap"/>
                     <Select @change="updateFedCap" class="form-select" id="inputSd" v-model="editInstitutionCapForm.fed_cap_guid">
                         <option></option>
                         <option v-for="f in fedCaps" :value="f.guid">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
+            </div>
+            <div class="row g-3 mb-3">
                 <div class="col-md-4">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editInstitutionCapForm.active_status">
@@ -26,6 +27,16 @@
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
                     </div>
                 </div>
+
+                <div class="col-md-4">
+                    <Label for="inputTotalAtte" class="form-label" value="Total Reserved Graduate Attest. Allowed"/>
+                    <div class="input-group mb-3">
+                        <Input type="number" class="form-control" id="inputTotalResGradAtte" aria-describedby="basic-inputTotalResGradAtte" @keyup="validateTotalResGrad" v-model="newInstitutionCapForm.total_reserved_graduate_attestations"/>
+                        <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_reserved_graduate_cap }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
                 <div v-if="allowProgramCap && activeInstCap !== null" class="col-md-12">
                     <Label for="inputProgram" class="form-label" value="Institution Program (optional)"/>
                     <Select class="form-select" id="inputProgram" v-model="editInstitutionCapForm.program_guid">
@@ -33,17 +44,20 @@
                         <option v-for="c in results.programs" :value="c.guid">{{ c.program_name}}</option>
                     </Select>
                 </div>
-
-
+            </div>
+            <div class="row g-3 mb-3">
                 <div class="col-12">
                     <Label for="inputComment" class="form-label" value="Comment"/>
                     <textarea class="form-control" id="inputComment" v-model="editInstitutionCapForm.comment" rows="3"></textarea>
                 </div>
+            </div>
+            <div class="row g-3 mb-3">
                 <div class="col-12">
                     <Label for="inputExternalComment" class="form-label" value="External Comment"/>
                     <textarea class="form-control" id="inputExternalComment" v-model="editInstitutionCapForm.external_comment" rows="3"></textarea>
                 </div>
-
+            </div>
+            <div class="row g-3 mb-3">
                 <div v-if="editInstitutionCapForm.errors != undefined" class="row">
                     <div class="col-12">
                         <div v-if="editInstitutionCapForm.hasErrors == true" class="alert alert-danger mt-3">
@@ -95,6 +109,7 @@ export default {
                 fed_cap_guid: "",
                 program_guid: "",
                 total_attestations: "",
+                total_reserved_graduate_attestations: "",
                 active_status: "",
                 comment: "",
                 external_comment: "",
@@ -108,6 +123,13 @@ export default {
             if(this.selectedFedCap !== ''){
                 if(parseInt(this.editInstitutionCapForm.total_attestations) > this.selectedFedCap.remaining_cap){
                     this.editInstitutionCapForm.total_attestations = this.selectedFedCap.remaining_cap;
+                }
+            }
+        },
+        validateTotalResGrad: function (){
+            if(this.selectedFedCap !== ''){
+                if(parseInt(this.newInstitutionCapForm.total_reserved_graduate_attestations) > this.selectedFedCap.remaining_reserved_graduate_cap){
+                    this.newInstitutionCapForm.total_reserved_graduate_attestations = this.selectedFedCap.remaining_reserved_graduate_cap;
                 }
             }
         },

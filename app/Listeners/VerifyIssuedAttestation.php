@@ -24,8 +24,14 @@ class VerifyIssuedAttestation
         $attestation = $event->attestation;
         $status = $event->status;
 
-        //do not restrict creating draft attestations
+        // Need to verify if this attestation is linked to a graduate or undergraduate program
+        if (!$attestation->relationLoaded('program')) {
+            $attestation->load('program');
+        }
 
+        $isProgramGraduate = $attestation->program->program_graduate ?? null;
+
+        //do not restrict creating draft attestations
         $instCap = Cap::where('institution_guid', $cap->institution_guid)
             ->active()
             ->where('program_guid', null)
@@ -43,6 +49,16 @@ class VerifyIssuedAttestation
             $issuedInstAttestations = Attestation::where('status', 'Issued')
                 ->where('institution_guid', $cap->institution_guid)
                 ->where('fed_cap_guid', $cap->fed_cap_guid)
+                ->count();
+
+            // If the attestation is linked to a reserved graduate program
+            // Get the inst cap and check if we have hit the cap for reserved graduate issued attestations
+            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $cap->institution_guid)
+                ->where('fed_cap_guid', $cap->fed_cap_guid)
+                ->whereHas('program', function ($query) {
+                    $query->where('program_graduate', true);
+                })
                 ->count();
 
             // If we hit or acceded the inst cap limit for issued attestations
@@ -63,12 +79,22 @@ class VerifyIssuedAttestation
                 $valid = false;
             }
 
+            // If we hit or acceded the reserved graduate inst cap limit for issued attestations
+            if ($issuedResGradInstAttestations > $instCap->total_reserved_graduate_attestations) {
+                \Log::info('3 $issuedResGradInstAttestations >= $instCap->total_reserved_graduate_attestations: '.$issuedResGradInstAttestations.' >= '.$instCap->total_reserved_graduate_attestations);
+                $valid = false;
+            }
+
             if ($attestation->gt_fifty_pct_in_person == false) {
                 $valid = false;
             }
 
             if ($valid) {
                 $cap->issued_attestations += 1;
+                // If it's an attestation linked to a Graduate Program
+                if ($isProgramGraduate) {
+                    $cap->issued_reserved_graduate_attestations += 1;
+                }
                 $attestation->issued_by_user_guid = Auth::user()->guid;
                 $attestation->issue_date = Carbon::now()->startOfDay();
                 $attestation->save();
@@ -77,11 +103,19 @@ class VerifyIssuedAttestation
                 $attestation->status = 'Draft';
                 $attestation->save();
                 $cap->draft_attestations += 1;
+                // If it's an attestation linked to a Graduate Program
+                if ($isProgramGraduate) {
+                    $cap->draft_reserved_graduate_attestations += 1;
+                }
             }
         } else {
             $attestation->status = 'Draft';
             $attestation->save();
             $cap->draft_attestations += 1;
+            // If it's an attestation linked to a Graduate Program
+            if ($isProgramGraduate) {
+                $cap->draft_reserved_graduate_attestations += 1;
+            }
         }
 
         $cap->save();

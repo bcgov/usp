@@ -72,6 +72,10 @@
                             <th scope="col">Total Issued</th>
                             <th scope="col">Total Draft</th>
                             <th scope="col">% Used</th>
+                            <th scope="col">PAL Res. Grad. Allocation</th>
+                            <th scope="col">Total Res. Grad. Issued</th>
+                            <th scope="col">Total Res. Grad. Draft</th>
+                            <th scope="col">% Res. Grad. Used</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -81,6 +85,10 @@
                             <td><strong>{{ filteredReport.publicReport.issued }}</strong></td>
                             <td><strong>{{ filteredReport.publicReport.draft }}</strong></td>
                             <td><strong>{{ roundIt(filteredReport.publicReport) }}%</strong></td>
+                            <td><strong>{{ filteredReport.publicReport.total_res_grad }}</strong></td>
+                            <td><strong>{{ filteredReport.publicReport.issued_res_grad }}</strong></td>
+                            <td><strong>{{ filteredReport.publicReport.draft_res_grad }}</strong></td>
+                            <td><strong>{{ roundResGradIt(filteredReport.publicReport) }}%</strong></td>
 
                         </tr>
                         <template v-for="(value, name, index) in filteredReport.publicReport">
@@ -91,6 +99,10 @@
                                     <td><strong>{{ value.issued }}</strong></td>
                                     <td><strong>{{ value.draft }}</strong></td>
                                     <td><strong>{{ (value.issued / value.total * 100).toFixed(2) }}%</strong></td>
+                                    <td><strong>{{ value.total_res_grad }}</strong></td>
+                                    <td><strong>{{ value.issued_res_grad}}</strong></td>
+                                    <td><strong>{{ value.draft_res_grad }}</strong></td>
+                                    <td><strong>{{ (value.issued_res_grad / value.total_res_grad * 100).toFixed(2) }}%</strong></td>
                                 </tr>
                                 <tr v-for="(row, k, i) in value.instList">
                                     <td>&nbsp;&nbsp;{{ k }}</td>
@@ -98,9 +110,17 @@
                                     <td>{{ row.issued }}</td>
                                     <td>{{ row.draft }}</td>
                                     <td>{{ roundIt(row) }}%</td>
+                                    <td>{{ row.total_res_grad }}</td>
+                                    <td>{{ row.issued_res_grad }}</td>
+                                    <td>{{ row.draft_res_grad }}</td>
+                                    <td>{{ roundResGradIt(row) }}%</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -117,6 +137,10 @@
                             <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                         </tfoot>
 
@@ -127,6 +151,10 @@
                             <td><strong>{{ filteredReport.privateReport.issued }}</strong></td>
                             <td><strong>{{ filteredReport.privateReport.draft }}</strong></td>
                             <td><strong>{{ roundIt(filteredReport.privateReport) }}%</strong></td>
+                            <td><strong>{{ filteredReport.privateReport.total_res_grad }}</strong></td>
+                            <td><strong>{{ filteredReport.privateReport.issued_res_grad }}</strong></td>
+                            <td><strong>{{ filteredReport.privateReport.draft_res_grad }}</strong></td>
+                            <td><strong>{{ roundResGradIt(filteredReport.privateReport) }}%</strong></td>
 
                         </tr>
                         <template v-for="(value, name, index) in filteredReport.privateReport">
@@ -137,6 +165,10 @@
                                     <td><strong>{{ value.issued }}</strong></td>
                                     <td><strong>{{ value.draft }}</strong></td>
                                     <td><strong>{{ roundIt(value) }}%</strong></td>
+                                    <td><strong>{{ value.total_res_grad }}</strong></td>
+                                    <td><strong>{{ value.issued_res_grad  }}</strong></td>
+                                    <td><strong>{{ value.draft_res_grad  }}</strong></td>
+                                    <td><strong>{{ roundResGradIt(value) }}%</strong></td>
                                 </tr>
                                 <tr v-for="(row, k, i) in value.instList">
                                     <td>&nbsp;&nbsp;{{ k }}</td>
@@ -144,9 +176,17 @@
                                     <td>{{ row.issued }}</td>
                                     <td>{{ row.draft }}</td>
                                     <td>{{ roundIt(row) }}%</td>
+                                    <td>{{ row.total_res_grad  }}</td>
+                                    <td>{{ row.issued_res_grad  }}</td>
+                                    <td>{{ row.draft_res_grad  }}</td>
+                                    <td>{{ roundResGradIt(row) }}%</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -164,6 +204,10 @@
                             <th scope="col">{{ filteredReport.publicReport.issued + filteredReport.privateReport.issued }}</th>
                             <th scope="col">{{ filteredReport.publicReport.draft + filteredReport.privateReport.draft }}</th>
                             <th scope="col">{{ roundGrandTotal(filteredReport.publicReport, filteredReport.privateReport) }}%</th>
+                            <th scope="col">{{ filteredReport.publicReport.total_res_grad + filteredReport.privateReport.total_res_grad }}</th>
+                            <th scope="col">{{ filteredReport.publicReport.issued_res_grad + filteredReport.privateReport.issued_res_grad }}</th>
+                            <th scope="col">{{ filteredReport.publicReport.draft_res_grad + filteredReport.privateReport.draft_res_grad }}</th>
+                            <th scope="col">{{ roundResGradGrandTotal(filteredReport.publicReport, filteredReport.privateReport) }}%</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -209,9 +253,19 @@ export default {
             if(report.total === 0) return 0;
             return (report.issued / report.total * 100).toFixed(2);
         },
+        roundResGradIt: function (report) {
+            if(report.total_res_grad === 0) return 0;
+            return (report.issued_res_grad / report.total_res_grad * 100).toFixed(2);
+        },
         roundGrandTotal: function (publicReport, privateReport) {
             let total = publicReport.total + privateReport.total;
             let issued = publicReport.issued + privateReport.issued;
+            if(total.total === 0) return 0;
+            return (issued / total * 100).toFixed(2);
+        },
+        roundResGradGrandTotal: function (publicReport, privateReport) {
+            let total = publicReport.total_res_grad + privateReport.total_res_grad;
+            let issued = publicReport.issued_res_grad + privateReport.issued_res_grad;
             if(total.total === 0) return 0;
             return (issued / total * 100).toFixed(2);
         },

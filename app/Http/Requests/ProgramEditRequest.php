@@ -30,6 +30,7 @@ class ProgramEditRequest extends FormRequest
             'institution_guid' => 'required|exists:institutions,guid',
             'program_name' => 'required',
             'program_type' => 'required',
+            'program_graduate' => 'boolean',
             'credential' => 'required',
             'total_duration_hrs' => 'nullable|numeric',
             'total_duration_weeks' => 'nullable|numeric',
@@ -60,6 +61,7 @@ class ProgramEditRequest extends FormRequest
             'delivery_distance' => isset($this->delivery_distance) ? $this->toBoolean($this->delivery_distance) : null,
             'delivery_in_class' => isset($this->delivery_in_class) ? $this->toBoolean($this->delivery_in_class) : null,
             'work_experience_required' => isset($this->work_experience_required) ? $this->toBoolean($this->work_experience_required) : null,
+            'program_graduate' => isset($this->program_graduate) ? $this->toBoolean($this->program_graduate) : false,
 
             'last_touch_by_user_guid' => $this->user()->guid,
         ]);

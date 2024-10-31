@@ -29,6 +29,7 @@ class FedCapStoreRequest extends FormRequest
             'end_date' => 'required|date_format:Y-m-d|unique:fed_caps,end_date',
             'status' => 'required|in:Active,Completed,Cancelled',
             'total_attestations' => 'required|numeric',
+            'total_reserved_graduate_attestations' => 'required|numeric|lte:total_attestations',
             'comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];

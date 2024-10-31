@@ -25,6 +25,13 @@
             <span>Institution</span>
         </th>
         <th scope="col" style="min-width: 100px;">
+            <a href="#" @click="switchSort('program_graduate')">
+                <span>Program</span>
+                <em v-if="sortClmn === 'program_graduate' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-else class="bi bi-sort-alpha-down"></em>
+            </a>
+        </th>
+        <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('status')">
                 <span>Status</span>
                 <em v-if="sortClmn === 'status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
