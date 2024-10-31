@@ -57,7 +57,38 @@ class AttestationController extends Controller
 
         $attestations = $this->paginateAtte($user->institution);
 
-        return Inertia::render('Institution::Attestations', ['error' => null, 'results' => $attestations,
+        // Display a warning message to users if the institution has reached a cap.
+        $warning_message = '';
+
+        // Get the inst cap and check if we have hit the cap for issued attestations
+        // This is going to be all attes. under this inst. and are using the same fed cap as this.
+        $issued_attestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $cap->institution_guid)
+            ->where('fed_cap_guid', $cap->fed_cap_guid)
+            ->count();
+
+        // If the attestation is linked to a reserved graduate program
+        // Get the inst cap and check if we have hit the cap for reserved graduate issued attestations
+        $issued_res_grad_attestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $cap->institution_guid)
+            ->where('fed_cap_guid', $cap->fed_cap_guid)
+            ->whereHas('program', function ($query) {
+                $query->where('program_graduate', true);
+            })
+            ->count();
+
+        // If we hit or acceded the reserved graduate inst cap limit for issued attestations
+        if ($issued_res_grad_attestations >= $cap->total_reserved_graduate_attestations) {
+            $warning_message = "Your institution has reached the maximum reserved graduate attestations cap. You can't issue a new attestation linked to a graduate program or it will be automatically converted as a Draft.";
+        }
+        elseif ($issued_attestations >= $cap->total_attestations) {
+            $warning_message = "Your institution has reached the maximum attestations cap. You can't issue a new attestation or it will be automatically converted as a Draft.";
+        }
+
+        return Inertia::render('Institution::Attestations', [
+            'error' => null,
+            'warning' => $warning_message,
+            'results' => $attestations,
             'institution' => $user->institution,
             'programs' => $user->institution->activePrograms, 'countries' => $this->countries,
             'instCaps' => $user->institution->activeInstCaps,
@@ -86,7 +117,6 @@ class AttestationController extends Controller
             $attestation = Attestation::create($request->validated());
             $this->authorize('download', $attestation);
             event(new AttestationIssued($attestation->cap, $attestation, $request->status));
-
         } else {
             $error = "There's already an attestation for the same user.";
         }
@@ -274,9 +304,18 @@ class AttestationController extends Controller
             $attestations = $attestations->orderBy('created_at', 'desc');
         }
 
+        if (request()->filter_program) {
+            $attestations->whereHas('program', function ($query) {
+                $query->where('program_graduate', request()->filter_program === 'graduate');
+            });
+        }
+
         return $attestations->with([
             'institution.activeCaps',
             'institution.programs',
+            'program' => function ($query) {
+                $query->select('guid', 'program_name', 'program_graduate');
+            },
         ])->paginate(25)->onEachSide(1)->appends(request()->query());
     }
 }

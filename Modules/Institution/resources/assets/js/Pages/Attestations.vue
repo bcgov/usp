@@ -49,6 +49,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                <div v-if="warning" class="alert alert-warning mt-3">
+                                    {{ warning }}
+                                </div>
                                 <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">
                                     <table class="table table-striped">
                                         <thead>
@@ -63,8 +66,8 @@
                                             </td>
                                             <td>{{ row.first_name }}</td>
                                             <td>{{ row.student_number }}</td>
-                                            <td><span v-if="row.program !== null">{{ row.program.program_name }}</span>
-                                            </td>
+                                            <td><span v-if="row.program !== null">{{ row.program.program_name }}</span></td>
+                                            <td>{{ row.program && row.program.program_graduate ? 'Graduate' : 'Undergraduate' }}</td>
                                             <td>
                                                 <div>
                                                     <span v-if="row.status === 'Issued'"
@@ -171,7 +174,8 @@ export default {
         error: String | null,
         instCaps: Object | null,
         programCaps: Object | null,
-        instCap: Object
+        instCap: Object,
+        warning: String | null,
     },
     data() {
         return {
