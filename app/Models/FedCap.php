@@ -48,19 +48,13 @@ class FedCap extends Model {
     }
 
     public function getRemainingCapAttribute() {
-        $total = 0;
-        foreach ($this->caps as $cap) {
-            $total += $cap->total_attestations;
-        }
+        $total = $this->caps->sum('total_attestations');
 
         return $this->total_attestations - $total;
     }
 
     public function getRemainingReservedGraduateCapAttribute() {
-        $total = 0;
-        foreach ($this->caps as $cap) {
-            $total += $cap->total_reserved_graduate_attestations;
-        }
+        $total = $this->caps->sum('total_reserved_graduate_attestations');
 
         return $this->total_reserved_graduate_attestations - $total;
     }
