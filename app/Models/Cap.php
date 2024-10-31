@@ -10,16 +10,33 @@ class Cap extends Model
 {
     use SoftDeletes;
 
-    protected $appends = ['inst_active_cap_stat'];
+    protected $appends = ['inst_active_cap_stat', 'inst_active_res_grad_cap_stat'];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = ['guid', 'fed_cap_guid', 'institution_guid', 'program_guid', 'start_date', 'end_date',
-        'total_attestations', 'status', 'comment', 'external_comment', 'last_touch_by_user_guid', 'parent_cap_guid',
-        'issued_attestations', 'draft_attestations', 'confirmed', ];
+    protected $fillable = [
+        'guid',
+        'fed_cap_guid',
+        'institution_guid',
+        'program_guid',
+        'start_date',
+        'end_date',
+        'total_attestations',
+        'total_reserved_graduate_attestations',
+        'status',
+        'comment',
+        'external_comment',
+        'last_touch_by_user_guid',
+        'parent_cap_guid',
+        'issued_attestations',
+        'issued_reserved_graduate_attestations',
+        'draft_attestations',
+        'draft_reserved_graduate_attestations',
+        'confirmed',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -62,9 +79,10 @@ class Cap extends Model
     public function scopeSelectedFedcap($query)
     {
         $guid = Cache::get('global_fed_caps');
-        if(is_null($guid)) {
+        if (is_null($guid)) {
             return $query;
         }
+
         return $query->where('fed_cap_guid', $guid['default']);
     }
 
@@ -85,7 +103,27 @@ class Cap extends Model
             ->where('fed_cap_guid', $this->fed_cap_guid)
             ->count();
 
-        return ['total' => $this->total_attestations, 'issued' => $issuedInstAttestations,
-            'remain' => $this->total_attestations - $issuedInstAttestations];
+        return [
+            'total' => $this->total_attestations,
+            'issued' => $issuedInstAttestations,
+            'remain' => $this->total_attestations - $issuedInstAttestations,
+        ];
+    }
+
+    public function getInstActiveResGradCapStatAttribute()
+    {
+        $issuedInstResGradAttestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $this->institution_guid)
+            ->where('fed_cap_guid', $this->fed_cap_guid)
+            ->whereHas('program', function ($query) {
+                $query->where('program_graduate', true);
+            })
+            ->count();
+
+        return [
+            'total_reserved_graduate' => $this->total_reserved_graduate_attestations,
+            'issued_reserved_graduate' => $issuedInstResGradAttestations,
+            'remain_reserved_graduate' => $this->total_reserved_graduate_attestations - $issuedInstResGradAttestations,
+        ];
     }
 }

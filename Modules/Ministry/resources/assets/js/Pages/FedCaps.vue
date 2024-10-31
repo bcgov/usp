@@ -37,6 +37,7 @@
                                             <td><Link :href="'/ministry/fed_caps/' + row.id">{{ row.start_date }}</Link></td>
                                             <td>{{ row.end_date }}</td>
                                             <td>{{ row.total_attestations}}</td>
+                                            <td>{{ row.total_reserved_graduate_attestations}}</td>
                                             <td>
                                                 <span v-if="row.status === 'Active'" class="badge rounded-pill text-bg-success">Active</span>
                                                 <span v-if="row.status === 'Completed'" class="badge rounded-pill text-bg-primary">Completed</span>

@@ -33,6 +33,7 @@
                                             <td>{{ row.first_name }}</td>
                                             <td>{{ row.student_number }}</td>
                                             <td><Link :href="'/ministry/institutions/' + row.institution.id">{{ row.institution.name }}</Link></td>
+                                            <td>{{ row.program && row.program.program_graduate ? 'Graduate' : 'Undergraduate' }}</td>
                                             <td>
                                                 <div>
                                                     <span v-if="row.status === 'Issued'" class="badge rounded-pill text-bg-success">Issued</span>

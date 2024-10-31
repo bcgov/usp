@@ -97,7 +97,16 @@ class CapController extends Controller
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
+
+            // Reserved Graduate Attestations issued
+            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $instCap->institution_guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->whereHas('program', function ($query) {
+                    $query->where('program_graduate', true);
+                })
+                ->count();
         }
-        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0]]);
+        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0, 'resGradIssued' => $issuedResGradInstAttestations ?? 0]]);
     }
 }
