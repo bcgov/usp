@@ -255,6 +255,9 @@ class MaintenanceController extends Controller
                 'caps.total_attestations',
                 'caps.issued_attestations',
                 'caps.draft_attestations',
+                'caps.total_reserved_graduate_attestations',
+                'caps.issued_reserved_graduate_attestations',
+                'caps.draft_reserved_graduate_attestations',
                 'caps.active_status',
                 'institutions.guid as institution_guid',
                 'institutions.name',
@@ -265,6 +268,7 @@ class MaintenanceController extends Controller
                 'fed_caps.start_date',
                 'fed_caps.end_date',
                 'fed_caps.total_attestations as fc_total_attestations',
+                'fed_caps.total_reserved_graduate_attestations as fc_total_reserved_graduate_attestations',
                 'fed_caps.status'
             )
                 ->join('institutions', 'institutions.guid', '=', 'caps.institution_guid')
@@ -355,8 +359,8 @@ class MaintenanceController extends Controller
         $fromDate = $request->from_date;
         $toDate = $request->to_date . " 23:59:59";
 
-        $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
-        $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
+        $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0, 'total_res_grad' => 0, 'issued_res_grad' => 0, 'draft_res_grad' => 0];
+        $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0, 'total_res_grad' => 0, 'issued_res_grad' => 0, 'draft_res_grad' => 0];
 
         // Fetch institutions with active attestations
         $institutions = Institution::with(['activeCaps.attestations'])->get();
@@ -398,23 +402,31 @@ class MaintenanceController extends Controller
     private function addInstToReport($inst, &$report)
     {
         if (!isset($report[$inst->category])) {
-            $report[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+            $report[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0, 'total_res_grad' => 0, 'issued_res_grad' => 0, 'draft_res_grad' => 0];
         }
 
         $total = is_null($inst->activeCaps->first()) ? 0 : $inst->activeCaps->first()->total_attestations;
+        $total_res_grad = is_null($inst->activeCaps->first()) ? 0 : $inst->activeCaps->first()->total_reserved_graduate_attestations;
         $report[$inst->category]['instList'][$inst->name] = [
             'total' => $total,
             'issued' => 0,
-            'draft' => 0
+            'draft' => 0,
+            'total_res_grad' => $total_res_grad,
+            'issued_res_grad' => 0,
+            'draft_res_grad' => 0
         ];
 
         $report[$inst->category]['total'] += $total;
         $report['total'] += $total;
+
+        $report[$inst->category]['total_res_grad'] += $total_res_grad;
+        $report['total_res_grad'] += $total_res_grad;
     }
 
     private function updateReport($att, &$report)
     {
         $inst = $att->institution;
+        $prog = $att->program;
         $instName = $inst->name;
         $status = ($att->status === 'Issued') ? 'issued' : 'draft';
 
@@ -425,6 +437,12 @@ class MaintenanceController extends Controller
         $report[$inst->category]['instList'][$instName][$status]++;
         $report[$inst->category][$status]++;
         $report[$status]++;
+
+        if ($prog->program_graduate) {
+            $report[$inst->category]['instList'][$instName][$status.'_res_grad']++;
+            $report[$inst->category][$status.'_res_grad']++;
+            $report[$status.'_res_grad']++;
+        }
     }
 
     private function getReportType($category)
@@ -444,8 +462,8 @@ class MaintenanceController extends Controller
         $institutions = Institution::with(['activeCaps.attestations'])->whereHas('activeCaps')->get();
 
         // Initialize report arrays
-        $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
-        $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
+        $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0, 'total_res_grad' => 0, 'issued_res_grad' => 0, 'draft_res_grad' => 0];
+        $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0, 'total_res_grad' => 0, 'issued_res_grad' => 0, 'draft_res_grad' => 0];
 
         // Add missing institutions that have not issued any attestation
         foreach ($institutions as $inst) {
@@ -459,7 +477,7 @@ class MaintenanceController extends Controller
         }
 
         // Fetch attestations within the specified date range
-        $results = Attestation::with('institution')->whereBetween('created_at', [$fromDate, $toDate])->get();
+        $results = Attestation::with('institution', 'program')->whereBetween('created_at', [$fromDate, $toDate])->get();
 
         // Update report based on fetched attestations
         foreach ($results as $att) {
