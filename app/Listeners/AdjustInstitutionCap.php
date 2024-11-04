@@ -97,7 +97,6 @@ class AdjustInstitutionCap
         }
 
         // Same process but for the Reserved Graduate Attestations
-        // Get the federal cap for Reserved Graduate Attestations and check if we have hit the cap for issued attestations
         $issuedResGradAttestations = Attestation::where('status', 'Issued')
             ->where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $cap->fed_cap_guid)
@@ -105,26 +104,25 @@ class AdjustInstitutionCap
                 $query->where('program_graduate', true);
             })
             ->count();
-        \Log::info('9 $issuedAttestations: '.$issuedResGradAttestations);
+        \Log::info('9 $issuedResGradAttestations: '.$issuedResGradAttestations);
 
-        // If we hit or acceded the fed cap limit for issued reserved graduate attestations
-        if ($issuedResGradAttestations >= $cap->fedCap->total_reserved_graduate_attestations) {
-            \Log::info('10 $issuedResGradAttestations >= $cap->fedCap->total_reserved_graduate_attestations: '.$issuedResGradAttestations.'>='.$cap->fedCap->total_reserved_graduate_attestations);
-            $cap->total_reserved_graduate_attestations = 0;
+        // The new value for Total Reserved Graduate Attest. Allowed can't be higher than the value for Total Attest. Allowed
+        if ($cap->total_reserved_graduate_attestations > $cap->total_attestations) {
+            \Log::info('10.1 $cap->total_reserved_graduate_attestations > $cap->total_attestations: '.$cap->total_reserved_graduate_attestations.'>='.$cap->total_attestations);
+            $cap->total_reserved_graduate_attestations = $cap->total_attestations;
+        }
+        // The new value for Total Reserved Graduate Attest. Allowed can't be lower than the total of grad. attestations already issues
+        elseif ($cap->total_reserved_graduate_attestations < $issuedResGradAttestations) {
+            \Log::info('10.2 $cap->total_reserved_graduate_attestations < $issuedResGradAttestations: '.$cap->total_reserved_graduate_attestations.'<'.$issuedResGradAttestations);
+            $cap->total_reserved_graduate_attestations = $issuedResGradAttestations;
         }
 
-        // The fed cap for reserved graduate attestations is not reached
-        else {
-            // How much of the fed cap is left
-            $remainderResGradFedCap = $cap->fedCap->total_reserved_graduate_attestations - $issuedResGradAttestations;
-            \Log::info('11 $remainderResGradFedCap: '.$remainderResGradFedCap);
-
-            // If the new cap is gt $remainderResGradFedCap then set it to match
-            if ($cap->total_reserved_graduate_attestations >= $remainderResGradFedCap) {
-                \Log::info('11.0 $cap->total_reserved_graduate_attestations >= $remainderResGradFedCap: '.$cap->total_reserved_graduate_attestations.'>='.$remainderResGradFedCap);
-                \Log::info('11.1 $cap->total_reserved_graduate_attestations >= $remainderResGradFedCap: $cap->total_reserved_graduate_attestations='.$cap->total_reserved_graduate_attestations);
-                $cap->total_reserved_graduate_attestations = $remainderResGradFedCap;
-            }
+        $issuedUndergradAttestations = $issuedAttestations - $issuedResGradAttestations;
+        $maxResGradAttestations = $cap->total_attestations - $issuedUndergradAttestations;
+        // Last chek, making sure that the new value for the Total Reserved Graduate Attest. doesn't go over the remaining number of Grad. Attes.
+        if ($cap->total_reserved_graduate_attestations > $maxResGradAttestations) {
+            \Log::info('10.3 $cap->total_reserved_graduate_attestations > $maxResGradAttestations: '.$cap->total_reserved_graduate_attestations.'>'.$maxResGradAttestations);
+            $cap->total_reserved_graduate_attestations = $maxResGradAttestations;
         }
 
         $cap->save();

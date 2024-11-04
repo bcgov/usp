@@ -4,11 +4,11 @@
             Attestations
             <template v-if="capStat != '' && capStat.instCap != null">
                 <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations}}</span>
-                <span class="badge rounded-pill text-bg-primary me-1">Issued PAL: {{ capStat.issued }}</span>
-                <span class="badge rounded-pill text-bg-primary me-1">Remaining PAL: {{ capStat.instCap.total_attestations - capStat.issued }}</span>
-                <span class="badge rounded-pill text-bg-primary me-1">Active Res. Grad. Cap Total: {{ capStat.instCap.total_reserved_graduate_attestations}}</span>
-                <span class="badge rounded-pill text-bg-primary me-1">Issued Res. Grad. PAL: {{ capStat.resGradIssued }}</span>
-                <span class="badge rounded-pill text-bg-primary me-1">Remaining Res. Grad. PAL: {{ capStat.instCap.total_reserved_graduate_attestations - capStat.resGradIssued  }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Total Issued PAL: {{ capStat.issued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Total Remaining PAL: {{ capStat.instCap.total_attestations - capStat.issued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Issued Grad. PAL: {{ capStat.resGradIssued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Issued Undergrad. PAL: {{ capStat.issued - capStat.resGradIssued }}</span>
+                <span class="badge rounded-pill text-bg-primary me-1">Remaining Undergrad. PAL: {{ capStat.remainingUndergrad }}</span>
             </template>
 <!--            <button v-if="results.active_caps.length > 0" type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Attestation</button>-->
         </div>

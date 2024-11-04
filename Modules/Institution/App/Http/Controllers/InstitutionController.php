@@ -3,6 +3,7 @@
 namespace Modules\Institution\App\Http\Controllers;
 
 use App\Events\StaffRoleChanged;
+use App\Facades\InstitutionFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionStaffEditRequest;
 use App\Models\Attestation;
@@ -33,7 +34,6 @@ class InstitutionController extends Controller
             ->first();
 
         $capTotal = 0;
-        $capResGradTotal = 0;
 
         if (! is_null($instCap)) {
             $capTotal = $instCap->total_attestations;
@@ -42,8 +42,7 @@ class InstitutionController extends Controller
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
 
-            // Total for Reserved Graduate cap and attestations
-            $capResGradTotal = $instCap->total_reserved_graduate_attestations;
+            // Total for Grad3. attestations
             $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
                 ->where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
@@ -51,13 +50,16 @@ class InstitutionController extends Controller
                     $query->where('program_graduate', true);
                 })
                 ->count();
+
+            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $instCap);
         }
 
         return Inertia::render('Institution::Dashboard', [
             'results' => $institution,
             'capTotal' => $capTotal,
             'issued' => $issuedInstAttestations,
-            'capResGradTotal' => $capResGradTotal,
+            'issuedUndegrad' => $instituionAttestationsDetails['issuedUndegrad'] ?? 0,
+            'undergradRemaining' => $instituionAttestationsDetails['undergradRemaining'] ?? 0,
             'issuedResGrad' => $issuedResGradInstAttestations,
         ]);
     }
