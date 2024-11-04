@@ -76,8 +76,8 @@ class CapStoreRequest extends FormRequest
             'last_touch_by_user_guid' => $this->user()->guid,
             'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
                 $fedCap->total_attestations : $this->total_attestations),
-            'total_reserved_graduate_attestations' => ($this->total_reserved_graduate_attestations > $fedCap->total_reserved_graduate_attestations ?
-                $fedCap->total_reserved_graduate_attestations : $this->total_reserved_graduate_attestations),
+            'total_reserved_graduate_attestations' => ($this->total_reserved_graduate_attestations > $this->total_attestations ?
+                $this->total_attestations : $this->total_reserved_graduate_attestations),
             'issued_attestations' => 0,
             'draft_attestations' => 0,
             'issued_reserved_graduate_attestations' => 0,

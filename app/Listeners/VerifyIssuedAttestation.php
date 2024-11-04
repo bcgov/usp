@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\AttestationIssued;
 use App\Events\TrackerTriggered;
+use App\Facades\InstitutionFacade;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
@@ -52,7 +53,6 @@ class VerifyIssuedAttestation
                 ->count();
 
             // If the attestation is linked to a reserved graduate program
-            // Get the inst cap and check if we have hit the cap for reserved graduate issued attestations
             $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
                 ->where('institution_guid', $cap->institution_guid)
                 ->where('fed_cap_guid', $cap->fed_cap_guid)
@@ -61,9 +61,11 @@ class VerifyIssuedAttestation
                 })
                 ->count();
 
+            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $cap);
+
             // If we hit or acceded the inst cap limit for issued attestations
             if ($issuedInstAttestations > $instCap->total_attestations) {
-                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
+                \Log::info('1 $issuedAttestations > $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
@@ -75,13 +77,13 @@ class VerifyIssuedAttestation
 
             // If we hit or acceded the inst cap limit for issued attestations
             if ($issuedProgAttestations > $cap->total_attestations) {
-                \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: '.$issuedProgAttestations.' >= '.$instCap->total_attestations);
+                \Log::info('2 $issuedProgAttestations > $instCap->total_attestations: '.$issuedProgAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
-            // If we hit or acceded the reserved graduate inst cap limit for issued attestations
-            if ($issuedResGradInstAttestations > $instCap->total_reserved_graduate_attestations) {
-                \Log::info('3 $issuedResGradInstAttestations >= $instCap->total_reserved_graduate_attestations: '.$issuedResGradInstAttestations.' >= '.$instCap->total_reserved_graduate_attestations);
+            // If we hit or acceded the limit for Undergrad issued attestations
+            if (!$isProgramGraduate && ($instituionAttestationsDetails['undergradRemaining']) === -1) {
+                \Log::info('3  $instituionAttestationsDetails[\'undergradRemaining\'] === -1');
                 $valid = false;
             }
 

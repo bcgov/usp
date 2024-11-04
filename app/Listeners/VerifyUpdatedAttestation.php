@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\AttestationDraftUpdated;
 use App\Events\TrackerTriggered;
+use App\Facades\InstitutionFacade;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
@@ -66,6 +67,8 @@ class VerifyUpdatedAttestation
                 })
                 ->count();
 
+            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $cap);
+
             // If we hit or acceded the inst cap limit for issued attestations
             if ($issuedInstAttestations > $instCap->total_attestations) {
                 \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
@@ -84,9 +87,9 @@ class VerifyUpdatedAttestation
                 $valid = false;
             }
 
-            // If we hit or acceded the reserved graduate inst cap limit for issued attestations
-            if ($issuedResGradInstAttestations > $instCap->total_reserved_graduate_attestations) {
-                \Log::info('3 $issuedResGradInstAttestations >= $instCap->total_reserved_graduate_attestations: '.$issuedResGradInstAttestations.' >= '.$instCap->total_reserved_graduate_attestations);
+            // If we hit or acceded the limit for Undergrad issued attestations
+            if (!$isProgramGraduate && ($instituionAttestationsDetails['undergradRemaining']) === -1) {
+                \Log::info('3  $instituionAttestationsDetails[\'undergradRemaining\'] === -1');
                 $valid = false;
             }
 

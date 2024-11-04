@@ -42,11 +42,11 @@
                                             </td>
                                             <template v-if="row.active_caps.length > 0">
                                                 <td>{{row.active_caps[0].inst_active_cap_stat.total}}</td>
+                                                <td>{{row.active_caps[0].inst_active_res_grad_cap_stat.total_reserved_graduate}}</td>
                                                 <td>{{row.active_caps[0].inst_active_cap_stat.issued}}</td>
                                                 <td>{{row.active_caps[0].inst_active_cap_stat.remain}}</td>
-                                                <td>{{row.active_caps[0].inst_active_res_grad_cap_stat.total_reserved_graduate}}</td>
                                                 <td>{{row.active_caps[0].inst_active_res_grad_cap_stat.issued_reserved_graduate}}</td>
-                                                <td>{{row.active_caps[0].inst_active_res_grad_cap_stat.remain_reserved_graduate}}</td>
+                                                <td>{{row.active_caps[0].inst_active_cap_stat.issued - row.active_caps[0].inst_active_res_grad_cap_stat.issued_reserved_graduate}}</td>
                                             </template>
                                             <template v-else>
                                                 <td></td>

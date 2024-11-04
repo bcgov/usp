@@ -6,7 +6,7 @@
                     <Label class="form-label" value="Institution Program" required="true"/>
                     <Select class="form-select" v-model="newAtteForm.program_guid">
                         <option></option>
-                        <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
+                        <option v-for="c in programs" :value="c.guid">{{ c.program_name}} ({{ c.program_graduate ? 'Graduate' : 'Undergraduate' }})</option>
                     </Select>
                 </div>
                 <div class="col-md-4">

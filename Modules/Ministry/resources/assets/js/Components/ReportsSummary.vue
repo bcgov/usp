@@ -37,9 +37,11 @@
                         <th scope="col">PAL Allocation</th>
                         <th scope="col">Total Issued</th>
                         <th scope="col">Total Draft</th>
-                        <th scope="col">PAL Res. Grad. Allocation</th>
-                        <th scope="col">Total Res. Grad. Issued</th>
-                        <th scope="col">Total Res. Grad. Draft</th>
+                        <th scope="col">Res. Grad. Allocation</th>
+                        <th scope="col">Grad. Issued</th>
+                        <th scope="col">Grad. Draft</th>
+                        <th scope="col">Undergrad. Issued</th>
+                        <th scope="col">Undergrad. Draft</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -51,6 +53,8 @@
                         <td><strong>{{ reportData.publicReport.total_res_grad }}</strong></td>
                         <td><strong>{{ reportData.publicReport.issued_res_grad }}</strong></td>
                         <td><strong>{{ reportData.publicReport.draft_res_grad }}</strong></td>
+                        <td><strong>{{ reportData.publicReport.issued - reportData.publicReport.issued_res_grad }}</strong></td>
+                        <td><strong>{{ reportData.publicReport.draft - reportData.publicReport.draft_res_grad }}</strong></td>
 
                     </tr>
                     <template v-for="(value, name, index) in reportData.publicReport">
@@ -63,6 +67,8 @@
                             <td><strong>{{ value.total_res_grad }}</strong></td>
                             <td><strong>{{ value.issued_res_grad}}</strong></td>
                             <td><strong>{{ value.draft_res_grad }}</strong></td>
+                            <td><strong>{{ value.issued - value.issued_res_grad}}</strong></td>
+                            <td><strong>{{ value.draft - value.draft_res_grad }}</strong></td>
                         </tr>
                         <tr v-for="(row, k, i) in value.instList">
                             <td>&nbsp;&nbsp;{{ k }}</td>
@@ -72,9 +78,13 @@
                             <td>{{ row.total_res_grad }}</td>
                             <td>{{ row.issued_res_grad }}</td>
                             <td>{{ row.draft_res_grad }}</td>
+                            <td>{{ row.issued - row.issued_res_grad }}</td>
+                            <td>{{ row.draft - row.draft_res_grad }}</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -95,6 +105,8 @@
                         <th scope="col"></th>
                         <th scope="col"></th>
                         <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                     </tfoot>
 
@@ -107,6 +119,8 @@
                         <td><strong>{{ reportData.privateReport.total_res_grad }}</strong></td>
                         <td><strong>{{ reportData.privateReport.issued_res_grad }}</strong></td>
                         <td><strong>{{ reportData.privateReport.draft_res_grad }}</strong></td>
+                        <td><strong>{{ reportData.privateReport.issued - reportData.privateReport.issued_res_grad }}</strong></td>
+                        <td><strong>{{ reportData.privateReport.draft - reportData.privateReport.draft_res_grad }}</strong></td>
 
                     </tr>
                     <template v-for="(value, name, index) in reportData.privateReport">
@@ -119,6 +133,8 @@
                                 <td><strong>{{ value.total_res_grad }}</strong></td>
                                 <td><strong>{{ value.issued_res_grad }}</strong></td>
                                 <td><strong>{{ value.draft_res_grad }}</strong></td>
+                                <td><strong>{{ value.issued - value.issued_res_grad }}</strong></td>
+                                <td><strong>{{ value.draft - value.draft_res_grad }}</strong></td>
                             </tr>
                             <tr v-for="(row, k, i) in value.instList">
                                 <td>&nbsp;&nbsp;{{ k }}</td>
@@ -128,9 +144,13 @@
                                 <td>{{ row.total_res_grad }}</td>
                                 <td>{{ row.issued_res_grad }}</td>
                                 <td>{{ row.draft_res_grad }}</td>
+                                <td>{{ row.issued - row.issued_res_grad }}</td>
+                                <td>{{ row.draft - row.draft_res_grad }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -152,6 +172,8 @@
                         <th scope="col">{{ reportData.publicReport.total_res_grad  + reportData.privateReport.total_res_grad }}</th>
                         <th scope="col">{{ reportData.publicReport.issued_res_grad  + reportData.privateReport.issued_res_grad }}</th>
                         <th scope="col">{{ reportData.publicReport.draft_res_grad  + reportData.privateReport.draft_res_grad }}</th>
+                        <th scope="col">{{ totalUndergradIssued }}</th>
+                        <th scope="col">{{ totalUndergradDraft }}</th>
                     </tr>
                     </tfoot>
                 </table>
@@ -180,6 +202,22 @@ export default {
             fromDate: '',
             toDate: '',
             reportData: ''
+        }
+    },
+    computed: {
+        totalUndergradIssued() {
+            if (!this.reportData || !this.reportData.publicReport || !this.reportData.privateReport) {
+                return 0;
+            }
+            return (this.reportData.publicReport.issued + this.reportData.privateReport.issued) -
+                (this.reportData.publicReport.issued_res_grad + this.reportData.privateReport.issued_res_grad);
+        },
+        totalUndergradDraft() {
+            if (!this.reportData || !this.reportData.publicReport || !this.reportData.privateReport) {
+                return 0;
+            }
+            return (this.reportData.publicReport.draft + this.reportData.privateReport.draft) -
+                (this.reportData.publicReport.draft_res_grad + this.reportData.privateReport.draft_res_grad);
         }
     },
     methods: {
