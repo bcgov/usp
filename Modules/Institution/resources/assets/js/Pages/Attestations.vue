@@ -24,18 +24,18 @@
                                     <template v-if="capStat != '' && capStat.instCap != null">
                                         <span
                                             class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Active Res. Grad.: {{ capStat.instCap.total_reserved_graduate_attestations }}</span>
                                         <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{
                                                 capStat.issued
                                             }}</span>
                                         <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{
                                                 capStat.instCap.total_attestations - capStat.issued
                                             }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Active Res. Grad. Cap Total: {{ capStat.instCap.total_reserved_graduate_attestations }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Res. Grad. PALs: {{
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Grad. PALs: {{
                                                 capStat.resGradIssued
                                             }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Remaining Res. Grad. PALs: {{
-                                                capStat.instCap.total_reserved_graduate_attestations - capStat.resGradIssued
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Undegrad. PALs: {{
+                                                capStat.issued - capStat.resGradIssued
                                             }}</span>
                                     </template>
                                 </div>

@@ -123,7 +123,6 @@ class Cap extends Model
         return [
             'total_reserved_graduate' => $this->total_reserved_graduate_attestations,
             'issued_reserved_graduate' => $issuedInstResGradAttestations,
-            'remain_reserved_graduate' => $this->total_reserved_graduate_attestations - $issuedInstResGradAttestations,
         ];
     }
 }
