@@ -10,13 +10,16 @@
             <span>Cap Total</span>
         </th>
         <th scope="col" style="min-width: 80px;">
-            <span>Issued PAL</span>
+            <span>Res. Grad.</span>
         </th>
         <th scope="col" style="min-width: 80px;">
-            <span>Res. Grad. Cap Total</span>
+            <span>Total Issued PAL</span>
         </th>
         <th scope="col" style="min-width: 80px;">
-            <span>Res. Grad. Issued PAL</span>
+            <span>Grad. Issued PAL</span>
+        </th>
+        <th scope="col" style="min-width: 80px;">
+            <span>Undergrad. Issued PAL</span>
         </th>
         <th scope="col">
             <span>Status</span>

@@ -4,6 +4,7 @@ namespace Modules\Institution\App\Http\Controllers;
 
 use App\Events\AttestationDraftUpdated;
 use App\Events\AttestationIssued;
+use App\Facades\InstitutionFacade;
 use App\Http\Controllers\Controller;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
@@ -11,6 +12,7 @@ use App\Models\Cap;
 use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\User;
+use App\Services\Institution\InstitutionAttestationsDetails;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -68,7 +70,7 @@ class AttestationController extends Controller
             ->count();
 
         // If the attestation is linked to a reserved graduate program
-        // Get the inst cap and check if we have hit the cap for reserved graduate issued attestations
+        // Get the total for reserved graduate issued attestations
         $issued_res_grad_attestations = Attestation::where('status', 'Issued')
             ->where('institution_guid', $cap->institution_guid)
             ->where('fed_cap_guid', $cap->fed_cap_guid)
@@ -77,11 +79,13 @@ class AttestationController extends Controller
             })
             ->count();
 
+        $instituion_attestations_details = InstitutionFacade::getInstitutionAttestInfo($issued_attestations, $issued_res_grad_attestations, $cap);
+
         // If we hit or acceded the reserved graduate inst cap limit for issued attestations
-        if ($issued_res_grad_attestations >= $cap->total_reserved_graduate_attestations) {
-            $warning_message = "Your institution has reached the maximum reserved graduate attestations cap. You can't issue a new attestation linked to a graduate program or it will be automatically converted as a Draft.";
+        if ($instituion_attestations_details['undergradRemaining'] === 0) {
+            $warning_message = "Your institution has reached the limit for undergraduate attestations. You can't issue a new attestation linked to an undergraduate program or it will be automatically converted as a Draft.";
         }
-        elseif ($issued_attestations >= $cap->total_attestations) {
+        elseif ($instituion_attestations_details['issued']>= $cap->total_attestations) {
             $warning_message = "Your institution has reached the maximum attestations cap. You can't issue a new attestation or it will be automatically converted as a Draft.";
         }
 

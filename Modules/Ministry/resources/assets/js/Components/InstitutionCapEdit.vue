@@ -32,7 +32,6 @@
                     <Label for="inputTotalAtte" class="form-label" value="Total Reserved Graduate Attest. Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="number" class="form-control" id="inputTotalResGradAtte" aria-describedby="basic-inputTotalResGradAtte" @keyup="validateTotalResGrad" v-model="newInstitutionCapForm.total_reserved_graduate_attestations"/>
-                        <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_reserved_graduate_cap }}</span>
                     </div>
                 </div>
             </div>
@@ -128,8 +127,8 @@ export default {
         },
         validateTotalResGrad: function (){
             if(this.selectedFedCap !== ''){
-                if(parseInt(this.newInstitutionCapForm.total_reserved_graduate_attestations) > this.selectedFedCap.remaining_reserved_graduate_cap){
-                    this.newInstitutionCapForm.total_reserved_graduate_attestations = this.selectedFedCap.remaining_reserved_graduate_cap;
+                if(parseInt(this.editInstitutionCapForm.total_reserved_graduate_attestations) > parseInt(this.editInstitutionCapForm.total_attestations) ){
+                    this.editInstitutionCapForm.total_reserved_graduate_attestations = parseInt(this.editInstitutionCapForm.total_attestations) ;
                 }
             }
         },
