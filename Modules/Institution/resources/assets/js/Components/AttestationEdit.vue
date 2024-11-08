@@ -68,6 +68,10 @@
                     <Label for="inputExpiryDate" class="fw-bold" value="Expiry Date"/>
                     {{ editAtteForm.expiry_date }}
                 </div>
+                <div class="col-md-12 text-break">
+                    <Label for="studentConfirmationCheckbox" class="fw-bold" value="Student Confirmation"/>
+                    {{ editAtteForm.student_confirmation ? 'Yes' : 'No' }}
+                </div>
 
             </div>
             <div v-else class="row g-3">
@@ -163,6 +167,15 @@
 
                 </div>
 
+                <div class="col-md-12 mt-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="editAtteForm.student_confirmation" id="studentConfirmationCheckbox">
+                        <label class="form-check-label" for="studentConfirmationCheckbox">
+                            We confirm that the applicant has been informed that the personal information contained in this application will be shared with Immigration, Refugee and Citizenship Canada and British Columbia’s Ministry of Post-Secondary Education and Future Skills for operational and program evaluation purposes.
+                        </label>
+                    </div>
+                </div>
+
                 <div v-if="editAtteForm.errors != undefined" class="row">
                     <div class="col-12">
                         <div v-if="editAtteForm.hasErrors == true" class="alert alert-danger mt-3">
@@ -220,6 +233,7 @@ export default {
                 last_name: "",
                 id_number: "",
                 student_number: "",
+                student_confirmation: false,
                 dob: "",
                 address1: "",
                 address2: "",
@@ -237,7 +251,20 @@ export default {
     methods: {
 
         submitForm: function (status) {
+
+            // Reset error messages
+            this.editAtteForm.errors = [];
+            this.editAtteForm.hasErrors = false;
+
             this.editAtteForm.status = status;
+
+            // Student confirmation (checkbox) is required for issuing an attestation.
+            if ((this.editAtteForm.status === 'Issued') && (!this.editAtteForm.student_confirmation)) {
+                this.editAtteForm.errors.push('Please confirm that the applicant has been informed that the personal information contained in this application will be shared.');
+                this.editAtteForm.hasErrors = true;
+                return;
+            }
+
             if(this.editAtteForm.status === 'Issued'){
                 let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
                 if(!check){
