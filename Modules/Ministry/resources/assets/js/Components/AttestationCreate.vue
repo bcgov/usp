@@ -107,7 +107,14 @@
                            class="form-control" id="inputExpiryDate" v-model="selectedInst.active_caps[0].end_date"
                            disabled readonly/>
                 </div>
-
+                <div class="col-md-12 mt-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="newAtteForm.student_confirmation" id="studentConfirmationCheckbox">
+                        <label class="form-check-label" for="studentConfirmationCheckbox">
+                            We confirm that the applicant has been informed that the personal information contained in this application will be shared with Immigration, Refugee and Citizenship Canada and British Columbia’s Ministry of Post-Secondary Education and Future Skills for operational and program evaluation purposes.
+                        </label>
+                    </div>
+                </div>
 
                 <div v-if="newAtteForm.errors != undefined" class="row">
                     <div class="col-12">
@@ -165,6 +172,7 @@ export default {
                 last_name: "",
                 id_number: "",
                 student_number: "",
+                student_confirmation: false,
                 dob: "",
                 address1: "",
                 address2: "",
@@ -206,7 +214,20 @@ export default {
                 });
         },
         submitForm: function (status) {
+
+            // Reset error messages
+            this.newAtteForm.errors = [];
+            this.newAtteForm.hasErrors = false;
+
             this.newAtteForm.status = status;
+
+            // Student confirmation (checkbox) is required for issuing an attestation.
+            if ((this.newAtteForm.status !== 'Draft') && (!this.newAtteForm.student_confirmation)) {
+                this.newAtteForm.errors.push('Please confirm that the applicant has been informed that the personal information contained in this application will be shared.');
+                this.newAtteForm.hasErrors = true;
+                return;
+            }
+
             if(this.newAtteForm.status !== 'Draft'){
                 let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
                 if(!check){
