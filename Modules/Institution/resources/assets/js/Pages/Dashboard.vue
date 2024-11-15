@@ -6,6 +6,9 @@
             <div class="container">
                 <div class="row mb-3">
                     <div class="col-12">
+                        <div v-if="$page.props.errors.error" class="alert alert-danger mt-3">
+                            {{ $page.props.errors.error }}
+                        </div>
                         <div class="card">
                             <div class="card-body">
                                 <div class="display-5">{{ results.name }}</div>
