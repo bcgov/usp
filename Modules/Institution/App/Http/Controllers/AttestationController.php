@@ -55,6 +55,10 @@ class AttestationController extends Controller
             ->where('institution_guid', $institution->guid)
             ->first();
 
+        if (is_null($cap)) {
+            return redirect(route('institution.dashboard'))->withErrors(['error' => "Error: No institution cap found for this institution, attestations can't be retrieved."]);
+        }
+
         $user = User::find(Auth::user()->id);
 
         $attestations = $this->paginateAtte($user->institution);
