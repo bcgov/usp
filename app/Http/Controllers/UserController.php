@@ -119,9 +119,9 @@ class UserController extends Controller
                 $failMsg = 'Welcome back! Please contact Institution Admin to grant you access.';
 
                 // Added later to capture business name
-                if (!is_null($user) && is_null($user->bceid_business_name)) {
+/*                if (!is_null($user) && is_null($user->bceid_business_name)) {
                     $user->update(['bceid_business_name' => $provider_user['bceid_business_name']]);
-                }
+                }*/
             }
 
             //if it is a new IDIR or BCeID user, register the user first
