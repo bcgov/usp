@@ -220,6 +220,23 @@ export default {
 
             this.newAtteForm.status = status;
 
+            // Get the current date
+            const currentDate = new Date();
+
+            // Check if a Federal Cap is selected
+            if (this.selectedFedCapGuid) {
+                const selectedCap = this.activeFedCapList.find(cap => cap.guid === this.selectedFedCapGuid);
+                const startDate = new Date(selectedCap.start_date);
+                const endDate = new Date(selectedCap.end_date);
+
+                // Validate current date is within cap dates
+                if (currentDate < startDate || currentDate > endDate) {
+                    this.newAtteForm.errors.push('Please select a correct Cap period.');
+                    this.newAtteForm.hasErrors = true;
+                    return;
+                }
+            }
+
             // Student confirmation (checkbox) is required for issuing an attestation.
             if ((this.newAtteForm.status !== 'Draft') && (!this.newAtteForm.student_confirmation)) {
                 this.newAtteForm.errors.push('Please confirm that the applicant has been informed that the personal information contained in this application will be shared.');
