@@ -2,15 +2,14 @@
     <form v-if="newAtteForm != null" class="card-body">
         <div class="modal-body">
             <div class="row g-3">
-
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputName" class="form-label" value="Institution Name" required="true"/>
                     <input @change="enableCap" type="text" class="form-control" list="datalistOptionsInstName" id="inputName" placeholder="Type to search..." autocomplete="off"  v-model="selectedInstIndex" />
                     <datalist id="datalistOptionsInstName">
                         <option v-for="(inst, i) in institutions" :key="i" :value="inst.name"></option>
                     </datalist>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
                     <Select class="form-select" id="inputProgram" v-model="newAtteForm.program_guid" :disabled="selectedInst === ''">
                         <template v-if="selectedInst != ''">
@@ -20,13 +19,20 @@
                     </Select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputInPerson" class="form-label" value="> 50% in-person?" required="true"/>
                     <Select class="form-select" id="inputInPerson" v-model="newAtteForm.gt_fifty_pct_in_person" :disabled="newAtteForm.program_guid === ''">
                         <option></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
+                </div>
+                <div class="col-md-6">
+                    <Label class="form-label" value="Cap Period" required="true"/>
+                    <select @change="updateFedCap" class="form-select" aria-label="Default federal cap" v-model="newAtteForm.cap_guid" :disabled="selectedInst === ''">
+                        <option value="">Select Cap</option>
+                        <option v-for="(cap, i) in allInstCaps" :value="cap.guid" >{{ cap.start_date }} - {{ cap.end_date }}</option>
+                    </select>
                 </div>
 
 
@@ -161,12 +167,13 @@ export default {
     data() {
         return {
             newAtteForm: null,
+            allInstCaps: [],
             newAtteFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
                 institution_guid: "",
-                // cap_guid: "",
+                cap_guid: "",
                 program_guid: "",
                 first_name: "",
                 last_name: "",
@@ -191,12 +198,27 @@ export default {
         }
     },
     methods: {
+        updateFedCap: function (e){
+            if(e.target.value !== ''){
+                this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
+                this.selectedInst.active_caps[0].end_date = this.cap.end_date;
+                let data = {
+                    fed_cap_guid: this.cap.fed_cap_guid,
+                }
+                axios.post('/ministry/fed_caps/default', data)
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+            }
+        },
         enableCap: function (e){
             const inst = this.institutions.find(inst => inst.name === e.target.value);
             if (inst) {
                 this.selectedInst = inst;
                 this.newAtteForm.institution_guid = inst.guid;
                 this.fetchPrograms();
+                this.fetchCaps(inst.guid);
             }
         },
         fetchPrograms: function () {
@@ -213,6 +235,18 @@ export default {
                     console.log(error);
                 });
         },
+        async fetchCaps(institutionGuid) {
+            try {
+                let data = {
+                    institution_guid: institutionGuid,
+                }
+                const response = await axios.post('/ministry/api/fetch/caps', data);
+                this.allInstCaps = response.data;
+
+            } catch (error) {
+                console.error('Error while retrieving caps list:', error);
+            }
+        },
         submitForm: function (status) {
 
             // Reset error messages
@@ -220,6 +254,23 @@ export default {
             this.newAtteForm.hasErrors = false;
 
             this.newAtteForm.status = status;
+
+            // Get the current date
+            const currentDate = new Date();
+
+            // Check if a Cap is selected
+            if (this.newAtteForm.cap_guid) {
+                const selectedCap = this.allInstCaps.find(cap => cap.guid === this.newAtteForm.cap_guid);
+                const startDate = new Date(selectedCap.start_date);
+                const endDate = new Date(selectedCap.end_date);
+
+                // Validate current date is within cap dates
+                if (currentDate < startDate || currentDate > endDate) {
+                    this.newAtteForm.errors.push('Please select a correct Cap period.');
+                    this.newAtteForm.hasErrors = true;
+                    return;
+                }
+            }
 
             // Student confirmation (checkbox) is required for issuing an attestation.
             if ((this.newAtteForm.status !== 'Draft') && (!this.newAtteForm.student_confirmation)) {

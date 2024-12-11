@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionStaffEditRequest;
 use App\Models\Attestation;
 use App\Models\Cap;
+use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\Role;
 use App\Models\User;
@@ -15,13 +16,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class InstitutionController extends Controller
-{
+class InstitutionController extends Controller {
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
+    public function index() {
         $issuedInstAttestations = 0;
         $issuedResGradInstAttestations = 0;
         $user = User::find(Auth::user()->id);
@@ -30,12 +30,12 @@ class InstitutionController extends Controller
         $instCap = Cap::where('institution_guid', $institution->guid)
             ->selectedFedcap()
             ->active()
-            ->where('program_guid', null)
+            ->where('program_guid', NULL)
             ->first();
 
         $capTotal = 0;
 
-        if (! is_null($instCap)) {
+        if (!is_null($instCap)) {
             $capTotal = $instCap->total_attestations;
             $issuedInstAttestations = Attestation::where('status', 'Issued')
                 ->where('institution_guid', $institution->guid)
@@ -47,7 +47,7 @@ class InstitutionController extends Controller
                 ->where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->whereHas('program', function ($query) {
-                    $query->where('program_graduate', true);
+                    $query->where('program_graduate', TRUE);
                 })
                 ->count();
 
@@ -67,8 +67,7 @@ class InstitutionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function show(Request $request)
-    {
+    public function show(Request $request) {
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
@@ -78,8 +77,7 @@ class InstitutionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function caps()
-    {
+    public function caps() {
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
         $institution->activeInstCaps->makeHidden(['comment']);
@@ -93,17 +91,38 @@ class InstitutionController extends Controller
     }
 
     /**
+     * Retrieve all active caps for Institution linked to current user.
+     */
+    public function fetchAllCaps() {
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+
+        $activeCaps = $institution->caps()
+            ->where('active_status', TRUE)
+            ->get()
+            ->map(function ($cap) {
+                return [
+                    'guid' => $cap->guid,
+                    'start_date' => $cap->start_date,
+                    'end_date' => $cap->end_date,
+                    'fed_cap_guid' => $cap->fed_cap_guid,
+                ];
+            });
+
+        return response()->json($activeCaps);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Inertia\Response::render
      */
-    public function staffList(Request $request): \Inertia\Response
-    {
+    public function staffList(Request $request): \Inertia\Response {
         $user = User::find(Auth::user()->id);
         $institution = $user->institution->staff()->with('user.roles')->get();
 
         return Inertia::render('Institution::Staff', [
-            'status' => true,
+            'status' => TRUE,
             'results' => $institution,
         ]);
     }
@@ -111,15 +130,14 @@ class InstitutionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function staffUpdate(InstitutionStaffEditRequest $request): \Inertia\Response
-    {
+    public function staffUpdate(InstitutionStaffEditRequest $request): \Inertia\Response {
         InstitutionStaff::where('id', $request->id)
             ->update($request->validated());
         $user = User::find(Auth::user()->id);
         $institution = $user->institution->staff;
 
         return Inertia::render('Institution::Staff', [
-            'status' => true,
+            'status' => TRUE,
             'results' => $institution,
         ]);
     }
@@ -127,8 +145,7 @@ class InstitutionController extends Controller
     /**
      * Update the specified resource role in storage.
      */
-    public function staffUpdateRole(Request $request): \Inertia\Response
-    {
+    public function staffUpdateRole(Request $request): \Inertia\Response {
         $newRole = Role::where('name', Role::Institution_GUEST)->first();
         if ($request->input('role') === 'User') {
             $newRole = Role::where('name', Role::Institution_USER)->first();
@@ -141,14 +158,14 @@ class InstitutionController extends Controller
             Role::Institution_USER,
         ];
         if (Auth::user()
-            ->roles()
-            ->pluck('name')
-            ->intersect($rolesToCheck)
-            ->isNotEmpty() && Auth::user()->disabled === false) {
+                ->roles()
+                ->pluck('name')
+                ->intersect($rolesToCheck)
+                ->isNotEmpty() && Auth::user()->disabled === FALSE) {
             $staff = InstitutionStaff::where('id', $request->input('id'))
                 ->first();
 
-            if (! is_null($staff)) {
+            if (!is_null($staff)) {
                 //reset roles
                 $roles = Role::whereIn('name', [
                     Role::Institution_ADMIN,
@@ -168,8 +185,9 @@ class InstitutionController extends Controller
         $institution = $user->institution->staff;
 
         return Inertia::render('Institution::Staff', [
-            'status' => true,
+            'status' => TRUE,
             'results' => $institution,
         ]);
     }
+
 }

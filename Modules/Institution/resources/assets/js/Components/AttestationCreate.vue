@@ -4,9 +4,9 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <Label class="form-label" value="Cap Period" required="true"/>
-                    <select @change="updateFedCap" class="form-select" aria-label="Default federal cap">
-                        <option value="">Select Federal Cap</option>
-                        <option v-for="(cap, i) in activeFedCapList" :value="cap.guid" :selected="selectedFedCapGuid === cap.guid">{{ cap.start_date }} - {{ cap.end_date }}</option>
+                    <select @change="updateFedCap" class="form-select" aria-label="Default federal cap" v-model="newAtteForm.cap_guid">
+                        <option value="">Select Cap</option>
+                        <option v-for="(cap, i) in allInstCaps" :value="cap.guid" >{{ cap.start_date }} - {{ cap.end_date }}</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -148,15 +148,15 @@ export default {
         countries: Object,
         error: String|null,
         programs: Object,
-        instCap: Object
+        instCap: Object,
+        instCaps: Object,
+        allInstCaps: Array
     },
     data() {
         return {
             duplicate: false,
             randomId: '',
             newAtteForm: null,
-            activeFedCapList: [],
-            selectedFedCapGuid: '',
             newAtteFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
@@ -177,18 +177,18 @@ export default {
                 country: "",
                 status: "",
                 expiry_date: "",
-                gt_fifty_pct_in_person: ""
+                gt_fifty_pct_in_person: "",
+                cap_guid: ""
             },
         }
     },
     methods: {
         updateFedCap: function (e){
             if(e.target.value !== ''){
-                this.selectedFedCapGuid = e.target.value;
-                this.cap = this.activeFedCapList.find(cap => cap.guid === this.selectedFedCapGuid);
+                this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
                 this.instCap.end_date = this.cap.end_date;
                 let data = {
-                    fed_cap_guid: e.target.value
+                    fed_cap_guid: this.cap.fed_cap_guid,
                 }
                 axios.post('/institution/fed_caps/default', data)
                     .catch(function (error) {
@@ -223,9 +223,9 @@ export default {
             // Get the current date
             const currentDate = new Date();
 
-            // Check if a Federal Cap is selected
-            if (this.selectedFedCapGuid) {
-                const selectedCap = this.activeFedCapList.find(cap => cap.guid === this.selectedFedCapGuid);
+            // Check if a Cap is selected
+            if (this.newAtteForm.cap_guid) {
+                const selectedCap = this.allInstCaps.find(cap => cap.guid === this.newAtteForm.cap_guid);
                 const startDate = new Date(selectedCap.start_date);
                 const endDate = new Date(selectedCap.end_date);
 
@@ -294,11 +294,6 @@ export default {
     mounted() {
         this.newAtteForm = useForm(this.newAtteFormData);
         this.randomId = "" + Math.random() + "";
-
-        if(this.$attrs.fedCapsData != undefined) {
-            this.activeFedCapList = this.$attrs.fedCapsData.list;
-            this.selectedFedCapGuid = this.$attrs.fedCapsData.default;
-        }
 
         let vm = this;
         setTimeout(function(){vm.randomizer();}, 1000);

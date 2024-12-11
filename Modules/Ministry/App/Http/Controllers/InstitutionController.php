@@ -9,8 +9,10 @@ use App\Models\Attestation;
 use App\Models\Country;
 use App\Models\FedCap;
 use App\Models\Institution;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -97,5 +99,27 @@ class InstitutionController extends Controller
         }
 
         return $institutions->paginate(25)->onEachSide(1)->appends(request()->query());
+    }
+
+    /**
+     * Retrieve all active caps for Institution linked to current user.
+     */
+    public function fetchCaps(Request $request) {
+
+        $institution = Institution::where('guid', $request->institution_guid)->first();
+
+        $activeCaps = $institution->caps()
+            ->where('active_status', TRUE)
+            ->get()
+            ->map(function ($cap) {
+                return [
+                    'guid' => $cap->guid,
+                    'start_date' => $cap->start_date,
+                    'end_date' => $cap->end_date,
+                    'fed_cap_guid' => $cap->fed_cap_guid,
+                ];
+            });
+
+        return response()->json($activeCaps);
     }
 }

@@ -252,7 +252,8 @@ export default {
             },
             selectedProgram: '',
             selectedInst: '',
-            programs: []
+            programs: [],
+            allInstCaps: []
         }
     },
     methods: {
@@ -314,13 +315,23 @@ export default {
                 },
                 preserveState: true
             });
-        }
+        },
+        async getCaps () {
+            try {
+                const response = await axios.get('/institution/api/fetch/caps')
+                this.allInstCaps = response.data;
+            } catch (error) {
+                console.error('Error while trying to fetch Caps list for an Institution:', error);
+            }
+        },
     },
 
     mounted() {
         this.editAtteForm = useForm(this.attestation);
         this.selectedInst = this.attestation.institution;
         this.fetchPrograms();
+        this.allInstCaps = this.getCaps()
+        console.log(this.institution)
         // this.editAtteForm.institution_guid = this.institution.guid;
     }
 }

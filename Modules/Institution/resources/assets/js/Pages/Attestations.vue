@@ -114,7 +114,7 @@
                         </div>
                         <AttestationCreate v-else :instCap="instCap" :error="error" v-bind="$attrs"
                                            :countries="countries" :institution="institution" :programs="programs"
-                                           :newAtte="newAtte"/>
+                                           :newAtte="newAtte" :allInstCaps="allInstCaps"/>
                     </div>
                 </div>
             </div>
@@ -128,7 +128,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <AttestationEdit :instCap="instCap" :error="error" v-bind="$attrs" :countries="countries"
-                                         :institution="institution" :programs="programs" :attestation="editRow"/>
+                                         :institution="institution" :programs="programs" :attestation="editRow" :allInstCaps="allInstCaps" />
                         <div v-if="editRow.status === 'Issued'" class="modal-footer justify-content-between">
                             <a :href="'/institution/attestations/download/' + editRow.id" target="_blank"
                                class="btn btn-success">
@@ -184,7 +184,8 @@ export default {
             editRow: '',
             showNewModal: false,
             showEditModal: false,
-            capStat: ''
+            capStat: '',
+            allInstCaps: []
         }
     },
 
@@ -257,11 +258,22 @@ export default {
                     // handle error
                     console.log(error);
                 });
-        }
+        },
+        async getCaps () {
+            try {
+                const response = await axios.get('/institution/api/fetch/caps')
+                this.allInstCaps = response.data;
+            } catch (error) {
+                console.error('Error while trying to fetch Caps list for an Institution:', error);
+            }
+        },
     },
     mounted() {
         this.attestationList = this.results.data;
         this.fetchCapStats();
+        // Getting Institution Caps
+        this.getCaps();
+
     },
 }
 </script>

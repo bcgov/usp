@@ -3,15 +3,19 @@
         <div class="modal-body">
             <div v-if="attestation.status !== 'Draft'" class="row g-3">
 
-                <div class="col-md-4 text-break">
+                <div class="col-md-6 text-break">
+                    <Label for="inputProgram" class="fw-bold" value="Cap Period"/>
+                    {{ getCapPeriod(editAtteForm.cap_guid) }}
+                </div>
+                <div class="col-md-6 text-break">
                     <Label for="inputProgram" class="fw-bold" value="Institution Program"/>
                     {{ $getProgramNameFromGuid(programs, editAtteForm.program_guid) }}
                 </div>
-                <div class="col-md-4 text-break">
+                <div class="col-md-6 text-break">
                     <Label for="inputStudentNumber" class="fw-bold" value="Student Number"/>
                     {{ editAtteForm.student_number }}
                 </div>
-                <div class="col-md-4 text-break">
+                <div class="col-md-6 text-break">
                     <Label for="inputStudentId" class="fw-bold" value="Passport/Travel Doc. ID"/>
                     {{ editAtteForm.id_number }}
                 </div>
@@ -78,9 +82,9 @@
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <Label class="form-label" value="Cap Period" required="true"/>
-                        <select @change="updateFedCap" class="form-select" aria-label="Default federal cap">
-                            <option value="">Select Federal Cap</option>
-                            <option v-for="(cap, i) in activeFedCapList" :value="cap.guid" :selected="selectedFedCapGuid === cap.guid">{{ cap.start_date }} - {{ cap.end_date }}</option>
+                        <select @change="updateFedCap" class="form-select" aria-label="Select Cap" v-model="editAtteForm.cap_guid">
+                            <option value="">Select Cap</option>
+                            <option v-for="(cap, i) in allInstCaps" :value="cap.guid" >{{ cap.start_date }} - {{ cap.end_date }}</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -226,13 +230,12 @@ export default {
         countries: Object,
         error: String|null,
         programs: Object,
-        instCap: Object
+        instCap: Object,
+        allInstCaps: Array
     },
     data() {
         return {
             editAtteForm: null,
-            activeFedCapList: [],
-            selectedFedCapGuid: '',
             editAtteFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
@@ -256,18 +259,17 @@ export default {
                 country: "",
                 status: "",
                 expiry_date: "",
-                gt_fifty_pct_in_person: ""
+                gt_fifty_pct_in_person: "",
             },
         }
     },
     methods: {
         updateFedCap: function (e){
             if(e.target.value !== ''){
-                this.selectedFedCapGuid = e.target.value;
-                this.cap = this.activeFedCapList.find(cap => cap.guid === this.selectedFedCapGuid);
+                this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
                 this.instCap.end_date = this.cap.end_date;
                 let data = {
-                    fed_cap_guid: e.target.value
+                    fed_cap_guid: this.cap.fed_cap_guid,
                 }
                 axios.post('/institution/fed_caps/default', data)
                     .catch(function (error) {
@@ -275,6 +277,13 @@ export default {
                         console.log(error);
                     });
             }
+        },
+        getCapPeriod(capGuid) {
+            const cap = this.allInstCaps.find(cap => cap.guid === capGuid);
+            if (cap) {
+                return `${cap.start_date} - ${cap.end_date}`;
+            }
+            return 'N/A';
         },
         submitForm: function (status) {
 
@@ -287,9 +296,9 @@ export default {
             // Get the current date
             const currentDate = new Date();
 
-            // Check if a Federal Cap is selected
-            if (this.selectedFedCapGuid) {
-                const selectedCap = this.activeFedCapList.find(cap => cap.guid === this.selectedFedCapGuid);
+            // Check if a Cap is selected
+            if (this.editAtteForm.cap_guid) {
+                const selectedCap = this.allInstCaps.find(cap => cap.guid === this.editAtteForm.cap_guid);
                 const startDate = new Date(selectedCap.start_date);
                 const endDate = new Date(selectedCap.end_date);
 
@@ -340,11 +349,6 @@ export default {
 
     mounted() {
         this.editAtteForm = useForm(this.attestation);
-
-        if(this.$attrs.fedCapsData != undefined) {
-            this.activeFedCapList = this.$attrs.fedCapsData.list;
-            this.selectedFedCapGuid = this.$attrs.fedCapsData.default;
-        }
 
     }
 }

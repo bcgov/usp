@@ -38,6 +38,7 @@ Route::prefix('institution')->group(function () {
             Route::get('/caps', [InstitutionController::class, 'caps'])->name('caps.index');
         Route::post('/api/fetch/capStats', [AttestationController::class, 'capStat'])->name('caps.api.fetch.cap-stat');
         Route::post('/api/check/duplicate_student', [AttestationController::class, 'duplicateStudent'])->name('caps.api.check.duplicate-student');
+        Route::get('/api/fetch/caps', [InstitutionController::class, 'fetchAllCaps'])->name('caps.api.fetch.all-caps');
 
         Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.index');
 
