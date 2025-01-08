@@ -37,6 +37,7 @@ class ImportNewPrograms extends Command
             Program::create([
                 'institution_guid' => $institution->guid,
                 'guid' => $guid,
+                'active_status' => true,
                 'program_name' => $record['Program_Name'],
                 'cip_code' => $record['CIP_Code'],
                 'program_type' => $record['Program_Type'],
