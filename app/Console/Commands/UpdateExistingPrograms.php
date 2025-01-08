@@ -28,12 +28,15 @@ class UpdateExistingPrograms extends Command
                 continue;
             }
 
-            $institution = Institution::where('guid', $record['Insitution GUID'])->first();
+            $institution = Institution::where('guid', $record['Institution_guid'])->first();
 
             if (!$institution) {
-                $this->error("Institution not found: {$record['Insitution GUID']}");
+                $this->error("Institution not found: {$record['Institution_guid']}");
                 continue;
             }
+
+            // Determine if the program is a graduate program
+            $program_graduate = ($record['Program_Type'] === 'Graduate Programs') && ($record['Credential'] === 'Degree');
 
             $program->update([
                 'institution_guid' => $institution->guid,
@@ -41,6 +44,7 @@ class UpdateExistingPrograms extends Command
                 'cip_code' => $record['CIP_Code'],
                 'program_type' => $record['Program_Type'],
                 'credential' => $record['Credential'],
+                'program_graduate' => $program_graduate,
             ]);
 
             $this->info("Program updated: {$record['Program_Name']}");
