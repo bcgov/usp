@@ -28,7 +28,8 @@ class ImportNewPrograms extends Command
                 continue;
             }
 
-            $program_graduate = ($record['Program_Type'] !== 'Undergraduate Programs');
+            // Determine if the program is a graduate program
+            $program_graduate = ($record['Program_Type'] === 'Graduate Programs') && ($record['Credential'] === 'Degree');
 
             // Remove any hyphens that could be exist in the csv file provided
             $guid = str_replace('-', '', $record['JM_Assigned_GUID']);
