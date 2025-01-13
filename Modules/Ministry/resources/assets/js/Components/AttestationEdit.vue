@@ -104,7 +104,7 @@
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
                         <template v-if="institution !== ''">
                             <template v-for="c in institution.programs">
-                                <option v-if="c.active_status" :value="c.guid">{{ c.program_name}}</option>
+                                <option v-if="c.active_status" :value="c.guid">{{ c.program_name}} ({{ c.program_graduate ? 'Graduate' : 'Undergraduate' }})</option>
                             </template>
                         </template>
                     </Select>

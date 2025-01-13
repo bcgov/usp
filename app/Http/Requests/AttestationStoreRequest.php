@@ -150,7 +150,16 @@ class AttestationStoreRequest extends FormRequest
             $next_numeric_part = 100000000;
         }
 
-        // Construct the next value
-        return 'BC'.$year_prefix.'-'.sprintf('%03d', $next_numeric_part);
+        // Loop to ensure uniqueness
+        do {
+            $fed_guid = 'BC' . $year_prefix . '-' . sprintf('%09d', $next_numeric_part);
+            $exists = Attestation::where('fed_guid', $fed_guid)->exists();
+
+            if ($exists) {
+                $next_numeric_part++;
+            }
+        } while ($exists);
+
+        return $fed_guid;
     }
 }

@@ -3,19 +3,15 @@
         <div class="modal-body">
             <div v-if="attestation.status !== 'Draft'" class="row g-3">
 
-                <div class="col-md-6 text-break">
-                    <Label for="inputProgram" class="fw-bold" value="Cap Period"/>
-                    {{ getCapPeriod(editAtteForm.cap_guid) }}
-                </div>
-                <div class="col-md-6 text-break">
+                <div class="col-md-4 text-break">
                     <Label for="inputProgram" class="fw-bold" value="Institution Program"/>
                     {{ $getProgramNameFromGuid(programs, editAtteForm.program_guid) }}
                 </div>
-                <div class="col-md-6 text-break">
+                <div class="col-md-4 text-break">
                     <Label for="inputStudentNumber" class="fw-bold" value="Student Number"/>
                     {{ editAtteForm.student_number }}
                 </div>
-                <div class="col-md-6 text-break">
+                <div class="col-md-4 text-break">
                     <Label for="inputStudentId" class="fw-bold" value="Passport/Travel Doc. ID"/>
                     {{ editAtteForm.id_number }}
                 </div>
@@ -78,128 +74,118 @@
                 </div>
 
             </div>
-            <div v-else>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <Label class="form-label" value="Cap Period" required="true"/>
-                        <select @change="updateFedCap" class="form-select" aria-label="Select Cap" v-model="editAtteForm.cap_guid">
-                            <option value="">Select Cap</option>
-                            <option v-for="(cap, i) in allInstCaps" :value="cap.guid" >{{ cap.start_date }} - {{ cap.end_date }}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <Label class="form-label" value="Institution Program" required="true"/>
-                        <Select class="form-select" v-model="editAtteForm.program_guid">
-                            <option></option>
-                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}} ({{ c.program_graduate ? 'Graduate' : 'Undergraduate' }})</option>
-                        </Select>
-                    </div>
+            <div v-else class="row g-3">
+
+                <div class="col-md-4">
+                    <Label class="form-label" value="Institution Program" required="true"/>
+                    <Select class="form-select" v-model="editAtteForm.program_guid">
+                        <option></option>
+                        <option v-for="c in programs" :value="c.guid">{{ c.program_name}} ({{ c.program_graduate ? 'Graduate' : 'Undergraduate' }})</option>
+                    </Select>
                 </div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <Label class="form-label" value="Student Number"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.student_number"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
-                    <div class="col-md-6">
-                        <Label class="form-label" value="Passport/Travel Doc. ID"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.id_number"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
+                <div class="col-md-4">
+                    <Label class="form-label" value="Student Number"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.student_number"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-4">
+                    <Label class="form-label" value="Passport/Travel Doc. ID"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.id_number"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
 
-                    <div class="col-md-6">
-                        <Label class="form-label" value="First Name" required="true"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.first_name"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
-                    <div class="col-md-6">
-                        <Label class="form-label" value="Last Name" required="true"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.last_name"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
+                <div class="col-md-6">
+                    <Label class="form-label" value="First Name" required="true"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.first_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-6">
+                    <Label class="form-label" value="Last Name" required="true"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.last_name"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
 
-                    <div class="col-md-12">
-                        <Label class="form-label" value="Address 1" required="true"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.address1"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
-                    <div class="col-md-12">
-                        <Label class="form-label" value="Address 2"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.address2"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
+                <div class="col-md-12">
+                    <Label class="form-label" value="Address 1" required="true"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.address1"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-12">
+                    <Label class="form-label" value="Address 2"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.address2"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
 
-                    <div class="col-md-3">
-                        <Label class="form-label" value="City" required="true"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.city"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="City" required="true"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.city"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
 
-                    <div class="col-md-3">
-                        <Label class="form-label" value="Postal Code"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.zip_code"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
-                    <div class="col-md-3">
-                        <Label class="form-label" value="Province / State"/>
-                        <Input type="text" class="form-control" v-model="editAtteForm.province"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
-                    <div class="col-md-3">
-                        <Label class="form-label" value="Country" required="true"/>
-                        <input type="text" class="form-control" list="datalistOptionsInputCountry"
-                               placeholder="Type to search..."  v-model="editAtteForm.country"  :disabled="editAtteForm.program_guid === ''" />
-                        <datalist id="datalistOptionsInputCountry">
-                            <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
-                        </datalist>
-                    </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Postal Code"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.zip_code"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Province / State"/>
+                    <Input type="text" class="form-control" v-model="editAtteForm.province"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Country" required="true"/>
+                    <input type="text" class="form-control" list="datalistOptionsInputCountry"
+                           placeholder="Type to search..."  v-model="editAtteForm.country"  :disabled="editAtteForm.program_guid === ''" />
+                    <datalist id="datalistOptionsInputCountry">
+                        <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
+                    </datalist>
+                </div>
 
-                    <div class="col-md-3">
-                        <Label class="form-label" value="> 50% in-person?" required="true"/>
-                        <Select class="form-select" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                        </Select>
-                    </div>
-                    <div class="col-md-3">
-                        <Label class="form-label" value="Date of Birth" required="true"/>
-                        <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
-                               class="form-control" v-model="editAtteForm.dob"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
-                    <div class="col-md-3">
-                        <Label class="form-label" value="Email" required="true"/>
-                        <Input type="email" class="form-control" v-model="editAtteForm.email"
-                               :disabled="editAtteForm.program_guid === ''"/>
-                    </div>
-                    <div class="col-md-3">
-                        <Label class="form-label" value="Expiry Date"/>
-                        <Input type="text"
-                               class="form-control" v-model="instCap.end_date"
-                               disabled readonly/>
-
-                    </div>
-
-                    <div class="col-md-12 mt-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" v-model="editAtteForm.student_confirmation" id="studentConfirmationCheckbox">
-                            <label class="form-check-label" for="studentConfirmationCheckbox">
-                                We confirm that the applicant has been informed that the personal information contained in this application will be shared with Immigration, Refugee and Citizenship Canada and British Columbia’s Ministry of Post-Secondary Education and Future Skills for operational and program evaluation purposes.
-                            </label>
-                        </div>
-                    </div>
-
-                    <div v-if="editAtteForm.errors != undefined" class="row">
-                        <div class="col-12">
-                            <div v-if="editAtteForm.hasErrors == true" class="alert alert-danger mt-3">
-                                <ul>
-                                    <li v-for="err in editAtteForm.errors">{{ err }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="> 50% in-person?" required="true"/>
+                    <Select class="form-select" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Date of Birth" required="true"/>
+                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
+                           class="form-control" v-model="editAtteForm.dob"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Email" required="true"/>
+                    <Input type="email" class="form-control" v-model="editAtteForm.email"
+                           :disabled="editAtteForm.program_guid === ''"/>
+                </div>
+                <div class="col-md-3">
+                    <Label class="form-label" value="Expiry Date"/>
+                    <Input type="text"
+                           class="form-control" v-model="instCap.end_date"
+                           disabled readonly/>
 
                 </div>
+
+                <div class="col-md-12 mt-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="editAtteForm.student_confirmation" id="studentConfirmationCheckbox">
+                        <label class="form-check-label" for="studentConfirmationCheckbox">
+                            We confirm that the applicant has been informed that the personal information contained in this application will be shared with Immigration, Refugee and Citizenship Canada and British Columbia’s Ministry of Post-Secondary Education and Future Skills for operational and program evaluation purposes.
+                        </label>
+                    </div>
+                </div>
+
+                <div v-if="editAtteForm.errors != undefined" class="row">
+                    <div class="col-12">
+                        <div v-if="editAtteForm.hasErrors == true" class="alert alert-danger mt-3">
+                            <ul>
+                                <li v-for="err in editAtteForm.errors">{{ err }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div v-if="attestation.status === 'Draft'" class="modal-footer justify-content-between">
@@ -230,8 +216,7 @@ export default {
         countries: Object,
         error: String|null,
         programs: Object,
-        instCap: Object,
-        allInstCaps: Array
+        instCap: Object
     },
     data() {
         return {
@@ -259,32 +244,12 @@ export default {
                 country: "",
                 status: "",
                 expiry_date: "",
-                gt_fifty_pct_in_person: "",
+                gt_fifty_pct_in_person: ""
             },
         }
     },
     methods: {
-        updateFedCap: function (e){
-            if(e.target.value !== ''){
-                this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
-                this.instCap.end_date = this.cap.end_date;
-                let data = {
-                    fed_cap_guid: this.cap.fed_cap_guid,
-                }
-                axios.post('/institution/fed_caps/default', data)
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    });
-            }
-        },
-        getCapPeriod(capGuid) {
-            const cap = this.allInstCaps.find(cap => cap.guid === capGuid);
-            if (cap) {
-                return `${cap.start_date} - ${cap.end_date}`;
-            }
-            return 'N/A';
-        },
+
         submitForm: function (status) {
 
             // Reset error messages
@@ -292,23 +257,6 @@ export default {
             this.editAtteForm.hasErrors = false;
 
             this.editAtteForm.status = status;
-
-            // Get the current date
-            const currentDate = new Date();
-
-            // Check if a Cap is selected
-            if (this.editAtteForm.cap_guid) {
-                const selectedCap = this.allInstCaps.find(cap => cap.guid === this.editAtteForm.cap_guid);
-                const startDate = new Date(selectedCap.start_date);
-                const endDate = new Date(selectedCap.end_date);
-
-                // Validate current date is within cap dates
-                if (currentDate < startDate || currentDate > endDate) {
-                    this.editAtteForm.errors.push('Please select a correct Cap period.');
-                    this.editAtteForm.hasErrors = true;
-                    return;
-                }
-            }
 
             // Student confirmation (checkbox) is required for issuing an attestation.
             if ((this.editAtteForm.status === 'Issued') && (!this.editAtteForm.student_confirmation)) {
@@ -349,7 +297,6 @@ export default {
 
     mounted() {
         this.editAtteForm = useForm(this.attestation);
-
     }
 }
 </script>
