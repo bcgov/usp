@@ -327,35 +327,4 @@ class UserController extends Controller
             $user->roles()->attach($role);
         }
     }
-
-    /**
-     * Set the default Fed Cap at user login based on current date
-     * @return bool
-     */
-    private function setDefaultFedCap()
-    {
-        // Get current date
-        $currentDate = Carbon::now();
-        // Get Fed Cap based on current date
-        $fedCap = FedCap::where('start_date', '<=', $currentDate)
-            ->where('end_date', '>=', $currentDate)
-            ->first();
-
-        // Get Fed Cap GUID
-        if ($fedCap) {
-            $data = [
-                'fed_cap_guid' => $fedCap->guid
-            ];
-
-            // Call route to set default fed_cap
-            $response = Http::post('/ministry/fed_caps/default', $data);
-
-            if ($response->successful()) {
-                // Default Fed Cap has been set successfully
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
