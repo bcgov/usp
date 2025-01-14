@@ -4,7 +4,7 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <Label class="form-label" value="Cap Period" required="true"/>
-                    <select @change="updateFedCap" class="form-select" aria-label="Default federal cap" v-model="newAtteForm.cap_guid">
+                    <select @change="updateCap" class="form-select" aria-label="Cap Period" v-model="newAtteForm.cap_guid">
                         <option value="">Select Cap</option>
                         <option v-for="(cap, i) in allInstCaps" :value="cap.guid" >{{ cap.start_date }} - {{ cap.end_date }}</option>
                     </select>
@@ -183,7 +183,7 @@ export default {
         }
     },
     methods: {
-        updateFedCap: function (e){
+        updateCap: function (e){
             if(e.target.value !== ''){
                 this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
                 this.instCap.end_date = this.cap.end_date;

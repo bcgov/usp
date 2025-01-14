@@ -227,12 +227,14 @@ export default {
     data() {
         return {
             editAtteForm: null,
+            allInstCaps: [],
             editAtteFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
                 id: "",
                 institution_guid: "",
+                cap_guid: "",
                 program_guid: "",
                 first_name: "",
                 last_name: "",
@@ -252,11 +254,23 @@ export default {
             },
             selectedProgram: '',
             selectedInst: '',
-            programs: [],
-            allInstCaps: []
+            programs: []
         }
     },
     methods: {
+        updateCap: function (e){
+            if(e.target.value !== ''){
+                this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
+                let data = {
+                    fed_cap_guid: this.cap.fed_cap_guid,
+                }
+                axios.post('/ministry/fed_caps/default', data)
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+            }
+        },
         enableCap: function (e){
             const inst = this.institutions.find(inst => inst.name === e.target.value);
             if (inst) {

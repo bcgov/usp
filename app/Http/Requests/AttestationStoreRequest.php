@@ -66,7 +66,7 @@ class AttestationStoreRequest extends FormRequest
         $program = Program::where('guid', $this->program_guid)->first();
         //get the inst active cap.
         $inst = Institution::where('guid', $program->institution_guid)->active()->first();
-        $cap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', null)->first();
+        $cap = (isset($this->cap_guid)) ? Cap::where('guid', $this->cap_guid)->first() : Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', null)->first();
         //now check if there is a cap against the program
         $progCap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', $this->program_guid)->first();
         //if there is a program cap then use it as the cap_guid not the institution cap

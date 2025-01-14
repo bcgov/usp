@@ -3,11 +3,11 @@
         <div class="modal-body">
             <div v-if="attestation.status !== 'Draft'" class="row g-3">
 
-                <div class="col-md-4 text-break">
+                <div class="col-md-6 text-break">
                     <Label for="inputProgram" class="fw-bold" value="Institution Program"/>
                     {{ $getProgramNameFromGuid(programs, editAtteForm.program_guid) }}
                 </div>
-                <div class="col-md-4 text-break">
+                <div class="col-md-6 text-break">
                     <Label for="inputStudentNumber" class="fw-bold" value="Student Number"/>
                     {{ editAtteForm.student_number }}
                 </div>
@@ -16,11 +16,11 @@
                     {{ editAtteForm.id_number }}
                 </div>
 
-                <div class="col-md-6 text-break">
+                <div class="col-md-4 text-break">
                     <Label for="inputFirstName" class="fw-bold" value="First Name"/>
                     {{ editAtteForm.first_name }}
                 </div>
-                <div class="col-md-6 text-break">
+                <div class="col-md-4 text-break">
                     <Label for="inputLastName" class="fw-bold" value="Last Name"/>
                     {{ editAtteForm.last_name }}
                 </div>
@@ -74,25 +74,37 @@
                 </div>
 
             </div>
-            <div v-else class="row g-3">
+            <div v-else>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <Label class="form-label" value="Cap Period" required="true"/>
+                        <select @change="updateCap" class="form-select" aria-label="Cap Period" v-model="editAtteForm.cap_guid">
+                            <option value="">Select Cap</option>
+                            <option v-for="(cap, i) in allInstCaps" :value="cap.guid">{{ cap.start_date }} -
+                                {{ cap.end_date }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <Label class="form-label" value="Institution Program" required="true"/>
+                        <Select class="form-select" v-model="editAtteForm.program_guid">
+                            <option></option>
+                            <option v-for="c in programs" :value="c.guid">{{ c.program_name}} ({{ c.program_graduate ? 'Graduate' : 'Undergraduate' }})</option>
+                        </Select>
+                    </div>
 
-                <div class="col-md-4">
-                    <Label class="form-label" value="Institution Program" required="true"/>
-                    <Select class="form-select" v-model="editAtteForm.program_guid">
-                        <option></option>
-                        <option v-for="c in programs" :value="c.guid">{{ c.program_name}} ({{ c.program_graduate ? 'Graduate' : 'Undergraduate' }})</option>
-                    </Select>
                 </div>
-                <div class="col-md-4">
-                    <Label class="form-label" value="Student Number"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.student_number"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-4">
-                    <Label class="form-label" value="Passport/Travel Doc. ID"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.id_number"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <Label class="form-label" value="Student Number"/>
+                        <Input type="text" class="form-control" v-model="editAtteForm.student_number"
+                               :disabled="editAtteForm.program_guid === ''"/>
+                    </div>
+                    <div class="col-md-6">
+                        <Label class="form-label" value="Passport/Travel Doc. ID"/>
+                        <Input type="text" class="form-control" v-model="editAtteForm.id_number"
+                               :disabled="editAtteForm.program_guid === ''"/>
+                    </div>
 
                 <div class="col-md-6">
                     <Label class="form-label" value="First Name" required="true"/>
@@ -195,6 +207,7 @@
         </div>
         <FormSubmitAlert :form-state="editAtteForm.formState" :success-msg="editAtteForm.formSuccessMsg"
                          :fail-msg="editAtteForm.formFailMsg"></FormSubmitAlert>
+        </div>
     </form>
 
 </template>
@@ -216,11 +229,14 @@ export default {
         countries: Object,
         error: String|null,
         programs: Object,
-        instCap: Object
+        instCap: Object,
+        allInstCaps: Array
     },
     data() {
         return {
             editAtteForm: null,
+            activeFedCapList: [],
+            selectedFedCapGuid: '',
             editAtteFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
@@ -249,7 +265,20 @@ export default {
         }
     },
     methods: {
-
+        updateCap: function (e){
+            if(e.target.value !== ''){
+                this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
+                this.instCap.end_date = this.cap.end_date;
+                let data = {
+                    fed_cap_guid: this.cap.fed_cap_guid,
+                }
+                axios.post('/institution/fed_caps/default', data)
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+            }
+        },
         submitForm: function (status) {
 
             // Reset error messages
@@ -257,6 +286,23 @@ export default {
             this.editAtteForm.hasErrors = false;
 
             this.editAtteForm.status = status;
+
+            // Get the current date
+            const currentDate = new Date();
+
+            // Check if a Federal Cap is selected
+            if (this.selectedFedCapGuid) {
+                const selectedCap = this.activeFedCapList.find(cap => cap.guid === this.selectedFedCapGuid);
+                const startDate = new Date(selectedCap.start_date);
+                const endDate = new Date(selectedCap.end_date);
+
+                // Validate current date is within cap dates
+                if (currentDate < startDate || currentDate > endDate) {
+                    this.editAtteForm.errors.push('Please select a correct Cap period.');
+                    this.editAtteForm.hasErrors = true;
+                    return;
+                }
+            }
 
             // Student confirmation (checkbox) is required for issuing an attestation.
             if ((this.editAtteForm.status === 'Issued') && (!this.editAtteForm.student_confirmation)) {
@@ -297,6 +343,12 @@ export default {
 
     mounted() {
         this.editAtteForm = useForm(this.attestation);
+
+        if(this.$attrs.fedCapsData != undefined) {
+            this.activeFedCapList = this.$attrs.fedCapsData.list;
+            this.selectedFedCapGuid = this.$attrs.fedCapsData.default;
+        }
+
     }
 }
 </script>
