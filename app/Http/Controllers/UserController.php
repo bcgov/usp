@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AjaxRequest;
+use App\Models\FedCap;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\Role;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Modules\Ministry\App\Http\Controllers\FedCapController;
 use Response;
 use Stevenmaguire\OAuth2\Client\Provider\Keycloak;
 
@@ -169,6 +172,9 @@ class UserController extends Controller
 
                 Auth::login($user);
 
+                // Set default Fed Cap
+                $this->setDefaultFedCap();
+
                 return Redirect::route('ministry.home');
             }
 
@@ -183,10 +189,16 @@ class UserController extends Controller
                     ]);
                 }
 
+                // Set default Fed Cap
+                $this->setDefaultFedCap();
+
                 Auth::login($user);
 
                 return Redirect::route('institution.dashboard');
             }
+
+            // Set default Fed Cap
+            $this->setDefaultFedCap();
 
             return Redirect::route('login');
         }
@@ -327,36 +339,32 @@ class UserController extends Controller
             $user->roles()->attach($role);
         }
     }
-}
 
+    /**
+     * Set the default Fed Cap at user login based on current date
+     * @return bool
+     */
+    private function setDefaultFedCap()
+    {
+        $currentDate = Carbon::now();
+        $fedCap = FedCap::where('start_date', '<=', $currentDate->format('Y-m-d'))
+            ->where('end_date', '>=', $currentDate->format('Y-m-d'))
+            ->first();
 
-/**
- * Set the default Fed Cap at user login based on current date
- * @return bool
- */
-private function setDefaultFedCap()
-{
-    // Get current date
-    $currentDate = Carbon::now();
-    // Get Fed Cap based on current date
-    $fedCap = FedCap::where('start_date', '<=', $currentDate)
-        ->where('end_date', '>=', $currentDate)
-        ->first();
+        if ($fedCap) {
+            $data = [
+                'fed_cap_guid' => $fedCap->guid
+            ];
+            $request = new Request($data);
 
-    // Get Fed Cap GUID
-    if ($fedCap) {
-        $data = [
-            'fed_cap_guid' => $fedCap->guid
-        ];
+            $controller = app()->make('Modules\Ministry\App\Http\Controllers\FedCapController');
+            $response = app()->call([$controller, 'setDefault'], ['request' => $request]);
 
-        // Call route to set default fed_cap
-        $response = Http::post('/ministry/fed_caps/default', $data);
-
-        if ($response->successful()) {
-            // Default Fed Cap has been set successfully
-            return true;
+            if ($response) {
+                return true;
+            }
         }
-    }
 
-    return false;
+        return false;
+    }
 }
