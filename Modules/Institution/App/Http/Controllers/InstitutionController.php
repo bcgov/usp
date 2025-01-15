@@ -57,6 +57,7 @@ class InstitutionController extends Controller
         return Inertia::render('Institution::Dashboard', [
             'results' => $institution,
             'capTotal' => $capTotal,
+            'resGraduateCapTotal' => $instCap->total_reserved_graduate_attestations,
             'issued' => $issuedInstAttestations,
             'issuedUndegrad' => $instituionAttestationsDetails['issuedUndegrad'] ?? 0,
             'undergradRemaining' => $instituionAttestationsDetails['undergradRemaining'] ?? 0,
