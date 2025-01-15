@@ -22,7 +22,7 @@
                 <div class="col d-flex">
                     <div class="card text-center h-100 w-100">
                         <div class="card-header">
-                            Total Attestations Allowed
+                            Total Attestations Available
                         </div>
                         <div class="card-body display-5 py-5">{{ capTotal }}</div>
                     </div>
