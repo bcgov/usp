@@ -3,6 +3,7 @@
 namespace Modules\Ministry\App\Http\Controllers;
 
 use App\Events\InstitutionCapCreated;
+use App\Facades\InstitutionFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CapEditRequest;
 use App\Http\Requests\CapStoreRequest;
@@ -97,7 +98,18 @@ class CapController extends Controller
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
+
+            // Reserved Graduate Attestations issued
+            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $instCap->institution_guid)
+                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+                ->whereHas('program', function ($query) {
+                    $query->where('program_graduate', true);
+                })
+                ->count();
+
+            $institutionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $instCap);
         }
-        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0]]);
+        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0, 'resGradIssued' => $issuedResGradInstAttestations ?? 0, 'remainingUndergrad' => $institutionAttestationsDetails['undergradRemaining'] ?? 0]], 200);
     }
 }

@@ -21,6 +21,13 @@
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>
+        <th scope="col">
+            <a href="#" @click="switchSort('total_reserved_graduate_attestations')">
+                <span># Res. Grad. Attestations</span>
+                <em v-if="sortClmn === 'total_reserved_graduate_attestations' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
+                <em v-else class="bi bi-sort-numeric-down"></em>
+            </a>
+        </th>
         <th scope="col" style="min-width: 100px;">
             <a href="#" @click="switchSort('status')">
                 <span>Status</span>

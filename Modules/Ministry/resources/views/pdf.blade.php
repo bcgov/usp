@@ -80,6 +80,7 @@
                     <li>Designated Learning Institution (DLI) name: {{ $attestation->institution->name }}</li>
                     <li>DLI number: {{ $attestation->institution->dli }}</li>
                     <li>Program name: {{ $attestation->program->program_name }}</li>
+                    <li>{{ $attestation->program->program_graduate ? 'Graduate' : 'Undergraduate' }} Program</li>
                 </ul>
                 <br/>
                 This provincial attestation letter is valid until {{ $attestation->expiry_date }}, or until the study permit application cap is reached.<br/><br/>

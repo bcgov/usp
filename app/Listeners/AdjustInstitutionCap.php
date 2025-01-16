@@ -96,11 +96,40 @@ class AdjustInstitutionCap
             }
         }
 
+        // Same process but for the Reserved Graduate Attestations
+        $issuedResGradAttestations = Attestation::where('status', 'Issued')
+            ->where('institution_guid', $institution->guid)
+            ->where('fed_cap_guid', $cap->fed_cap_guid)
+            ->whereHas('program', function ($query) {
+                $query->where('program_graduate', true);
+            })
+            ->count();
+        \Log::info('9 $issuedResGradAttestations: '.$issuedResGradAttestations);
+
+        // The new value for Total Reserved Graduate Attest. Allowed can't be higher than the value for Total Attest. Allowed
+        if ($cap->total_reserved_graduate_attestations > $cap->total_attestations) {
+            \Log::info('10.1 $cap->total_reserved_graduate_attestations > $cap->total_attestations: '.$cap->total_reserved_graduate_attestations.'>='.$cap->total_attestations);
+            $cap->total_reserved_graduate_attestations = $cap->total_attestations;
+        }
+        // The new value for Total Reserved Graduate Attest. Allowed can't be lower than the total of grad. attestations already issues
+        elseif ($cap->total_reserved_graduate_attestations < $issuedResGradAttestations) {
+            \Log::info('10.2 $cap->total_reserved_graduate_attestations < $issuedResGradAttestations: '.$cap->total_reserved_graduate_attestations.'<'.$issuedResGradAttestations);
+            $cap->total_reserved_graduate_attestations = $issuedResGradAttestations;
+        }
+
+        $issuedUndergradAttestations = $issuedAttestations - $issuedResGradAttestations;
+        $maxResGradAttestations = $cap->total_attestations - $issuedUndergradAttestations;
+        // Last chek, making sure that the new value for the Total Reserved Graduate Attest. doesn't go over the remaining number of Grad. Attes.
+        if ($cap->total_reserved_graduate_attestations > $maxResGradAttestations) {
+            \Log::info('10.3 $cap->total_reserved_graduate_attestations > $maxResGradAttestations: '.$cap->total_reserved_graduate_attestations.'>'.$maxResGradAttestations);
+            $cap->total_reserved_graduate_attestations = $maxResGradAttestations;
+        }
+
         $cap->save();
 
         // If the cap is institution level, check any program caps and update the limit to be the same
         if (is_null($cap->program_guid)) {
-            \Log::info('9 is_null($cap->program_guid): '.$cap->total_attestations);
+            \Log::info('12 is_null($cap->program_guid): '.$cap->total_attestations);
             // No program limit can have more attestations available to it than the institution cap
             Cap::where('institution_guid', $institution->guid)
                 ->active()

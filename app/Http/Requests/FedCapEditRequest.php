@@ -24,13 +24,17 @@ class FedCapEditRequest extends FormRequest
      */
     public function rules(): array
     {
+        $totalAttestations = array_sum(array_column($this->caps, 'issued_attestations'));
+        $totalGradAttestations = array_sum(array_column($this->caps, 'issued_reserved_graduate_attestations'));
+
         return [
             'id' => 'required',
             'guid' => 'required',
             'start_date' => 'required|unique:fed_caps,start_date,'.$this->id,
             'end_date' => 'required|unique:fed_caps,end_date,'.$this->id,
             'status' => 'required|in:Active,Completed,Cancelled',
-            'total_attestations' => 'required|numeric',
+            'total_attestations' => 'required|numeric|gte:'.$totalAttestations,
+            'total_reserved_graduate_attestations' => 'required|numeric|gte:'.$totalGradAttestations,
             'comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];

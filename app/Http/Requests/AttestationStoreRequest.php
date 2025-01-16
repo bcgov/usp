@@ -38,6 +38,7 @@ class AttestationStoreRequest extends FormRequest
             'last_name' => 'required',
             'id_number' => 'nullable',
             'student_number' => 'nullable',
+            'student_confirmation' => 'boolean',
             'dob' => 'required|date_format:Y-m-d|before:today',
             'email' => 'required|email',
             'address1' => 'required',
@@ -85,6 +86,7 @@ class AttestationStoreRequest extends FormRequest
             'last_touch_by_user_guid' => $this->user()->guid,
             'id_number' => Str::upper($this->id_number),
             'student_number' => Str::upper($this->student_number),
+            'student_confirmation' => $this->toBoolean($this->student_confirmation),
             'first_name' => Str::title($this->first_name),
             'last_name' => Str::title($this->last_name),
             'email' => Str::lower($this->email),
@@ -148,7 +150,16 @@ class AttestationStoreRequest extends FormRequest
             $next_numeric_part = 100000000;
         }
 
-        // Construct the next value
-        return 'BC'.$year_prefix.'-'.sprintf('%03d', $next_numeric_part);
+        // Loop to ensure uniqueness
+        do {
+            $fed_guid = 'BC' . $year_prefix . '-' . sprintf('%09d', $next_numeric_part);
+            $exists = Attestation::where('fed_guid', $fed_guid)->exists();
+
+            if ($exists) {
+                $next_numeric_part++;
+            }
+        } while ($exists);
+
+        return $fed_guid;
     }
 }

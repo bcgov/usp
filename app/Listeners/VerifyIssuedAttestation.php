@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\AttestationIssued;
 use App\Events\TrackerTriggered;
+use App\Facades\InstitutionFacade;
 use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
@@ -24,8 +25,14 @@ class VerifyIssuedAttestation
         $attestation = $event->attestation;
         $status = $event->status;
 
-        //do not restrict creating draft attestations
+        // Need to verify if this attestation is linked to a graduate or undergraduate program
+        if (!$attestation->relationLoaded('program')) {
+            $attestation->load('program');
+        }
 
+        $isProgramGraduate = $attestation->program->program_graduate ?? null;
+
+        //do not restrict creating draft attestations
         $instCap = Cap::where('institution_guid', $cap->institution_guid)
             ->active()
             ->where('program_guid', null)
@@ -45,9 +52,20 @@ class VerifyIssuedAttestation
                 ->where('fed_cap_guid', $cap->fed_cap_guid)
                 ->count();
 
+            // If the attestation is linked to a reserved graduate program
+            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+                ->where('institution_guid', $cap->institution_guid)
+                ->where('fed_cap_guid', $cap->fed_cap_guid)
+                ->whereHas('program', function ($query) {
+                    $query->where('program_graduate', true);
+                })
+                ->count();
+
+            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $cap);
+
             // If we hit or acceded the inst cap limit for issued attestations
             if ($issuedInstAttestations > $instCap->total_attestations) {
-                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
+                \Log::info('1 $issuedAttestations > $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
@@ -59,7 +77,13 @@ class VerifyIssuedAttestation
 
             // If we hit or acceded the inst cap limit for issued attestations
             if ($issuedProgAttestations > $cap->total_attestations) {
-                \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: '.$issuedProgAttestations.' >= '.$instCap->total_attestations);
+                \Log::info('2 $issuedProgAttestations > $instCap->total_attestations: '.$issuedProgAttestations.' >= '.$instCap->total_attestations);
+                $valid = false;
+            }
+
+            // If we hit or acceded the limit for Undergrad issued attestations
+            if (!$isProgramGraduate && ($instituionAttestationsDetails['undergradRemaining']) === -1) {
+                \Log::info('3  $instituionAttestationsDetails[\'undergradRemaining\'] === -1');
                 $valid = false;
             }
 
@@ -69,6 +93,10 @@ class VerifyIssuedAttestation
 
             if ($valid) {
                 $cap->issued_attestations += 1;
+                // If it's an attestation linked to a Graduate Program
+                if ($isProgramGraduate) {
+                    $cap->issued_reserved_graduate_attestations += 1;
+                }
                 $attestation->issued_by_user_guid = Auth::user()->guid;
                 $attestation->issue_date = Carbon::now()->startOfDay();
                 $attestation->save();
@@ -77,11 +105,19 @@ class VerifyIssuedAttestation
                 $attestation->status = 'Draft';
                 $attestation->save();
                 $cap->draft_attestations += 1;
+                // If it's an attestation linked to a Graduate Program
+                if ($isProgramGraduate) {
+                    $cap->draft_reserved_graduate_attestations += 1;
+                }
             }
         } else {
             $attestation->status = 'Draft';
             $attestation->save();
             $cap->draft_attestations += 1;
+            // If it's an attestation linked to a Graduate Program
+            if ($isProgramGraduate) {
+                $cap->draft_reserved_graduate_attestations += 1;
+            }
         }
 
         $cap->save();

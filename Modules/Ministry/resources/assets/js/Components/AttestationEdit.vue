@@ -67,6 +67,10 @@
                     <Label for="inputExpiryDate" class="fw-bold" value="Expiry Date"/>
                     {{ editAtteForm.expiry_date }}
                 </div>
+                <div class="col-md-12 text-break">
+                    <Label for="studentConfirmationCheckbox" class="fw-bold" value="Student Confirmation"/>
+                    {{ editAtteForm.student_confirmation ? 'Yes' : 'No' }}
+                </div>
 
                 <a v-if="attestation.status === 'Issued'" :href="'/ministry/attestations/download/' + attestation.id" target="_blank" class="btn btn-lg btn-outline-secondary mb-3">
                     {{attestation.issued_by_name}}<br/><i class="bi bi-box-arrow-down"></i>
@@ -100,7 +104,7 @@
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
                         <template v-if="institution !== ''">
                             <template v-for="c in institution.programs">
-                                <option v-if="c.active_status" :value="c.guid">{{ c.program_name}}</option>
+                                <option v-if="c.active_status" :value="c.guid">{{ c.program_name}} ({{ c.program_graduate ? 'Graduate' : 'Undergraduate' }})</option>
                             </template>
                         </template>
                     </Select>
@@ -167,6 +171,14 @@
                            class="form-control" id="inputExpiryDate" v-model="institution.active_caps[0].end_date"
                            disabled readonly/>
 
+                </div>
+                <div class="col-md-12 mt-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="editAtteForm.student_confirmation" id="studentConfirmationCheckbox">
+                        <label class="form-check-label" for="studentConfirmationCheckbox">
+                            We confirm that the applicant has been informed that the personal information contained in this application will be shared with Immigration, Refugee and Citizenship Canada and British Columbia’s Ministry of Post-Secondary Education and Future Skills for operational and program evaluation purposes.
+                        </label>
+                    </div>
                 </div>
 
 
@@ -235,7 +247,8 @@ export default {
                 country: "",
                 status: "",
                 expiry_date: "",
-                gt_fifty_pct_in_person: ""
+                gt_fifty_pct_in_person: "",
+                student_confirmation: false
             },
             selectedProgram: '',
             selectedInst: '',
@@ -266,7 +279,20 @@ export default {
                 });
         },
         submitForm: function (status) {
+
+            // Reset error messages
+            this.editAtteForm.errors = [];
+            this.editAtteForm.hasErrors = false;
+
             this.editAtteForm.status = status;
+
+            // Student confirmation (checkbox) is required for issuing an attestation.
+            if ((this.editAtteForm.status === 'Issued') && (!this.editAtteForm.student_confirmation)) {
+                this.editAtteForm.errors.push('Please confirm that the applicant has been informed that the personal information contained in this application will be shared.');
+                this.editAtteForm.hasErrors = true;
+                return;
+            }
+
             if(this.editAtteForm.status !== 'Draft'){
                 let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
                 if(!check){

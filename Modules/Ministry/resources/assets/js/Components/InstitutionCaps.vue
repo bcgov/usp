@@ -20,7 +20,10 @@
                             <td>{{ row.start_date }}</td>
                             <td>{{ row.end_date }}</td>
                             <td>{{ row.total_attestations }}</td>
+                            <td>{{ row.total_reserved_graduate_attestations }}</td>
                             <td>{{ row.issued_attestations }}</td>
+                            <td>{{ row.issued_reserved_graduate_attestations }}</td>
+                            <td>{{ row.issued_attestations - row.issued_reserved_graduate_attestations }}</td>
                             <td>
                                 <span v-if="row.active_status" class="badge rounded-pill text-bg-success">Active</span>
                                 <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>

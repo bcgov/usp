@@ -25,10 +25,19 @@
             Cap Total
         </th>
         <th scope="col" style="min-width: 100px;">
-            Issued
+            Res. Grad.
         </th>
         <th scope="col" style="min-width: 100px;">
-            Remaining
+            Total Issued
+        </th>
+        <th scope="col" style="min-width: 100px;">
+           Total Remaining
+        </th>
+        <th scope="col" style="min-width: 100px;">
+            Grad. Issued
+        </th>
+        <th scope="col" style="min-width: 100px;">
+            Undergrad. Issued
         </th>
     </tr>
 </template>
