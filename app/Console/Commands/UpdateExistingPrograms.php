@@ -21,7 +21,9 @@ class UpdateExistingPrograms extends Command
         $records = $csv->getRecords();
 
         foreach ($records as $record) {
-            $program = Program::where('guid', $record['Progam_guid'])->first();
+            // Remove any hyphens that could be exist in the csv file provided
+            $program_guid = str_replace('-', '', $record['Progam_guid']);
+            $program = Program::where('guid', $program_guid)->first();
 
             if (!$program) {
                 $this->error("Program not found: {$record['Progam_guid']}");
