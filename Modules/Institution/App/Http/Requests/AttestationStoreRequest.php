@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class AttestationStoreRequest extends BaseFormRequest
 {
@@ -83,6 +84,12 @@ class AttestationStoreRequest extends BaseFormRequest
         //if there is a program cap then use it as the cap_guid not the institution cap
         if (! is_null($progCap)) {
             $cap = $progCap;
+        }
+
+        if ($cap === null) {
+            throw ValidationException::withMessages([
+                'cap' => ["The system can't find an active cap for this institution."]
+            ]);
         }
 
         //get the next fed_guid
