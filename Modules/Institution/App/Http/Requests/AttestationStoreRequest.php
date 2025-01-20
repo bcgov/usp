@@ -86,7 +86,6 @@ class AttestationStoreRequest extends BaseFormRequest
             $cap = $progCap;
         }
 
-        $cap = NULL;
         if ($cap === null) {
             throw ValidationException::withMessages([
                 'cap' => ["The system can't find an active cap for this institution."]
