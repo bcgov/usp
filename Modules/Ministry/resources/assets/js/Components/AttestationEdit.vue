@@ -98,8 +98,16 @@
                     <Input type="text" class="form-control" id="inputAddress2" v-model="editAtteForm.address2"
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <Label class="form-label" value="Cap Period" required="true"/>
+                    <select @change="updateCap" class="form-select" aria-label="Cap Period" v-model="editAtteForm.cap_guid">
+                        <option value="">Select Cap</option>
+                        <option v-for="(cap, i) in allInstCaps" :value="cap.guid">{{ cap.start_date }} -
+                            {{ cap.end_date }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6">
                     <Label for="inputProgram" class="form-label" value="Institution Program" required="true"/>
                     <Select class="form-select" id="inputProgram" v-model="editAtteForm.program_guid" :disabled="institution === ''">
                         <template v-if="institution !== ''">
@@ -120,7 +128,7 @@
                            :disabled="editAtteForm.program_guid === ''"/>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputDob" class="form-label" value="Date of Birth" required="true"/>
                     <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputDob" v-model="editAtteForm.dob"
@@ -261,6 +269,7 @@ export default {
         updateCap: function (e){
             if(e.target.value !== ''){
                 this.cap = this.allInstCaps.find(cap => cap.guid === e.target.value);
+                this.selectedInst.active_caps[0].end_date = this.cap.end_date;
                 let data = {
                     fed_cap_guid: this.cap.fed_cap_guid,
                 }
@@ -292,6 +301,18 @@ export default {
                     // handle error
                     console.log(error);
                 });
+        },
+        async fetchCaps(institutionGuid) {
+            try {
+                let data = {
+                    institution_guid: institutionGuid,
+                }
+                const response = await axios.post('/ministry/api/fetch/caps', data);
+                this.allInstCaps = response.data;
+
+            } catch (error) {
+                console.error('Error while retrieving caps list:', error);
+            }
         },
         submitForm: function (status) {
 
@@ -344,9 +365,7 @@ export default {
         this.editAtteForm = useForm(this.attestation);
         this.selectedInst = this.attestation.institution;
         this.fetchPrograms();
-        this.allInstCaps = this.getCaps()
-        console.log(this.institution)
-        // this.editAtteForm.institution_guid = this.institution.guid;
+        this.fetchCaps(this.selectedInst.guid);
     }
 }
 </script>
