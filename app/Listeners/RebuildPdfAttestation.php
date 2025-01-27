@@ -39,7 +39,12 @@ class RebuildPdfAttestation
         $utils = Util::getSortedUtils();
         $draft = env('APP_ENV') !== 'production';
 
-        $html = view('ministry::pdf', compact('attestation', 'now_d', 'now_t', 'utils', 'draft'))->render();
+        // Get cap linked to the attestation to extract year
+        $cap = $attestation->cap;
+        $capStartDate = $cap ? $cap->start_date : null;
+        $year = date('Y', strtotime($capStartDate));
+
+        $html = view('ministry::pdf', compact('attestation', 'now_d', 'now_t', 'utils', 'draft', 'year'))->render();
         $pdfContent = base64_encode($html);
         AttestationPdf::create(['guid' => Str::orderedUuid()->getHex(),
             'attestation_guid' => $attestation->guid,
