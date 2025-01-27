@@ -67,7 +67,7 @@
                 Expiry date: {{ $attestation->expiry_date }}<br/>
                 <br/><br/>
                 Dear {{ $attestation->first_name }} {{ $attestation->last_name }},<br/><br/>
-                This provincial attestation letter confirms that you have a space within British Columbia’s 2024 allocation period for study permit applications, based on the information that you provided:<br/>
+                This provincial attestation letter confirms that you have a space within British Columbia’s {{ $year }} allocation period for study permit applications, based on the information that you provided:<br/>
                 <strong>Student:</strong>
                 <ul>
                     <li>Student Name: {{ $attestation->last_name }}, {{ $attestation->first_name }}</li>
@@ -103,9 +103,6 @@
                 <td style="width: 30%;">
                     Mailing Address:<br/>
                     {!! $utils['Ministry Mailing Address'][0]->field_name !!}<br/>
-                    {{ $utils['Ministry Tele Victoria'][0]->field_name }}<br/>
-                    {{ $utils['Ministry Tele Toll-free'][0]->field_name }} (Toll-free in Canada/USA)<br/>
-                    {{ $utils['Ministry Tele Toll-free'][0]->field_name }} (B.C. Lower Mainland)<br/>
                 </td>
                 <td style="width: 25%;">
                     Courier Address:<br/>
