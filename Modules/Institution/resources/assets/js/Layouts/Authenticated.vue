@@ -2,7 +2,7 @@
     <div>
 
         <div class="min-h-screen bg-gray-100">
-            <NavBar v-bind="$attrs" />
+            <NavBar @update="updateFCap" v-bind="$attrs" />
 
             <main>
                 <div class="mt-3">
@@ -37,11 +37,20 @@ export default {
             showingNavigationDropdown: ref(false),
             searchType: '',
             searchData: '',
+            updateFedCap: ref(false),
         }
     },
     methods: {
         emitSearch: function (data){
             this.$emit('search', data);
+        },
+        updateFCap() {
+            this.updateFedCap = !this.updateFedCap;
+
+            //dispatch a global event
+            window.dispatchEvent(new CustomEvent('update-fed-cap', {
+                detail: { updateFedCap: this.updateFedCap }
+            }));
         }
     },
     mounted() {

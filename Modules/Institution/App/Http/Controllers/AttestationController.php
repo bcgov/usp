@@ -34,8 +34,7 @@ class AttestationController extends Controller
 
     public function __construct()
     {
-        $this->fedCaps = FedCap::active()->get();
-        $this->countries = Country::select('name')->where('active', true)->get();
+//        $this->fedCaps = FedCap::active()->get();
     }
 
     /**
@@ -93,6 +92,7 @@ class AttestationController extends Controller
             $warning_message = "Your institution has reached the maximum attestations cap. You can't issue a new attestation or it will be automatically converted as a Draft.";
         }
 
+        $this->countries = Country::select('name')->where('active', true)->get();
         return Inertia::render('Institution::Attestations', [
             'error' => null,
             'warning' => $warning_message,
