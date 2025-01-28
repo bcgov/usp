@@ -259,6 +259,9 @@ export default {
                     // handle error
                     console.log(error);
                 });
+        },
+        handleFedCapUpdate(event) {
+            this.updateFedCap = event.detail.updateFedCap;
         }
     },
     beforeUnmount() {

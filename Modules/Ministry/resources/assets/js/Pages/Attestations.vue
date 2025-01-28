@@ -158,7 +158,6 @@ export default {
         },
         handleFedCapUpdate(event) {
             this.updateFedCap = event.detail.updateFedCap;
-            console.log("updateFedCap updated:", this.updateFedCap);
         }
     },
     beforeUnmount() {
