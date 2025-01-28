@@ -30,14 +30,7 @@ class AttestationController extends Controller
 
     public function __construct()
     {
-        $this->fedCaps = FedCap::active()->get();
-        $this->countries = Country::select('name')
-            ->where('active', true)
-            ->get();
-        $this->institutions = Institution::whereHas('activeCaps')
-            ->active()
-            ->with('activeCaps')
-            ->get();
+//        $this->fedCaps = FedCap::active()->get();
     }
 
     /**
@@ -46,7 +39,13 @@ class AttestationController extends Controller
     public function index(Request $request)
     {
         $attestations = $this->paginateAtte();
-
+        $this->countries = Country::select('name')
+            ->where('active', true)
+            ->get();
+        $this->institutions = Institution::whereHas('activeCaps')
+            ->active()
+            ->with('activeCaps')
+            ->get();
         return Inertia::render('Ministry::Attestations', [
             'status' => true,
             'results' => $attestations,
