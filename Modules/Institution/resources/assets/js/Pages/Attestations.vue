@@ -16,6 +16,7 @@
                     </div>
                 </div>
                 <div class="col-md-9">
+                    <div v-if="updateFedCap" class="above">&nbsp;</div>
                     <div class="card mb-3">
                         <div class="card-header">
                             <div class="row">
@@ -184,7 +185,8 @@ export default {
             editRow: '',
             showNewModal: false,
             showEditModal: false,
-            capStat: ''
+            capStat: '',
+            updateFedCap: false
         }
     },
 
@@ -259,9 +261,23 @@ export default {
                 });
         }
     },
+    beforeUnmount() {
+        window.removeEventListener('update-fed-cap', this.handleFedCapUpdate);
+    },
     mounted() {
         this.attestationList = this.results.data;
+        window.addEventListener('update-fed-cap', this.handleFedCapUpdate);
         this.fetchCapStats();
     },
 }
 </script>
+<style scoped>
+.above{
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #efefef7d;
+    z-index: 111;
+}
+</style>

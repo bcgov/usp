@@ -128,6 +128,7 @@ export default {
     methods: {
         updateFedCap: function (e){
             if(e.target.value !== ''){
+                this.$emit('update');
                 this.selectedFedCapGuid = e.target.value;
                 let data = {
                     fed_cap_guid: e.target.value
