@@ -41,6 +41,10 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = null;
+        $globalFedCaps = [
+            'list' => [],
+            'default' => null,
+        ];
         if (Auth::check()) {
             $user = User::find(Auth::id());
 
