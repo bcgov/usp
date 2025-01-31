@@ -9,6 +9,7 @@ use App\Http\Requests\FedCapStoreRequest;
 use App\Models\FedCap;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -76,8 +77,8 @@ class FedCapController extends Controller
     {
         $fedCap = FedCap::where('guid', $request->input('fed_cap_guid'))->first();
 
-        Cache::forget('global_fed_caps');
-        Cache::remember('global_fed_caps', now()->addHours(10), function () use ($fedCap) {
+        Cache::forget('global_fed_caps_' . Auth::id());
+        Cache::remember('global_fed_caps_' . Auth::id(), now()->addHours(10), function () use ($fedCap) {
             $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
                 ->without(['caps'])
                 ->active()->orderBy('id')->get();

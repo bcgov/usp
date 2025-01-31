@@ -48,7 +48,7 @@ class AttestationController extends Controller
         $institution = $user->institution;
         //        $fedCap = FedCap::active()->first();
 
-        $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps')['default'])->active()
+        $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps_' . $user->id)['default'])->active()
 //        $cap = Cap::where('fed_cap_guid', $fedCap->guid)->active()
             ->where('program_guid', null)
             ->where('institution_guid', $institution->guid)
@@ -112,7 +112,7 @@ class AttestationController extends Controller
         $error = null;
         //1. check for duplicate attestations
         $check1 = Attestation::where([
-            'fed_cap_guid' => Cache::get('global_fed_caps')['default'],
+            'fed_cap_guid' => Cache::get('global_fed_caps_' . Auth::id())['default'],
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
             'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
             'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid, 'email' => $request->email,
@@ -148,7 +148,7 @@ class AttestationController extends Controller
 
         //2. dont allow duplicate
         $check2 = Attestation::where([
-            'fed_cap_guid' => Cache::get('global_fed_caps')['default'],
+            'fed_cap_guid' => Cache::get('global_fed_caps_' . Auth::id())['default'],
             'first_name' => $request->first_name, 'last_name' => $request->last_name, 'id_number' => $request->id_number,
             'dob' => $request->dob, 'institution_guid' => $request->institution_guid,
             'program_guid' => $request->program_guid, 'cap_guid' => $request->cap_guid, 'email' => $request->email,
@@ -204,11 +204,11 @@ class AttestationController extends Controller
 
     public function exportCsv()
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::find(Auth::id());
         $institution = $user->institution;
 
         $data = Attestation::where('institution_guid', $institution->guid)
-            ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
             ->whereNot('status', 'Cancelled Draft')
             ->orderByDesc('created_at')->get();
 
@@ -291,7 +291,7 @@ class AttestationController extends Controller
     {
         //        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
         $attestations = Attestation::where('institution_guid', $institution->guid)
-            ->where('fed_cap_guid', Cache::get('global_fed_caps')['default'])
+            ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
             ->whereNot('status', 'Cancelled Draft');
 
         if (request()->filter_term !== null && request()->filter_type !== null) {

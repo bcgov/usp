@@ -41,29 +41,34 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = null;
+        $globalFedCaps = [
+            'list' => [],
+            'default' => null,
+        ];
         if (Auth::check()) {
-            $user = User::find(Auth::user()->id);
+            $user = User::find(Auth::id());
+
+            $globalFedCaps = Cache::remember('global_fed_caps_' . $user->id, now()->addHours(10), function () {
+                $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
+                    ->without(['caps'])
+                    ->active()->orderBy('id')->get();
+                if($fedCaps->isEmpty()) {
+                    return [
+                        'list' => [],
+                        'default' => null,
+                    ];
+                }
+                return [
+                    'list' => $fedCaps,
+                    'default' => $fedCaps[0]->guid
+                ];
+            });
         }
 
         $sortedUtils = Cache::remember('sorted_utils', 180, function () {
             return Util::getSortedUtils();
         });
 
-        $globalFedCaps = Cache::remember('global_fed_caps', now()->addHours(10), function () {
-            $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
-                ->without(['caps'])
-                ->active()->orderBy('id')->get();
-            if($fedCaps->isEmpty()) {
-                return [
-                    'list' => [],
-                    'default' => null,
-                ];
-            }
-            return [
-                'list' => $fedCaps,
-                'default' => $fedCaps[0]->guid
-                ];
-        });
 
         return array_merge(parent::share($request), [
             'auth' => [
