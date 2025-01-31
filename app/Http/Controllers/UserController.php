@@ -231,7 +231,7 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        Cache::forget('global_fed_caps');
+        Cache::forget('global_fed_caps_' . Auth::id());
         return Inertia::render('Auth/Login', [
             'loginAttempt' => false,
             'hasAccess' => false,
