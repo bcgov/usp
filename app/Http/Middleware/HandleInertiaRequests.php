@@ -48,8 +48,9 @@ class HandleInertiaRequests extends Middleware
         if (Auth::check()) {
             $user = User::find(Auth::id());
 
+            // Sometimes Auth::id() is null and we need to enforce attaching the id to the cache
             if(!is_null(Auth::id())){
-                \Log::info('Updating Global Fed Caps for: ' . Auth::id());
+//                \Log::info('Updating Global Fed Caps for: ' . Auth::id());
 
                 $globalFedCaps = Cache::remember('global_fed_caps_' . Auth::id(), now()->addHours(10), function () {
                     $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
