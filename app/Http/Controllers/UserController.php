@@ -246,6 +246,9 @@ class UserController extends Controller
      */
     public function logout(Request $request)
     {
+        if(Auth::check()){
+            Cache::forget('global_fed_caps_' . Auth::id());
+        }
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
