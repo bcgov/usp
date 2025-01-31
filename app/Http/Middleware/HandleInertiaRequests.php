@@ -48,21 +48,25 @@ class HandleInertiaRequests extends Middleware
         if (Auth::check()) {
             $user = User::find(Auth::id());
 
-            $globalFedCaps = Cache::remember('global_fed_caps_' . Auth::id(), now()->addHours(10), function () {
-                $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
-                    ->without(['caps'])
-                    ->active()->orderBy('id')->get();
-                if($fedCaps->isEmpty()) {
+            if(!is_null(Auth::id())){
+                \Log::info('Updating Global Fed Caps for: ' . Auth::id());
+
+                $globalFedCaps = Cache::remember('global_fed_caps_' . Auth::id(), now()->addHours(10), function () {
+                    $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
+                        ->without(['caps'])
+                        ->active()->orderBy('id')->get();
+                    if($fedCaps->isEmpty()) {
+                        return [
+                            'list' => [],
+                            'default' => null,
+                        ];
+                    }
                     return [
-                        'list' => [],
-                        'default' => null,
+                        'list' => $fedCaps,
+                        'default' => $fedCaps[0]->guid
                     ];
-                }
-                return [
-                    'list' => $fedCaps,
-                    'default' => $fedCaps[0]->guid
-                ];
-            });
+                });
+            }
         }
 
         $sortedUtils = Cache::remember('sorted_utils', 180, function () {

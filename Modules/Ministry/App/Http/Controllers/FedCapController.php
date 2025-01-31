@@ -78,15 +78,19 @@ class FedCapController extends Controller
         $fedCap = FedCap::where('guid', $request->input('fed_cap_guid'))->first();
 
         Cache::forget('global_fed_caps_' . Auth::id());
-        Cache::remember('global_fed_caps_' . Auth::id(), now()->addHours(10), function () use ($fedCap) {
-            $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
-                ->without(['caps'])
-                ->active()->orderBy('id')->get();
-            return [
-                'list' => $fedCaps,
-                'default' => $fedCap->guid
-            ];
-        });
+        if(!is_null(Auth::id())){
+            \Log::info('updating global fed caps for: ' . Auth::id());
+            Cache::remember('global_fed_caps_' . Auth::id(), now()->addHours(10), function () use ($fedCap) {
+                $fedCaps = FedCap::select('id', 'guid', 'start_date', 'end_date', 'status')
+                    ->without(['caps'])
+                    ->active()->orderBy('id')->get();
+                return [
+                    'list' => $fedCaps,
+                    'default' => $fedCap->guid
+                ];
+            });
+        }
+
 
         return Response::json(['status' => true, 'body' => $fedCap]);
     }
