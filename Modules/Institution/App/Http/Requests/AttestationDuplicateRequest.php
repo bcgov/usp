@@ -63,6 +63,7 @@ class AttestationDuplicateRequest extends BaseFormRequest
     protected function prepareForValidation()
     {
         $oldAtte = Attestation::where('guid', $this->old_guid)->first();
+        \Log::info('We got a old_guid: ' . $this->old_guid);
         if(!is_null($oldAtte)){
 
             // Get the inst active cap.

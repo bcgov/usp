@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests;
 
+use Auth;
 use App\Models\Attestation;
 use App\Models\Cap;
 use App\Models\Institution;
 use App\Models\Program;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class AttestationStoreRequest extends FormRequest
@@ -66,7 +68,13 @@ class AttestationStoreRequest extends FormRequest
         $program = Program::where('guid', $this->program_guid)->first();
         //get the inst active cap.
         $inst = Institution::where('guid', $program->institution_guid)->active()->first();
-        $cap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', null)->first();
+
+        $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])->active()
+            ->where('program_guid', null)
+            ->where('institution_guid', $inst->guid)
+            ->first();
+
+//        $cap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', null)->first();
         //now check if there is a cap against the program
         $progCap = Cap::where('institution_guid', $inst->guid)->active()->where('program_guid', $this->program_guid)->first();
         //if there is a program cap then use it as the cap_guid not the institution cap

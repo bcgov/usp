@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Auth;
 
 class Cap extends Model
 {
@@ -78,7 +79,8 @@ class Cap extends Model
 
     public function scopeSelectedFedcap($query)
     {
-        $guid = Cache::get('global_fed_caps');
+        $guid = Cache::get('global_fed_caps_' . Auth::id());
+
         if (is_null($guid)) {
             return $query;
         }
