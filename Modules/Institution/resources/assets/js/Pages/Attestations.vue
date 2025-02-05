@@ -107,7 +107,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="newAtteModalLabel">New Attestation</h5>
+                            <h5 class="modal-title" id="newAtteModalLabel">New Attestation <span class=" fs-6" v-if="instCap !== null">for PY: {{ instCap.start_date }} to {{ instCap.end_date }}</span></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div v-if="instCap === null" class="modal-body">
@@ -124,7 +124,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title me-2" id="editAtteModalLabel">Edit Attestation</h5>
+                            <h5 class="modal-title me-2" id="editAtteModalLabel">Edit Attestation <span class="fs-6" v-if="instCap !== null">for PY: {{ instCap.start_date }} to {{ instCap.end_date }}</span></h5>
                             <strong>Issued by: {{ editRow.issued_by_name }}</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>

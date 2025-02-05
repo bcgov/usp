@@ -232,22 +232,23 @@ class AttestationController extends Controller
 
     public function exportCsv()
     {
-        $user = User::find(Auth::id());
-        $institution = $user->institution;
+        //$user = User::find(Auth::id());
+        $institution = Auth::user()->institution;
 
-        $data = Attestation::where('institution_guid', $institution->guid)
+        $data = Attestation::with('program')
+            ->where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
             ->whereNot('status', 'Cancelled Draft')
             ->orderByDesc('created_at')->get();
 
         $csvData = [];
         $csvDataHeader = ['PAL ID', 'PROGRAM NAME', 'STUDENT NUMBER', 'FIRST NAME', 'LAST NAME', 'TRAVEL ID', 'DOB', 'ADDRESS1', 'ADDRESS2', 'EMAIL', 'CITY',
-            'POSTAL CODE', 'PROVINCE', 'COUNTRY', '>50% IN PERSON', 'STATUS', 'EXPIRY DATE', 'ISSUED BY', 'ISSUE DATE'];
+            'POSTAL CODE', 'PROVINCE', 'COUNTRY', '>50% IN PERSON', 'STATUS', 'GRADUATE', 'EXPIRY DATE', 'ISSUED BY', 'ISSUE DATE'];
 
         foreach ($data as $d) {
             $csvData[] = [$d->fed_guid, $d->program->program_name, $d->student_number, $d->first_name, $d->last_name, $d->id_number,
                 $d->dob, $d->address1, $d->address2, $d->email, $d->city, $d->zip_code, $d->province, $d->country,
-                $d->gt_fifty_pct_in_person, $d->status, $d->expiry_date, $d->issued_by_name, $d->updated_at];
+                $d->gt_fifty_pct_in_person, $d->status, $d->program->program_graduate == true ? 'TRUE' : 'FALSE', $d->expiry_date, $d->issued_by_name, $d->updated_at];
         }
         $output = fopen('php://temp', 'w');
         // Write CSV headers
