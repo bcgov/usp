@@ -276,12 +276,12 @@ class AttestationController extends Controller
             ->first();
 
         if (! is_null($instCap)) {
-            $issuedInstAttestations = Attestation::where('status', 'Issued')
+            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
 
-            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->whereHas('program', function ($query) {

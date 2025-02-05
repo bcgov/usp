@@ -23,7 +23,7 @@ class AdjustInstitutionCap
 
         \Log::info('Cap Listeners started');
         // Get the federal cap and check if we have hit the cap for issued attestations
-        $issuedAttestations = Attestation::where('status', 'Issued')
+        $issuedAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $cap->fed_cap_guid)
             ->count();
@@ -73,7 +73,7 @@ class AdjustInstitutionCap
 
                 // Get the inst cap and check if we have hit the cap for issued attestations
                 // This is going to be all attes. under this inst. and are using the same fed cap as this.
-                $issuedAttestations = Attestation::where('status', 'Issued')
+                $issuedAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                     ->where('institution_guid', $institution->guid)
                     ->where('fed_cap_guid', $cap->fed_cap_guid)
                     ->count();
@@ -97,7 +97,7 @@ class AdjustInstitutionCap
         }
 
         // Same process but for the Reserved Graduate Attestations
-        $issuedResGradAttestations = Attestation::where('status', 'Issued')
+        $issuedResGradAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $cap->fed_cap_guid)
             ->whereHas('program', function ($query) {

@@ -47,13 +47,13 @@ class VerifyIssuedAttestation
 
             // Get the inst cap and check if we have hit the cap for issued attestations
             // This is going to be all attes. under this inst. and are using the same fed cap as this.
-            $issuedInstAttestations = Attestation::where('status', 'Issued')
+            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $cap->institution_guid)
                 ->where('fed_cap_guid', $cap->fed_cap_guid)
                 ->count();
 
             // If the attestation is linked to a reserved graduate program
-            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $cap->institution_guid)
                 ->where('fed_cap_guid', $cap->fed_cap_guid)
                 ->whereHas('program', function ($query) {
@@ -71,7 +71,7 @@ class VerifyIssuedAttestation
 
             //check if the program cap has been reached
             //if so switch it to draft
-            $issuedProgAttestations = Attestation::where('status', 'Issued')
+            $issuedProgAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('cap_guid', $cap->guid)
                 ->count();
 
