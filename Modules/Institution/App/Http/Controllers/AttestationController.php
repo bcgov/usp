@@ -74,20 +74,20 @@ class AttestationController extends Controller
 
         // Get the inst cap and check if we have hit the cap for issued attestations
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
-        $issued_attestations = Attestation::where('status', 'Issued')
-            ->where('institution_guid', $cap->institution_guid)
-            ->where('fed_cap_guid', $cap->fed_cap_guid)
-            ->count();
+//        $issued_attestations = Attestation::where('status', 'Issued')
+//            ->where('institution_guid', $cap->institution_guid)
+//            ->where('fed_cap_guid', $cap->fed_cap_guid)
+//            ->count();
 
         // If the attestation is linked to a reserved graduate program
         // Get the total for reserved graduate issued attestations
-        $issued_res_grad_attestations = Attestation::where('status', 'Issued')
-            ->where('institution_guid', $cap->institution_guid)
-            ->where('fed_cap_guid', $cap->fed_cap_guid)
-            ->whereHas('program', function ($query) {
-                $query->where('program_graduate', true);
-            })
-            ->count();
+//        $issued_res_grad_attestations = Attestation::where('status', 'Issued')
+//            ->where('institution_guid', $cap->institution_guid)
+//            ->where('fed_cap_guid', $cap->fed_cap_guid)
+//            ->whereHas('program', function ($query) {
+//                $query->where('program_graduate', true);
+//            })
+//            ->count();
 
         // Fetch issued attestations count **in a single query**
         $issued_counts = Attestation::selectRaw("
@@ -116,7 +116,7 @@ class AttestationController extends Controller
         }
 
         // Fetch countries with caching
-        $this->countries = Cache::remember('active_countries', 3600, function () {
+        $this->countries = Cache::remember('active_countries', now()->addHours(10), function () {
             return Country::select('name')->where('active', true)->get();
         });
 
