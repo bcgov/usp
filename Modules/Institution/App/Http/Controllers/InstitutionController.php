@@ -37,13 +37,13 @@ class InstitutionController extends Controller
 
         if (! is_null($instCap)) {
             $capTotal = $instCap->total_attestations;
-            $issuedInstAttestations = Attestation::where('status', 'Issued')
+            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
 
             // Total for Grad3. attestations
-            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $institution->guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->whereHas('program', function ($query) {

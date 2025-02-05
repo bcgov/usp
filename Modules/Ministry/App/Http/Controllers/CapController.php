@@ -100,7 +100,7 @@ class CapController extends Controller
                 ->count();
 
             // Reserved Graduate Attestations issued
-            $issuedResGradInstAttestations = Attestation::where('status', 'Issued')
+            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->whereHas('program', function ($query) {
