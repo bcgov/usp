@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('institution-attestations-details', function ($app) {
             return new InstitutionAttestationsDetails();
         });
+
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('Debugbar', \Barryvdh\Debugbar\Facades\Debugbar::class);
+
     }
 
     /**

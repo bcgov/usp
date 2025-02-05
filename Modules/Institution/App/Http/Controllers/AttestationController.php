@@ -46,21 +46,28 @@ class AttestationController extends Controller
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
-        //        $fedCap = FedCap::active()->first();
 
-        $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps_' . $user->id)['default'])->active()
-//        $cap = Cap::where('fed_cap_guid', $fedCap->guid)->active()
-            ->where('program_guid', null)
-            ->where('institution_guid', $institution->guid)
-            ->first();
+        // Use cache for fetching the default fed_cap_guid
+        $default_fed_cap = Cache::get('global_fed_caps_' . $user->id)['default'];
+
+//        $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps_' . $user->id)['default'])->active()
+//            ->where('program_guid', null)
+//            ->where('institution_guid', $institution->guid)
+//            ->first();
+        $cap = Cap::where([
+            ['fed_cap_guid', $default_fed_cap],
+            ['institution_guid', $institution->guid],
+            ['program_guid', null]
+        ])->active()->first();
 
         if (is_null($cap)) {
             return redirect(route('institution.dashboard'))->withErrors(['error' => "Error: No institution cap found for this institution, attestations can't be retrieved."]);
         }
 
-        $user = User::find(Auth::user()->id);
+//        $user = User::find(Auth::user()->id);
 
-        $attestations = $this->paginateAtte($user->institution);
+//        $attestations = $this->paginateAtte($user->institution);
+        $attestations = $this->paginateAtte($institution);
 
         // Display a warning message to users if the institution has reached a cap.
         $warning_message = '';
@@ -82,17 +89,38 @@ class AttestationController extends Controller
             })
             ->count();
 
-        $instituion_attestations_details = InstitutionFacade::getInstitutionAttestInfo($issued_attestations, $issued_res_grad_attestations, $cap);
+        // Fetch issued attestations count **in a single query**
+        $issued_counts = Attestation::selectRaw("
+        SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_attestations,
+        SUM(CASE WHEN status = 'Issued' AND program_guid IN
+            (SELECT guid FROM programs WHERE program_graduate = true) THEN 1 ELSE 0 END) as issued_res_grad_attestations
+    ")->where('institution_guid', $cap->institution_guid)
+            ->where('fed_cap_guid', $cap->fed_cap_guid)
+            ->first();
+
+        // Use InstitutionFacade for fetching additional details
+        $institution_attestations_details = InstitutionFacade::getInstitutionAttestInfo(
+            $issued_counts->issued_attestations,
+            $issued_counts->issued_res_grad_attestations,
+            $cap
+        );
+
+//        $instituion_attestations_details = InstitutionFacade::getInstitutionAttestInfo($issued_attestations, $issued_res_grad_attestations, $cap);
 
         // If we hit or acceded the reserved graduate inst cap limit for issued attestations
-        if ($instituion_attestations_details['undergradRemaining'] === 0) {
+        if ($institution_attestations_details['undergradRemaining'] === 0) {
             $warning_message = "Your institution has reached the limit for undergraduate attestations. You can't issue a new attestation linked to an undergraduate program or it will be automatically converted as a Draft.";
         }
-        elseif ($instituion_attestations_details['issued']>= $cap->total_attestations) {
+        elseif ($institution_attestations_details['issued'] >= $cap->total_attestations) {
             $warning_message = "Your institution has reached the maximum attestations cap. You can't issue a new attestation or it will be automatically converted as a Draft.";
         }
 
-        $this->countries = Country::select('name')->where('active', true)->get();
+        // Fetch countries with caching
+        $this->countries = Cache::remember('active_countries', 3600, function () {
+            return Country::select('name')->where('active', true)->get();
+        });
+
+//        $this->countries = Country::select('name')->where('active', true)->get();
         return Inertia::render('Institution::Attestations', [
             'error' => null,
             'warning' => $warning_message,
@@ -290,10 +318,17 @@ class AttestationController extends Controller
     private function paginateAtte($institution)
     {
         //        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
+//        $attestations = Attestation::where('institution_guid', $institution->guid)
+//            ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
+//            ->whereNot('status', 'Cancelled Draft');
+        $default_fed_cap = Cache::get('global_fed_caps_' . Auth::id())['default'];
         $attestations = Attestation::where('institution_guid', $institution->guid)
-            ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
-            ->whereNot('status', 'Cancelled Draft');
-
+            ->where('fed_cap_guid', $default_fed_cap)
+            ->whereNot('status', 'Cancelled Draft')
+            ->with([
+                'program:guid,program_name,program_graduate',  // Eager load only needed fields
+                'institution:id,guid,name',
+            ]);
         if (request()->filter_term !== null && request()->filter_type !== null) {
             $attestations = match (request()->filter_type) {
                 'snumber' => $attestations->where('student_number', 'ILIKE', '%'.request()->filter_term.'%'),
@@ -318,12 +353,14 @@ class AttestationController extends Controller
             });
         }
 
-        return $attestations->with([
-            'institution.activeCaps',
-            'institution.programs',
-            'program' => function ($query) {
-                $query->select('guid', 'program_name', 'program_graduate');
-            },
-        ])->paginate(25)->onEachSide(1)->appends(request()->query());
+        return $attestations->paginate(25)->onEachSide(1)->appends(request()->query());
+
+//        return $attestations->with([
+//            'institution.activeCaps',
+//            'institution.programs',
+//            'program' => function ($query) {
+//                $query->select('guid', 'program_name', 'program_graduate');
+//            },
+//        ])->paginate(25)->onEachSide(1)->appends(request()->query());
     }
 }
