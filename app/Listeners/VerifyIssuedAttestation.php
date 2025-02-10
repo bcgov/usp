@@ -47,21 +47,41 @@ class VerifyIssuedAttestation
 
             // Get the inst cap and check if we have hit the cap for issued attestations
             // This is going to be all attes. under this inst. and are using the same fed cap as this.
-            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-                ->where('institution_guid', $cap->institution_guid)
-                ->where('fed_cap_guid', $cap->fed_cap_guid)
-                ->count();
+//            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
+//                ->where('institution_guid', $cap->institution_guid)
+//                ->where('fed_cap_guid', $cap->fed_cap_guid)
+//                ->count();
+//
+//            // If the attestation is linked to a reserved graduate program
+//            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
+//                ->where('institution_guid', $cap->institution_guid)
+//                ->where('fed_cap_guid', $cap->fed_cap_guid)
+//                ->whereHas('program', function ($query) {
+//                    $query->where('program_graduate', true);
+//                })
+//                ->count();
+//
+//            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $cap);
 
-            // If the attestation is linked to a reserved graduate program
-            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-                ->where('institution_guid', $cap->institution_guid)
-                ->where('fed_cap_guid', $cap->fed_cap_guid)
-                ->whereHas('program', function ($query) {
-                    $query->where('program_graduate', true);
-                })
-                ->count();
+            $counts = Attestation::selectRaw("
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declinedinstattestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issuedresgradinstattestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declinedresgradinstattestations
+")
+                ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
+                ->where('attestations.institution_guid', $cap->institution_guid)
+                ->where('attestations.fed_cap_guid', $cap->fed_cap_guid)
+                ->first();
 
-            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $cap);
+            $issuedInstAttestations       = $counts->issuedinstattestations;
+            $declinedInstAttestations     = $counts->declinedinstattestations;
+            $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
+            $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
+            \Log::info("info 1: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
+
+            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
+                $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $cap);
 
             // If we hit or acceded the inst cap limit for issued attestations
             if ($issuedInstAttestations > $instCap->total_attestations) {
