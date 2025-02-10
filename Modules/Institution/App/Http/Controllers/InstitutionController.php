@@ -37,31 +37,66 @@ class InstitutionController extends Controller
 
         if (! is_null($instCap)) {
             $capTotal = $instCap->total_attestations;
-            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-                ->where('institution_guid', $institution->guid)
-                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-                ->count();
 
-            // Total for Grad3. attestations
-            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-                ->where('institution_guid', $institution->guid)
-                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-                ->whereHas('program', function ($query) {
-                    $query->where('program_graduate', true);
-                })
-                ->count();
+            $counts = Attestation::selectRaw("
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declinedinstattestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issuedresgradinstattestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declinedresgradinstattestations
+")
+                ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
+                ->where('attestations.institution_guid', $institution->guid)
+                ->where('attestations.fed_cap_guid', $instCap->fed_cap_guid)
+                ->first();
+            $issuedInstAttestations       = $counts->issuedinstattestations;
+            $declinedInstAttestations     = $counts->declinedinstattestations;
+            $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
+            $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
+            \Log::info("info 5: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
+            \Log::info(json_encode($counts));
 
-            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $instCap);
+//
+//            $attestationCounts = Attestation::selectRaw('status, COUNT(*) as total')
+//                ->where('institution_guid', $institution->guid)
+//                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+//                ->whereIn('status', ['Issued', 'Declined'])
+//                ->groupBy('status')
+//                ->pluck('total', 'status');
+//
+//            $issuedInstAttestations = $attestationCounts->get('Issued', 0);
+//            $declinedInstAttestations = $attestationCounts->get('Declined', 0);
+//
+//
+//            //graduate-related attestations counts
+//            $gradCounts = Attestation::selectRaw('status, COUNT(*) as total')
+//                ->where('institution_guid', $institution->guid)
+//                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+//                ->whereIn('status', ['Issued', 'Declined'])
+//                ->whereHas('program', function ($query) {
+//                    $query->where('program_graduate', true);
+//                })
+//                ->groupBy('status')
+//                ->pluck('total', 'status');
+//
+//            $issuedResGradInstAttestations = $gradCounts->get('Issued', 0);
+//            $declinedResGradInstAttestations = $gradCounts->get('Declined', 0);
+
+
+            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
+                $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $instCap);
         }
 
         return Inertia::render('Institution::Dashboard', [
             'results' => $institution,
             'capTotal' => $capTotal,
             'resGraduateCapTotal' => $instCap->total_reserved_graduate_attestations ?? 0,
-            'issued' => $issuedInstAttestations,
+            'issued' => $issuedInstAttestations ?? 0,
+            'declined' => $declinedInstAttestations ?? 0,
             'issuedUndegrad' => $instituionAttestationsDetails['issuedUndegrad'] ?? 0,
+            'declinedUndegrad' => $instituionAttestationsDetails['declinedUndegrad'] ?? 0,
             'undergradRemaining' => $instituionAttestationsDetails['undergradRemaining'] ?? 0,
-            'issuedResGrad' => $issuedResGradInstAttestations,
+            'issuedResGrad' => $issuedResGradInstAttestations ?? 0,
+            'declinedResGrad' => $declinedResGradInstAttestations ?? 0,
         ]);
     }
 

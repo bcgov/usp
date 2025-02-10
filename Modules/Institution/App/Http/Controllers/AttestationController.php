@@ -89,29 +89,48 @@ class AttestationController extends Controller
 //            })
 //            ->count();
 
-        // Fetch issued attestations count **in a single query**
-        $issued_counts = Attestation::selectRaw("
-        SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_attestations,
-        SUM(CASE WHEN status = 'Issued' AND program_guid IN
-            (SELECT guid FROM programs WHERE program_graduate = true) THEN 1 ELSE 0 END) as issued_res_grad_attestations
-    ")->where('institution_guid', $cap->institution_guid)
-            ->where('fed_cap_guid', $cap->fed_cap_guid)
+        // Fetch attestations count **in a single query**
+//        $issued_counts = Attestation::selectRaw("
+//        SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_attestations,
+//        SUM(CASE WHEN status = 'Issued' AND program_guid IN
+//            (SELECT guid FROM programs WHERE program_graduate = true) THEN 1 ELSE 0 END) as issued_res_grad_attestations
+//    ")->where('institution_guid', $cap->institution_guid)
+//            ->where('fed_cap_guid', $cap->fed_cap_guid)
+//            ->first();
+        $counts = Attestation::selectRaw("
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declinedinstattestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issuedresgradinstattestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declinedresgradinstattestations
+")
+            ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
+            ->where('attestations.institution_guid', $cap->institution_guid)
+            ->where('attestations.fed_cap_guid', $cap->fed_cap_guid)
             ->first();
 
+        $issuedInstAttestations       = $counts->issuedinstattestations;
+        $declinedInstAttestations     = $counts->declinedinstattestations;
+        $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
+        $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
+        \Log::info("info 3: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
+
+        $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
+            $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $cap);
+
         // Use InstitutionFacade for fetching additional details
-        $institution_attestations_details = InstitutionFacade::getInstitutionAttestInfo(
-            $issued_counts->issued_attestations,
-            $issued_counts->issued_res_grad_attestations,
-            $cap
-        );
+//        $institution_attestations_details = InstitutionFacade::getInstitutionAttestInfo(
+//            $issuedInstAttestations,
+//            $issued_counts->issued_res_grad_attestations,
+//            $cap
+//        );
 
 //        $instituion_attestations_details = InstitutionFacade::getInstitutionAttestInfo($issued_attestations, $issued_res_grad_attestations, $cap);
 
         // If we hit or acceded the reserved graduate inst cap limit for issued attestations
-        if ($institution_attestations_details['undergradRemaining'] === 0) {
+        if ($instituionAttestationsDetails['undergradRemaining'] === 0) {
             $warning_message = "Your institution has reached the limit for undergraduate attestations. You can't issue a new attestation linked to an undergraduate program or it will be automatically converted as a Draft.";
         }
-        elseif ($institution_attestations_details['issued'] >= $cap->total_attestations) {
+        elseif ($instituionAttestationsDetails['issued'] >= $cap->total_attestations) {
             $warning_message = "Your institution has reached the maximum attestations cap. You can't issue a new attestation or it will be automatically converted as a Draft.";
         }
 

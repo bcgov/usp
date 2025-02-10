@@ -108,8 +108,37 @@ class CapController extends Controller
                 })
                 ->count();
 
-            $institutionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $instCap);
+            $counts = Attestation::selectRaw("
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declinedinstattestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issuedresgradinstattestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declinedresgradinstattestations
+")
+                ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
+                ->where('attestations.institution_guid', $instCap->institution_guid)
+                ->where('attestations.fed_cap_guid', $instCap->fed_cap_guid)
+                ->first();
+
+            $issuedInstAttestations       = $counts->issuedinstattestations;
+            $declinedInstAttestations     = $counts->declinedinstattestations;
+            $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
+            $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
+            \Log::info("info 2: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
+
+            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
+                $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $instCap);
+
+//            $institutionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $instCap);
         }
-        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0, 'resGradIssued' => $issuedResGradInstAttestations ?? 0, 'remainingUndergrad' => $institutionAttestationsDetails['undergradRemaining'] ?? 0]], 200);
+
+        return Response::json(['status' => true, 'body' =>
+            [
+                'instCap' => $instCap,
+                'issued' => $issuedInstAttestations ?? 0,
+                'declined' => $declinedInstAttestations ?? 0,
+                'resGradIssued' => $issuedResGradInstAttestations ?? 0,
+                'declinedUndegrad' => $instituionAttestationsDetails['declinedUndegrad'] ?? 0,
+                'remainingUndergrad' => $instituionAttestationsDetails['undergradRemaining'] ?? 0
+            ]], 200);
     }
 }

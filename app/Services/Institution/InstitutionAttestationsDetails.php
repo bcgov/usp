@@ -13,23 +13,27 @@ class InstitutionAttestationsDetails {
      *
      * @param int $issuedInstAttestations
      * @param int $issuedResGradInstAttestations
+     * @param int $declinedInstAttestations
+     * @param int $declinedResGradInstAttestations
      * @param object $cap
      *
      * @return array
      */
-    public function getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $cap) {
+    public function getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $cap) {
 
         // Total Undergrad. issued PALs = Total issued PALs - Total Grad. Pals
         $issuedUndergradAttestations = $issuedInstAttestations - $issuedResGradInstAttestations;
 
+        $declinedUndergradAttestations = $declinedInstAttestations - $declinedResGradInstAttestations;
+
         // Remaining Total attestations for the institution
-        $remainingTotalAttestations = $cap->total_attestations - $issuedInstAttestations;
+        $remainingTotalAttestations = $cap->total_attestations - ($issuedInstAttestations + $declinedInstAttestations);
 
         // Calculate the default remaining Undergrad. PALs based on the Inst. Cap details
         $undergradAttestationsLimitDefault = $cap->total_attestations - $cap->total_reserved_graduate_attestations;
 
         // Calculate the real remaining Undegrad. PALs based on the number of already Undergrad. PALs issued
-        $undergradAttestationsRemaining = $undergradAttestationsLimitDefault - $issuedUndergradAttestations;
+        $undergradAttestationsRemaining = $undergradAttestationsLimitDefault - ($issuedUndergradAttestations + $declinedInstAttestations);
 
         // If Undegrad. PALs have been already issued, select the real remaining Undergrad. Attest. total as the new cap.
         $undergradAttestationsLimitFinal = ($undergradAttestationsLimitDefault < $undergradAttestationsRemaining) ? $undergradAttestationsLimitDefault : $undergradAttestationsRemaining;
@@ -41,7 +45,9 @@ class InstitutionAttestationsDetails {
 
         return array(
             'issued' => $issuedInstAttestations,
+            'declined' => $declinedInstAttestations,
             'issuedUndegrad' => $issuedUndergradAttestations,
+            'declinedUndegrad' => $declinedUndergradAttestations,
             'undergradRemaining' => $undergradAttestationsLimitFinal,
             'issuedResGrad' => $issuedResGradInstAttestations,
         );
