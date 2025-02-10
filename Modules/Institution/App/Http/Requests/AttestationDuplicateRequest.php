@@ -67,8 +67,13 @@ class AttestationDuplicateRequest extends BaseFormRequest
         if(!is_null($oldAtte)){
 
             // Get the inst active cap.
-            $cap = Cap::where('institution_guid', $oldAtte->institution_guid)
+            $oldCap = Cap::where('guid', $oldAtte->cap_guid)
                 ->selectedFedcap()
+                ->active()
+                ->first();
+
+            $cap = Cap::where('institution_guid', $oldCap->institution_guid)
+                ->where('fed_cap_guid', $oldCap->fed_cap_guid)
                 ->active()
                 ->first();
             if(!is_null($cap)){
