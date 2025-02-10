@@ -52,34 +52,6 @@ class InstitutionController extends Controller
             $declinedInstAttestations     = $counts->declinedinstattestations;
             $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
             $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
-            \Log::info("info 5: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
-            \Log::info(json_encode($counts));
-
-//
-//            $attestationCounts = Attestation::selectRaw('status, COUNT(*) as total')
-//                ->where('institution_guid', $institution->guid)
-//                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-//                ->whereIn('status', ['Issued', 'Declined'])
-//                ->groupBy('status')
-//                ->pluck('total', 'status');
-//
-//            $issuedInstAttestations = $attestationCounts->get('Issued', 0);
-//            $declinedInstAttestations = $attestationCounts->get('Declined', 0);
-//
-//
-//            //graduate-related attestations counts
-//            $gradCounts = Attestation::selectRaw('status, COUNT(*) as total')
-//                ->where('institution_guid', $institution->guid)
-//                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-//                ->whereIn('status', ['Issued', 'Declined'])
-//                ->whereHas('program', function ($query) {
-//                    $query->where('program_graduate', true);
-//                })
-//                ->groupBy('status')
-//                ->pluck('total', 'status');
-//
-//            $issuedResGradInstAttestations = $gradCounts->get('Issued', 0);
-//            $declinedResGradInstAttestations = $gradCounts->get('Declined', 0);
 
 
             $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
