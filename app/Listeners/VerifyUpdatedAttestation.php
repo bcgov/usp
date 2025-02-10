@@ -52,10 +52,6 @@ class VerifyUpdatedAttestation
 
             // Get the inst cap and check if we have hit the cap for issued attestations
             // This is going to be all attes. under this inst. and are using the same fed cap as this.
-//            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-//                ->where('institution_guid', $cap->institution_guid)
-//                ->where('fed_cap_guid', $cap->fed_cap_guid)
-//                ->count();
 
             $counts = Attestation::selectRaw("
     SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
@@ -72,22 +68,11 @@ class VerifyUpdatedAttestation
             $declinedInstAttestations     = $counts->declinedinstattestations;
             $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
             $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
-            \Log::info("info 4: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
 
 
             // If the attestation is linked to a reserved graduate program
             // Get the inst cap and check if we have hit the cap for reserved graduate issued attestations
-//            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-//                ->where('institution_guid', $cap->institution_guid)
-//                ->where('fed_cap_guid', $cap->fed_cap_guid)
-//                ->whereHas('program', function ($query) {
-//                    $query->where('program_graduate', true);
-//                })
-//                ->count();
-            //graduate-related attestations counts
 
-
-//            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $cap);
             $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
                 $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $instCap);
 

@@ -94,19 +94,6 @@ class CapController extends Controller
             ->first();
 
         if(!is_null($instCap)){
-            $issuedInstAttestations = Attestation::where('status', 'Issued')
-                ->where('institution_guid', $instCap->institution_guid)
-                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-                ->count();
-
-            // Reserved Graduate Attestations issued
-            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-                ->where('institution_guid', $instCap->institution_guid)
-                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-                ->whereHas('program', function ($query) {
-                    $query->where('program_graduate', true);
-                })
-                ->count();
 
             $counts = Attestation::selectRaw("
     SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
@@ -123,12 +110,10 @@ class CapController extends Controller
             $declinedInstAttestations     = $counts->declinedinstattestations;
             $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
             $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
-            \Log::info("info 2: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
 
             $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
                 $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $instCap);
 
-//            $institutionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations, $issuedResGradInstAttestations, $instCap);
         }
 
         return Response::json(['status' => true, 'body' =>

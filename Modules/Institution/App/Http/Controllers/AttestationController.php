@@ -50,10 +50,6 @@ class AttestationController extends Controller
         // Use cache for fetching the default fed_cap_guid
         $default_fed_cap = Cache::get('global_fed_caps_' . $user->id)['default'];
 
-//        $cap = Cap::where('fed_cap_guid', Cache::get('global_fed_caps_' . $user->id)['default'])->active()
-//            ->where('program_guid', null)
-//            ->where('institution_guid', $institution->guid)
-//            ->first();
         $cap = Cap::where([
             ['fed_cap_guid', $default_fed_cap],
             ['institution_guid', $institution->guid],
@@ -64,9 +60,6 @@ class AttestationController extends Controller
             return redirect(route('institution.dashboard'))->withErrors(['error' => "Error: No institution cap found for this institution, attestations can't be retrieved."]);
         }
 
-//        $user = User::find(Auth::user()->id);
-
-//        $attestations = $this->paginateAtte($user->institution);
         $attestations = $this->paginateAtte($institution);
 
         // Display a warning message to users if the institution has reached a cap.
@@ -74,29 +67,7 @@ class AttestationController extends Controller
 
         // Get the inst cap and check if we have hit the cap for issued attestations
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
-//        $issued_attestations = Attestation::where('status', 'Issued')
-//            ->where('institution_guid', $cap->institution_guid)
-//            ->where('fed_cap_guid', $cap->fed_cap_guid)
-//            ->count();
 
-        // If the attestation is linked to a reserved graduate program
-        // Get the total for reserved graduate issued attestations
-//        $issued_res_grad_attestations = Attestation::where('status', 'Issued')
-//            ->where('institution_guid', $cap->institution_guid)
-//            ->where('fed_cap_guid', $cap->fed_cap_guid)
-//            ->whereHas('program', function ($query) {
-//                $query->where('program_graduate', true);
-//            })
-//            ->count();
-
-        // Fetch attestations count **in a single query**
-//        $issued_counts = Attestation::selectRaw("
-//        SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_attestations,
-//        SUM(CASE WHEN status = 'Issued' AND program_guid IN
-//            (SELECT guid FROM programs WHERE program_graduate = true) THEN 1 ELSE 0 END) as issued_res_grad_attestations
-//    ")->where('institution_guid', $cap->institution_guid)
-//            ->where('fed_cap_guid', $cap->fed_cap_guid)
-//            ->first();
         $counts = Attestation::selectRaw("
     SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
     SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declinedinstattestations,
@@ -112,19 +83,10 @@ class AttestationController extends Controller
         $declinedInstAttestations     = $counts->declinedinstattestations;
         $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
         $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
-        \Log::info("info 3: " . $issuedInstAttestations . "<>" . $declinedInstAttestations . "<>" . $issuedResGradInstAttestations . "<>" . $declinedResGradInstAttestations);
 
         $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
             $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $cap);
 
-        // Use InstitutionFacade for fetching additional details
-//        $institution_attestations_details = InstitutionFacade::getInstitutionAttestInfo(
-//            $issuedInstAttestations,
-//            $issued_counts->issued_res_grad_attestations,
-//            $cap
-//        );
-
-//        $instituion_attestations_details = InstitutionFacade::getInstitutionAttestInfo($issued_attestations, $issued_res_grad_attestations, $cap);
 
         // If we hit or acceded the reserved graduate inst cap limit for issued attestations
         if ($instituionAttestationsDetails['undergradRemaining'] === 0) {

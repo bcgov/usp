@@ -24,15 +24,16 @@ class InstitutionAttestationsDetails {
         // Total Undergrad. issued PALs = Total issued PALs - Total Grad. Pals
         $issuedUndergradAttestations = $issuedInstAttestations - $issuedResGradInstAttestations;
 
+        // Total Undergrad. declined PALs = Total issued PALs - Total Grad. Pals
         $declinedUndergradAttestations = $declinedInstAttestations - $declinedResGradInstAttestations;
 
-        // Remaining Total attestations for the institution
+        // Remaining Total attestations for the institution - (issued and declined)
         $remainingTotalAttestations = $cap->total_attestations - ($issuedInstAttestations + $declinedInstAttestations);
 
         // Calculate the default remaining Undergrad. PALs based on the Inst. Cap details
         $undergradAttestationsLimitDefault = $cap->total_attestations - $cap->total_reserved_graduate_attestations;
 
-        // Calculate the real remaining Undegrad. PALs based on the number of already Undergrad. PALs issued
+        // Calculate the real remaining Undegrad. PALs based on the number of already Undergrad. PALs issued and declined
         $undergradAttestationsRemaining = $undergradAttestationsLimitDefault - ($issuedUndergradAttestations + $declinedInstAttestations);
 
         // If Undegrad. PALs have been already issued, select the real remaining Undergrad. Attest. total as the new cap.
