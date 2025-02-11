@@ -205,10 +205,18 @@ class AttestationController extends Controller
             ->first();
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML(base64_decode($storedPdf->content));
-        $pdf->getCanvas()
-            ->get_cpdf()
-            ->setEncryption('', env('PDF_KEY'), ['print']);
+
+        //combining steps here cause pdf to be sometime generated with missing bytes
+        $loadHTML = base64_decode($storedPdf->content);
+        $trimHTML = trim($loadHTML);
+        $pdf->loadHTML($trimHTML);
+        $pdf->render();
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+
+        // Clear any output buffers.
+        if (ob_get_length()) {
+            ob_clean();
+        }
 
         return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
