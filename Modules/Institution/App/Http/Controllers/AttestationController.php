@@ -101,7 +101,6 @@ class AttestationController extends Controller
             return Country::select('name')->where('active', true)->get();
         });
 
-//        $this->countries = Country::select('name')->where('active', true)->get();
         return Inertia::render('Institution::Attestations', [
             'error' => null,
             'warning' => $warning_message,
@@ -135,7 +134,7 @@ class AttestationController extends Controller
             $this->authorize('download', $attestation);
             event(new AttestationIssued($attestation->cap, $attestation, $request->status));
         } else {
-            $error = "There's already an attestation for the same user.";
+            $error = "This user has already been issued an attestation.";
         }
 
         if (! is_null($error)) {
@@ -170,7 +169,7 @@ class AttestationController extends Controller
         if (is_null($check1)) {
             $error = 'This attestation cannot be edited. Only draft attestations can be edited.';
         } elseif (! is_null($check2)) {
-            $error = "There's already an attestation for the exact same user.";
+            $error = "This user has already been issued an attestation.";
         } else {
             $cap = Cap::where('guid', $request->cap_guid)->first();
 
@@ -205,9 +204,18 @@ class AttestationController extends Controller
         $storedPdf = AttestationPdf::where('attestation_guid', $attestation->guid)->first();
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML(base64_decode($storedPdf->content));
+
+        //combining steps here cause pdf to be sometime generated with missing bytes
+        $loadHTML = base64_decode($storedPdf->content);
+        $trimHTML = trim($loadHTML);
+        $pdf->loadHTML($trimHTML);
+        $pdf->render();
         $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
+        // Clear any output buffers.
+        if (ob_get_length()) {
+            ob_clean();
+        }
         return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
@@ -299,10 +307,6 @@ class AttestationController extends Controller
 
     private function paginateAtte($institution)
     {
-        //        $attestations = Attestation::where('institution_guid', $institution->guid)->with('program');
-//        $attestations = Attestation::where('institution_guid', $institution->guid)
-//            ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
-//            ->whereNot('status', 'Cancelled Draft');
         $default_fed_cap = Cache::get('global_fed_caps_' . Auth::id())['default'];
         $attestations = Attestation::where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $default_fed_cap)
@@ -336,13 +340,5 @@ class AttestationController extends Controller
         }
 
         return $attestations->paginate(25)->onEachSide(1)->appends(request()->query());
-
-//        return $attestations->with([
-//            'institution.activeCaps',
-//            'institution.programs',
-//            'program' => function ($query) {
-//                $query->select('guid', 'program_name', 'program_graduate');
-//            },
-//        ])->paginate(25)->onEachSide(1)->appends(request()->query());
     }
 }
