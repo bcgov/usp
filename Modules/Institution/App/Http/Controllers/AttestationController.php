@@ -220,30 +220,14 @@ class AttestationController extends Controller
             ob_clean();
         }
 
-        //get the raw PDF output.
-        $pdfContent = $pdf->output();
+        // Write the PDF content to a temporary file.
+        $tempPath = tempnam(sys_get_temp_dir(), 'pdf');
+        file_put_contents($tempPath, $pdf->output());
 
+        // Return the file as a download, deleting it after sending.
         $filename = $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
-        return response()->streamDownload(function () use ($pdfContent) {
+        return response()->download($tempPath, $filename)->deleteFileAfterSend();
 
-
-            $chunkSize = 1024 * 8; // 8KB/chunk
-            $length    = strlen($pdfContent);
-            $offset    = 0;
-
-            //stream the content chunk by chunk
-            while ($offset < $length) {
-                echo substr($pdfContent, $offset, $chunkSize);
-                $offset += $chunkSize;
-                flush();//send the chunk to the client immediately.
-            }
-        }, $filename, [
-            'Content-Type'        => 'application/pdf',
-            'Cache-Control'       => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
-            'Pragma'              => 'no-cache',
-            'Expires'             => '0',
-            //omit the Content-Length header so that chunked encoding is used
-        ]);
     }
 
     public function exportCsv()
