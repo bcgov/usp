@@ -200,6 +200,9 @@ class AttestationController extends Controller
 
     public function download(Request $request, Attestation $attestation)
     {
+        ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
+        set_time_limit(300);
+
         $this->authorize('download', $attestation);
         $storedPdf = AttestationPdf::where('attestation_guid', $attestation->guid)->first();
 
@@ -210,15 +213,37 @@ class AttestationController extends Controller
         $trimHTML = trim($loadHTML);
         $pdf->loadHTML($trimHTML);
         $pdf->render();
-        $pdfKey = env('PDF_KEY');
-        $pdf->getCanvas()->get_cpdf()->setEncryption('', $pdfKey, ['print']);
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
-        // Clear any output buffers.
+        //clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
 
-        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+        //get the raw PDF output.
+        $pdfContent = $pdf->output();
+
+        $filename = $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
+        return response()->streamDownload(function () use ($pdfContent) {
+
+
+            $chunkSize = 1024 * 8; // 8KB/chunk
+            $length    = strlen($pdfContent);
+            $offset    = 0;
+
+            //stream the content chunk by chunk
+            while ($offset < $length) {
+                echo substr($pdfContent, $offset, $chunkSize);
+                $offset += $chunkSize;
+                flush();//send the chunk to the client immediately.
+            }
+        }, $filename, [
+            'Content-Type'        => 'application/pdf',
+            'Cache-Control'       => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
+            'Pragma'              => 'no-cache',
+            'Expires'             => '0',
+            //omit the Content-Length header so that chunked encoding is used
+        ]);
     }
 
     public function exportCsv()
