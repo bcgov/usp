@@ -210,13 +210,21 @@ class AttestationController extends Controller
         $trimHTML = trim($loadHTML);
         $pdf->loadHTML($trimHTML);
         $pdf->render();
-        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+        $pdf->getCanvas()->get_cpdf();
+        $pdf->setEncryption('', env('PDF_KEY'), ['print']);
 
         // Clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
-        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+
+        // Write the PDF content to a temporary file.
+        $tempPath = tempnam(sys_get_temp_dir(), 'pdf');
+        file_put_contents($tempPath, $pdf->output());
+
+        // Return the file as a download, deleting it after sending.
+        $filename = $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
+        return response()->download($tempPath, $filename)->deleteFileAfterSend();
     }
 
     public function exportCsv()
