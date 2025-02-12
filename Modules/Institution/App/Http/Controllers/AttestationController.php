@@ -210,13 +210,13 @@ class AttestationController extends Controller
         $trimHTML = trim($loadHTML);
         $pdf->loadHTML($trimHTML);
         $pdf->render();
-        $pdf->getCanvas();
-        $pdf->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
         // Clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
+
 
         // Get the raw PDF output.
         $pdfContent = $pdf->output();
