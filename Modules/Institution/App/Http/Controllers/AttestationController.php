@@ -208,23 +208,25 @@ class AttestationController extends Controller
         //combining steps here cause pdf to be sometime generated with missing bytes
         $loadHTML = base64_decode($storedPdf->content);
         $trimHTML = trim($loadHTML);
-        $pdf->loadHTML($trimHTML);
-        $pdf->render();
-        $pdf->getCanvas()->get_cpdf();
-        $pdf->setEncryption('', env('PDF_KEY'), ['print']);
+        $pdf->loadHTML($trimHTML)->render()->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
         // Clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
 
-        // Write the PDF content to a temporary file.
-        $tempPath = tempnam(sys_get_temp_dir(), 'pdf');
-        file_put_contents($tempPath, $pdf->output());
+        // Get the raw PDF output.
+        $pdfContent = $pdf->output();
 
-        // Return the file as a download, deleting it after sending.
         $filename = $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
-        return response()->download($tempPath, $filename)->deleteFileAfterSend();
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+            'Content-Length' => strlen($pdfContent)
+        ]);
     }
 
     public function exportCsv()
