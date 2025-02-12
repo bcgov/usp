@@ -209,7 +209,9 @@ class AttestationController extends Controller
         $loadHTML = base64_decode($storedPdf->content);
         $trimHTML = trim($loadHTML);
         $pdf->loadHTML($trimHTML);
-        $pdf->render()->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+        $pdf->render();
+        $pdf->getCanvas();
+        $pdf->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
         // Clear any output buffers.
         if (ob_get_length()) {
