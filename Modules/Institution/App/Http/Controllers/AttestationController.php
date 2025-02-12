@@ -200,6 +200,9 @@ class AttestationController extends Controller
 
     public function download(Request $request, Attestation $attestation)
     {
+        ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
+        set_time_limit(300);
+
         $this->authorize('download', $attestation);
         $storedPdf = AttestationPdf::where('attestation_guid', $attestation->guid)->first();
 
