@@ -7,7 +7,6 @@
     <title>USPA - International Study Permit</title>
     <style>
         body{
-            font-family: "DejaVu Sans", sans-serif;
             line-height: 1rem;
             font-size: 13px;
             margin: 130px 30px 30px 30px;
