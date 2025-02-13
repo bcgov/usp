@@ -220,13 +220,16 @@ class AttestationController extends Controller
             ob_clean();
         }
 
+        $rand = rand();
+
         // Write the PDF content to a temporary file.
-        $tempPath = tempnam(sys_get_temp_dir(), 'pdf');
+        $tempPath = tempnam(public_path(), 'pdf-' . $rand . '.pdf');
         file_put_contents($tempPath, $pdf->output());
 
         // Return the file as a download, deleting it after sending.
-        $filename = $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
-        return response()->download($tempPath, $filename)->deleteFileAfterSend();
+        $filename = $rand . '-' . $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
+//        return response()->download($tempPath, $filename)->deleteFileAfterSend();
+        return response()->download($tempPath, $filename);
 
     }
 
