@@ -6,10 +6,6 @@
 
     <title>USPA - International Study Permit</title>
     <style>
-        @font-face {
-            font-family: "DejaVu Sans";
-            src: url("{{ public_path('/fonts/DejaVuSans.ttf') }}") format("truetype");
-        }
         body{
             font-family: "DejaVu Sans", sans-serif;
             line-height: 1rem;
