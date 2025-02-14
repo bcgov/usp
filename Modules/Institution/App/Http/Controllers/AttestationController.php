@@ -69,20 +69,20 @@ class AttestationController extends Controller
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
 
         $counts = Attestation::selectRaw("
-    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
-    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declinedinstattestations,
-    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issuedresgradinstattestations,
-    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declinedresgradinstattestations
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_inst_attestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declined_inst_attestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issued_res_grad_inst_attestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declined_res_grad_inst_attestations
 ")
             ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
             ->where('attestations.institution_guid', $cap->institution_guid)
             ->where('attestations.fed_cap_guid', $cap->fed_cap_guid)
             ->first();
 
-        $issuedInstAttestations       = $counts->issuedinstattestations;
-        $declinedInstAttestations     = $counts->declinedinstattestations;
-        $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
-        $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
+        $issuedInstAttestations       = $counts->issued_inst_attestations;
+        $declinedInstAttestations     = $counts->declined_inst_attestations;
+        $issuedResGradInstAttestations = $counts->issued_res_grad_inst_attestations;
+        $declinedResGradInstAttestations = $counts->declined_res_grad_inst_attestations;
 
         $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
             $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $cap);
@@ -210,21 +210,18 @@ class AttestationController extends Controller
         $trimHTML = trim($loadHTML);
         $pdf->loadHTML($trimHTML);
         $pdf->render();
-        $pdf->getCanvas()->get_cpdf();
-        $pdf->setEncryption('', env('PDF_KEY'), ['print']);
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
         // Clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
+        // Clear any output buffers.
+        if (ob_get_length()) {
+            ob_clean();
+        }
 
-        // Write the PDF content to a temporary file.
-        $tempPath = tempnam(sys_get_temp_dir(), 'pdf');
-        file_put_contents($tempPath, $pdf->output());
-
-        // Return the file as a download, deleting it after sending.
-        $filename = $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
-        return response()->download($tempPath, $filename)->deleteFileAfterSend();
+        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
     public function exportCsv()

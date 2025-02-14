@@ -96,20 +96,20 @@ class CapController extends Controller
         if(!is_null($instCap)){
 
             $counts = Attestation::selectRaw("
-    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issuedinstattestations,
-    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declinedinstattestations,
-    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issuedresgradinstattestations,
-    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declinedresgradinstattestations
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_inst_attestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declined_inst_attestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issued_res_grad_inst_attestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declined_res_grad_inst_attestations
 ")
                 ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
                 ->where('attestations.institution_guid', $instCap->institution_guid)
                 ->where('attestations.fed_cap_guid', $instCap->fed_cap_guid)
                 ->first();
 
-            $issuedInstAttestations       = $counts->issuedinstattestations;
-            $declinedInstAttestations     = $counts->declinedinstattestations;
-            $issuedResGradInstAttestations = $counts->issuedresgradinstattestations;
-            $declinedResGradInstAttestations = $counts->declinedresgradinstattestations;
+            $issuedInstAttestations       = $counts->issued_inst_attestations;
+            $declinedInstAttestations     = $counts->declined_inst_attestations;
+            $issuedResGradInstAttestations = $counts->issued_res_grad_inst_attestations;
+            $declinedResGradInstAttestations = $counts->declined_res_grad_inst_attestations;
 
             $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
                 $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $instCap);
