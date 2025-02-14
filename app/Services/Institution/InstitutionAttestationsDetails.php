@@ -19,7 +19,8 @@ class InstitutionAttestationsDetails {
      *
      * @return array
      */
-    public function getInstitutionAttestInfo($issuedUnderAttestations, $issuedGradAttestations, $declinedUnderAttestations, $declinedGradAttestations, $cap) {
+    public function getInstitutionAttestInfo($issuedUnderAttestations, $issuedGradAttestations, $declinedUnderAttestations,
+                                             $declinedGradAttestations, $cap) {
 
         // Total Undergrad. issued PALs = Total issued PALs - Total Grad. Pals
 //        $issuedUndergradAttestations = $issuedUnderAttestations - $issuedGradAttestations;
@@ -31,14 +32,22 @@ class InstitutionAttestationsDetails {
         $remainingTotalAttestations = $cap->total_attestations - ($issuedUnderAttestations + $declinedUnderAttestations
                 + $issuedGradAttestations + $declinedGradAttestations);
 
+        \Log::info("getInstitutionAttestInfo: issuedUnderAttestations" . $issuedUnderAttestations);
+        \Log::info("getInstitutionAttestInfo: issuedGradAttestations" . $issuedGradAttestations);
+        \Log::info("getInstitutionAttestInfo: declinedUnderAttestations" . $declinedUnderAttestations);
+        \Log::info("getInstitutionAttestInfo: declinedGradAttestations" . $declinedGradAttestations);
+        \Log::info("getInstitutionAttestInfo: remainingTotalAttestations" . $remainingTotalAttestations);
+
         // Calculate the default remaining Undergrad. PALs based on the Inst. Cap details
 //        $undergradAttestationsLimitDefault = $cap->total_attestations - $cap->total_reserved_graduate_attestations;
 
 
         // Calculate the real remaining Undegrad. PALs based on the number of already Undergrad. PALs issued and declined
 //        $undergradAttestationsRemaining = $undergradAttestationsLimitDefault - ($issuedUndergradAttestations + $declinedUnderAttestations);
-        $undergradAttestationsRemaining = $this->calculateUndergradRemaining($issuedGradAttestations,
-            $issuedUnderAttestations, $cap->total_attestations, $cap->total_reserved_graduate_attestations);
+        $undergradAttestationsRemaining = $this->calculateUndergradRemaining($issuedGradAttestations + $declinedGradAttestations,
+            $issuedUnderAttestations + $declinedUnderAttestations, $cap->total_attestations, $cap->total_reserved_graduate_attestations);
+
+        \Log::info("undergradAttestationsRemaining: " . $undergradAttestationsRemaining);
 
         // If Undegrad. PALs have been already issued, select the real remaining Undergrad. Attest. total as the new cap.
         //$undergradAttestationsLimitFinal = ($undergradAttestationsLimitDefault < $undergradAttestationsRemaining) ? $undergradAttestationsLimitDefault : $undergradAttestationsRemaining;
@@ -62,12 +71,16 @@ class InstitutionAttestationsDetails {
     }
 
     private function calculateUndergradRemaining($gradsIssued, $undergradsIssued, $total, $gradResLimit) {
-        // Always reserve at least 100 for grads unless they exceed it
+        \Log::info("calculateUndergradRemaining: $gradsIssued:" . $gradsIssued . ", total:" . $total
+            . ", undergradsIssued:" . $undergradsIssued . ", gradResLimit:" . $gradResLimit);
+        //always reserve an amount for grads unless they exceed it
         $gradsCounted = max($gradResLimit, $gradsIssued);
 
-        // Calculate remaining attestations for undergrads
+        //calculate remaining attestations for undergrads
         $undergradRemaining = $total - $gradsCounted - $undergradsIssued;
 
-        return max(0, $undergradRemaining); // Ensure we never return negative values
+        \Log::info("undergradRemaining: " . $undergradRemaining . "=" . $total . "-" . $gradsCounted . "-" . $undergradsIssued);
+        //ensure we never return negative values
+        return max(0, $undergradRemaining);
     }
 }
