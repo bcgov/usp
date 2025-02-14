@@ -13,7 +13,6 @@ use App\Models\AttestationPdf;
 use App\Models\Cap;
 use App\Models\Country;
 use App\Models\Institution;
-use Dompdf\Options;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -205,19 +204,6 @@ class AttestationController extends Controller
         $storedPdf = AttestationPdf::where('attestation_guid', $attestation->guid)
             ->first();
 
-        $options = new Options();
-        $options->set('defaultFont', 'Noto Sans Regular');
-        $options->set('isFontSubsettingEnabled', false); //disable font embedding
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('tempDir', sys_get_temp_dir());
-        $options->set('chroot', realpath(base_path()));
-        $options->set('fontHeightRatio', 0.95);
-
-        //apply Options to the Laravel Dompdf Wrapper
-        app()->singleton('dompdf.options', function () use ($options) {
-            return $options;
-        });
-
         $pdf = App::make('dompdf.wrapper');
 
         //combining steps here cause pdf to be sometime generated with missing bytes
@@ -231,6 +217,7 @@ class AttestationController extends Controller
         if (ob_get_length()) {
             ob_clean();
         }
+
         return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
