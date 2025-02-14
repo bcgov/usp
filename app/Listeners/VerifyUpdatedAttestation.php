@@ -82,8 +82,10 @@ class VerifyUpdatedAttestation
                 $valid = false;
             }
 
+            // USE/UNCOMMENT THIS BLOCK WHENEVER PROGRAM CAP IS ENABLED
             //check if the program cap has been reached
             //if so switch it to draft
+            /*
             $issuedProgAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('cap_guid', $cap->guid)
                 ->count();
@@ -93,6 +95,7 @@ class VerifyUpdatedAttestation
                 \Log::info('2 $issuedProgAttestations >= $instCap->total_attestations: '.$issuedProgAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
+            */
 
             // If we hit or acceded the limit for Undergrad issued attestations
             if (!$isProgramGraduate && ($institutionAttestationsDetails['undergradRemaining']) === -1) {
