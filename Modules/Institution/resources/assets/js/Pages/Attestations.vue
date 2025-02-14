@@ -23,21 +23,12 @@
                                 <div class="col-md-10">
                                     Attestations
                                     <template v-if="capStat != '' && capStat.instCap != null">
-                                        <span
-                                            class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations }}</span>
                                         <span class="badge rounded-pill text-bg-primary me-1">Active Res. Grad.: {{ capStat.instCap.total_reserved_graduate_attestations }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{
-                                                capStat.issued
-                                            }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{
-                                                capStat.instCap.total_attestations - capStat.issued
-                                            }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Grad. PALs: {{
-                                                capStat.gradIssued
-                                            }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Undegrad. PALs: {{
-                                                capStat.issued - capStat.gradIssued
-                                            }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{ capStat.issued }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{ capStat.totalRemaining }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Grad. PALs: {{ capStat.gradIssued }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Undegrad. PALs: {{ capStat.remainingUndergrad }}</span>
                                     </template>
                                 </div>
                                 <div class="col-md-2">
