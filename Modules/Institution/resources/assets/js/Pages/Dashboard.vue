@@ -40,7 +40,7 @@
                         <div class="card-header">
                             Available Attestations
                         </div>
-                        <div class="card-body display-5 py-5">{{ capTotal - (issued + declined) }}</div>
+                        <div class="card-body display-5 py-5">{{ totalRemaining }}</div>
                     </div>
                 </div>
                 <div class="col d-flex">
@@ -51,10 +51,10 @@
                         <div class="card-body display-5 py-3">
                             <div class="row">
                                 <div class="col-6">
-                                    <span class="fs-3">Issued</span><br>{{ issuedResGrad }}
+                                    <span class="fs-3">Issued</span><br>{{ issuedGrad }}
                                 </div>
                                 <div class="col-6">
-                                    <span class="fs-3">Declined</span><br>{{ declinedResGrad }}
+                                    <span class="fs-3">Declined</span><br>{{ declinedGrad }}
                                 </div>
                             </div>
                         </div>
@@ -68,10 +68,10 @@
                         <div class="card-body display-5 py-3">
                             <div class="row">
                                 <div class="col-6">
-                                    <span class="fs-3">Issued</span><br>{{ issuedUndegrad }}
+                                    <span class="fs-3">Issued</span><br>{{ issued }}
                                 </div>
                                 <div class="col-6">
-                                    <span class="fs-3">Declined</span><br>{{ declinedUndegrad }}
+                                    <span class="fs-3">Declined</span><br>{{ declined }}
                                 </div>
                             </div>
                         </div>
@@ -123,11 +123,10 @@ export default {
         resGraduateCapTotal: Number | null,
         issued: Object | Number | null,
         declined: Object | Number | null,
-        issuedUndegrad: Number | null,
-        declinedUndegrad: Number | null,
         undergradRemaining: Number | null,
-        issuedResGrad: Number | null,
-        declinedResGrad: Number | null
+        totalRemaining: Number | null,
+        issuedGrad: Number | null,
+        declinedGrad: Number | null
     },
     data() {
         return {}

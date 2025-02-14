@@ -54,31 +54,31 @@ class VerifyUpdatedAttestation
             // This is going to be all attes. under this inst. and are using the same fed cap as this.
 
             $counts = Attestation::selectRaw("
-    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_inst_attestations,
-    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declined_inst_attestations,
-    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issued_res_grad_inst_attestations,
-    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declined_res_grad_inst_attestations
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_undergrad_attestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declined_undergrad_attestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issued_grad_attestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declined_grad_attestations
 ")
                 ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
                 ->where('attestations.institution_guid', $cap->institution_guid)
                 ->where('attestations.fed_cap_guid', $cap->fed_cap_guid)
                 ->first();
 
-            $issuedInstAttestations       = $counts->issued_inst_attestations;
-            $declinedInstAttestations     = $counts->declined_inst_attestations;
-            $issuedResGradInstAttestations = $counts->issued_res_grad_inst_attestations;
-            $declinedResGradInstAttestations = $counts->declined_res_grad_inst_attestations;
+            $issuedUnderAttestations       = $counts->issued_undergrad_attestations;
+            $declinedUnderAttestations     = $counts->declined_undergrad_attestations;
+            $issuedGradAttestations = $counts->issued_grad_attestations;
+            $declinedGradAttestations = $counts->declined_grad_attestations;
 
 
             // If the attestation is linked to a reserved graduate program
             // Get the inst cap and check if we have hit the cap for reserved graduate issued attestations
 
-            $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
-                $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $instCap);
+            $institutionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedUnderAttestations,
+                $issuedGradAttestations, $declinedUnderAttestations, $declinedGradAttestations, $instCap);
 
             // If we hit or acceded the inst cap limit for issued attestations
-            if ($issuedInstAttestations > $instCap->total_attestations) {
-                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedInstAttestations.' >= '.$instCap->total_attestations);
+            if ($issuedUnderAttestations > $instCap->total_attestations) {
+                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedUnderAttestations.' >= '.$instCap->total_attestations);
                 $valid = false;
             }
 
@@ -95,8 +95,8 @@ class VerifyUpdatedAttestation
             }
 
             // If we hit or acceded the limit for Undergrad issued attestations
-            if (!$isProgramGraduate && ($instituionAttestationsDetails['undergradRemaining']) === -1) {
-                \Log::info('3  $instituionAttestationsDetails[\'undergradRemaining\'] === -1');
+            if (!$isProgramGraduate && ($institutionAttestationsDetails['undergradRemaining']) === -1) {
+                \Log::info('3  $institutionAttestationsDetails[\'undergradRemaining\'] === -1');
                 $valid = false;
             }
 

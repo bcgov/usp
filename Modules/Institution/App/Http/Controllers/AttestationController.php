@@ -69,30 +69,30 @@ class AttestationController extends Controller
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
 
         $counts = Attestation::selectRaw("
-    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_inst_attestations,
-    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declined_inst_attestations,
-    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issued_res_grad_inst_attestations,
-    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declined_res_grad_inst_attestations
+    SUM(CASE WHEN status = 'Issued' THEN 1 ELSE 0 END) as issued_undergrad_attestations,
+    SUM(CASE WHEN status = 'Declined' THEN 1 ELSE 0 END) as declined_undergrad_attestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issued_grad_attestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declined_grad_attestations
 ")
             ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
             ->where('attestations.institution_guid', $cap->institution_guid)
             ->where('attestations.fed_cap_guid', $cap->fed_cap_guid)
             ->first();
 
-        $issuedInstAttestations       = $counts->issued_inst_attestations;
-        $declinedInstAttestations     = $counts->declined_inst_attestations;
-        $issuedResGradInstAttestations = $counts->issued_res_grad_inst_attestations;
-        $declinedResGradInstAttestations = $counts->declined_res_grad_inst_attestations;
+        $issuedUnderAttestations       = $counts->issued_undergrad_attestations;
+        $declinedUnderAttestations     = $counts->declined_undergrad_attestations;
+        $issuedGradAttestations = $counts->issued_grad_attestations;
+        $declinedGradAttestations = $counts->declined_grad_attestations;
 
-        $instituionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedInstAttestations,
-            $issuedResGradInstAttestations, $declinedInstAttestations, $declinedResGradInstAttestations, $cap);
+        $institutionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedUnderAttestations,
+            $issuedGradAttestations, $declinedUnderAttestations, $declinedGradAttestations, $cap);
 
 
         // If we hit or acceded the reserved graduate inst cap limit for issued attestations
-        if ($instituionAttestationsDetails['undergradRemaining'] === 0) {
+        if ($institutionAttestationsDetails['undergradRemaining'] === 0) {
             $warning_message = "Your institution has reached the limit for undergraduate attestations. You can't issue a new attestation linked to an undergraduate program or it will be automatically converted as a Draft.";
         }
-        elseif ($instituionAttestationsDetails['issued'] >= $cap->total_attestations) {
+        elseif (($issuedUnderAttestations + $issuedGradAttestations + $declinedUnderAttestations + $declinedGradAttestations) >= $cap->total_attestations) {
             $warning_message = "Your institution has reached the maximum attestations cap. You can't issue a new attestation or it will be automatically converted as a Draft.";
         }
 
@@ -271,12 +271,12 @@ class AttestationController extends Controller
             ->first();
 
         if (! is_null($instCap)) {
-            $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
+            $issuedUnderAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->count();
 
-            $issuedResGradInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
+            $issuedGradAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                 ->where('institution_guid', $instCap->institution_guid)
                 ->where('fed_cap_guid', $instCap->fed_cap_guid)
                 ->whereHas('program', function ($query) {
@@ -285,7 +285,8 @@ class AttestationController extends Controller
                 ->count();
         }
 
-        return Response::json(['status' => true, 'body' => ['instCap' => $instCap, 'issued' => $issuedInstAttestations ?? 0, 'resGradIssued' => $issuedResGradInstAttestations ?? 0]]);
+        return Response::json(['status' => true, 'body' =>
+            ['instCap' => $instCap, 'issued' => $issuedUnderAttestations ?? 0, 'gradIssued' => $issuedGradAttestations ?? 0]]);
     }
 
     public function duplicateStudent(Request $request)
