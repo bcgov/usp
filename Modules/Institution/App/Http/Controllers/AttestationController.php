@@ -10,8 +10,9 @@ use App\Models\Attestation;
 use App\Models\AttestationPdf;
 use App\Models\Cap;
 use App\Models\Country;
+use App\Models\FedCap;
 use App\Models\User;
-use Dompdf\Dompdf;
+use App\Services\Institution\InstitutionAttestationsDetails;
 use Dompdf\Options;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -200,11 +201,21 @@ class AttestationController extends Controller
 
     public function download(Request $request, Attestation $attestation)
     {
-        ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
-        set_time_limit(300);
-
         $this->authorize('download', $attestation);
         $storedPdf = AttestationPdf::where('attestation_guid', $attestation->guid)->first();
+
+        $options = new Options();
+        $options->set('defaultFont', 'Noto Sans Regular');
+        $options->set('isFontSubsettingEnabled', false); //disable font embedding
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('tempDir', sys_get_temp_dir());
+        $options->set('chroot', realpath(base_path()));
+        $options->set('fontHeightRatio', 0.95);
+
+        //apply Options to the Laravel Dompdf Wrapper
+        app()->singleton('dompdf.options', function () use ($options) {
+            return $options;
+        });
 
         $pdf = App::make('dompdf.wrapper');
 
@@ -215,22 +226,11 @@ class AttestationController extends Controller
         $pdf->render();
         $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
-        //clear any output buffers.
+        // Clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
-
-        $rand = rand();
-
-        // Write the PDF content to a temporary file.
-        $tempPath = tempnam(public_path(), 'pdf-' . $rand . '.pdf');
-        file_put_contents($tempPath, $pdf->output());
-
-        // Return the file as a download, deleting it after sending.
-        $filename = $rand . '-' . $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.pdf';
-//        return response()->download($tempPath, $filename)->deleteFileAfterSend();
-        return response()->download($tempPath, $filename);
-
+        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
     public function exportCsv()
