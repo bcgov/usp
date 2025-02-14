@@ -33,10 +33,10 @@
                                                 capStat.instCap.total_attestations - capStat.issued
                                             }}</span>
                                         <span class="badge rounded-pill text-bg-primary me-1">Issued Grad. PALs: {{
-                                                capStat.resGradIssued
+                                                capStat.gradIssued
                                             }}</span>
                                         <span class="badge rounded-pill text-bg-primary me-1">Issued Undegrad. PALs: {{
-                                                capStat.issued - capStat.resGradIssued
+                                                capStat.issued - capStat.gradIssued
                                             }}</span>
                                     </template>
                                 </div>
