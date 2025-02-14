@@ -4,7 +4,7 @@
 /public/hot
 /public/storage
 /storage/*.key
-/vendor
+/vendor_old
 .env
 .env.backup
 .phpunit.result.cache
@@ -15,7 +15,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
-composer.lock
+composer_old.lock
 package-lock.json
 /public/*.csv
 /public/*.xls

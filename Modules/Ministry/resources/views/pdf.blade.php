@@ -7,11 +7,12 @@
     <title>USPA - International Study Permit</title>
     <style>
         @font-face {
-            font-family: "DejaVu Sans";
-            src: url("' . public_path('fonts/DejaVuSans.ttf') . '") format("truetype");
+            font-family: "Noto Sans Regular";
+            src: url("{{ public_path('/fonts/NotoSans-Regular.ttf') }}") format("truetype");
         }
         body{
-            font-family: "DejaVu Sans", sans-serif;
+            /*font-family: 'Arial', 'Helvetica', sans-serif;*/
+            font-family: "Noto Sans Regular", 'Arial', sans-serif;
             line-height: 1rem;
             font-size: 13px;
             margin: 130px 30px 30px 30px;
@@ -52,13 +53,12 @@
             <tr>
                 <td style="text-align: left; width: 25%;"><img src="{{ public_path('/images/bc_sq_logo.png') }}"></td>
                 <td style="text-align: center; width: 50%;"></td>
-                <td style="text-align: left; width: 25%;"><strong>{{ $attestation->fed_guid }}</strong></td>
+                <td style="text-align: left; width: 25%;"><strong>{{ $attestation->fed_guid }}</strong><br/>{{ $now_d }}</td>
             </tr>
         </table>
     </header>
 
     <table>
-        <tr><td>{{ $now_d }}<br/><br/></td></tr>
         <tr>
             <td>
                 Student name: {{ $attestation->first_name }} {{ $attestation->last_name }}<br/>
@@ -80,7 +80,7 @@
                     <li>Designated Learning Institution (DLI) name: {{ $attestation->institution->name }}</li>
                     <li>DLI number: {{ $attestation->institution->dli }}</li>
                     <li>Program name: {{ $attestation->program->program_name }}</li>
-                    <li>PAL type: {{ $attestation->program->program_graduate ? 'Graduate' : 'Undergraduate and Other' }} Program</li>
+                    <li>PAL type: {{ $attestation->program->program_graduate ? 'Graduate Degree' : 'Undergraduate and Other' }} Program</li>
                 </ul>
                 <br/>
                 This provincial attestation letter is valid until {{ $attestation->expiry_date }}, or until the study permit application cap is reached.<br/><br/>
@@ -89,7 +89,7 @@
                 provincial attestation letter, or meet an exception as outlined in the Ministerial Instructions, will
                     not be accepted for processing.</strong> Please refer to <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada.html">IRCC’s web site</a> for study permit application information.
 
-                <br/><br/><br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/>{{ $utils['PAL Signature Position'][0]->field_name }}
+                <br/><br/>{{ $utils['PAL Signature Name'][0]->field_name }}<br/>{{ $utils['PAL Signature Position'][0]->field_name }}
                 <br/>{{ $utils['PAL Signature Division'][0]->field_name }}<br/>{{ $utils['Ministry Name'][0]->field_name }}
             </td>
         </tr>
