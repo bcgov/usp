@@ -57,6 +57,7 @@
                                     <span class="fs-3">Declined</span><br>{{ declinedGrad }}
                                 </div>
                             </div>
+                            <div class="row"><div class="col-12"><span class="fs-6">* For more information on Declined PALs see FAQ</span></div></div>
                         </div>
                     </div>
                 </div>
@@ -74,6 +75,7 @@
                                     <span class="fs-3">Declined</span><br>{{ declined }}
                                 </div>
                             </div>
+                            <div class="row"><div class="col-12"><span class="fs-6">* For more information on Declined PALs see FAQ</span></div></div>
                         </div>
                     </div>
                 </div>
