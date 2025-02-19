@@ -273,29 +273,59 @@ class AttestationController extends Controller
 
     public function capStat(Request $request)
     {
-        $instCap = Cap::where('institution_guid', $request->input('institution_guid'))
+
+        $cap = Cap::where('institution_guid', $request->input('institution_guid'))
             ->selectedFedcap()
             ->active()
             ->where('program_guid', null)
             ->first();
 
-        if (! is_null($instCap)) {
-            $issuedUnderAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-                ->where('institution_guid', $instCap->institution_guid)
-                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-                ->count();
+        $counts = Attestation::selectRaw("
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = false THEN 1 ELSE 0 END) as issued_undergrad_attestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = false THEN 1 ELSE 0 END) as declined_undergrad_attestations,
+    SUM(CASE WHEN status = 'Issued' AND programs.program_graduate = true THEN 1 ELSE 0 END) as issued_grad_attestations,
+    SUM(CASE WHEN status = 'Declined' AND programs.program_graduate = true THEN 1 ELSE 0 END) as declined_grad_attestations
+")
+            ->leftJoin('programs', 'programs.guid', '=', 'attestations.program_guid')
+            ->where('attestations.institution_guid', $cap->institution_guid)
+            ->where('attestations.fed_cap_guid', $cap->fed_cap_guid)
+            ->first();
 
-            $issuedGradAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
-                ->where('institution_guid', $instCap->institution_guid)
-                ->where('fed_cap_guid', $instCap->fed_cap_guid)
-                ->whereHas('program', function ($query) {
-                    $query->where('program_graduate', true);
-                })
-                ->count();
-        }
+        $issuedUnderAttestations       = $counts->issued_undergrad_attestations;
+        $declinedUnderAttestations     = $counts->declined_undergrad_attestations;
+        $issuedGradAttestations = $counts->issued_grad_attestations;
+        $declinedGradAttestations = $counts->declined_grad_attestations;
 
+        $institutionAttestationsDetails = InstitutionFacade::getInstitutionAttestInfo($issuedUnderAttestations,
+            $issuedGradAttestations, $declinedUnderAttestations, $declinedGradAttestations, $cap);
+
+//
+//        if (! is_null($cap)) {
+//            $issuedUnderAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
+//                ->where('institution_guid', $instCap->institution_guid)
+//                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+//                ->count();
+//
+//            $issuedGradAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
+//                ->where('institution_guid', $instCap->institution_guid)
+//                ->where('fed_cap_guid', $instCap->fed_cap_guid)
+//                ->whereHas('program', function ($query) {
+//                    $query->where('program_graduate', true);
+//                })
+//                ->count();
+//        }
         return Response::json(['status' => true, 'body' =>
-            ['instCap' => $instCap, 'issued' => $issuedUnderAttestations ?? 0, 'gradIssued' => $issuedGradAttestations ?? 0]]);
+            ['instCap' => $cap,
+                'issued' => $issuedUnderAttestations ?? 0,
+                'declined' => $declinedUnderAttestations ?? 0,
+                'issuedGrad' => $issuedGradAttestations ?? 0,
+                'declinedGrad' => $declinedGradAttestations ?? 0,
+                'remainingUndergrad' => $institutionAttestationsDetails['undergradRemaining'] ?? 0,
+                'totalRemaining' => $institutionAttestationsDetails['totalRemaining'] ?? 0
+                ]]);
+
+//        return Response::json(['status' => true, 'body' =>
+//            ['instCap' => $instCap, 'issued' => $issuedUnderAttestations ?? 0, 'gradIssued' => $issuedGradAttestations ?? 0]]);
     }
 
     public function duplicateStudent(Request $request)
