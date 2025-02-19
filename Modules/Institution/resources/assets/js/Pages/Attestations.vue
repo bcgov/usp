@@ -23,21 +23,12 @@
                                 <div class="col-md-10">
                                     Attestations
                                     <template v-if="capStat != '' && capStat.instCap != null">
-                                        <span
-                                            class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_attestations }}</span>
                                         <span class="badge rounded-pill text-bg-primary me-1">Active Res. Grad.: {{ capStat.instCap.total_reserved_graduate_attestations }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{
-                                                capStat.issued
-                                            }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{
-                                                capStat.instCap.total_attestations - capStat.issued
-                                            }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Grad. PALs: {{
-                                                capStat.resGradIssued
-                                            }}</span>
-                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Undegrad. PALs: {{
-                                                capStat.issued - capStat.resGradIssued
-                                            }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{ capStat.issued }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{ capStat.totalRemaining }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Grad. PALs: {{ capStat.gradIssued }}</span>
+                                        <span class="badge rounded-pill text-bg-primary me-1">Issued Undegrad. PALs: {{ capStat.remainingUndergrad }}</span>
                                     </template>
                                 </div>
                                 <div class="col-md-2">
@@ -107,7 +98,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="newAtteModalLabel">New Attestation</h5>
+                            <h5 class="modal-title" id="newAtteModalLabel">New Attestation <span class=" fs-6" v-if="instCap !== null">for PY: {{ instCap.start_date }} to {{ instCap.end_date }}</span></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div v-if="instCap === null" class="modal-body">
@@ -124,7 +115,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title me-2" id="editAtteModalLabel">Edit Attestation</h5>
+                            <h5 class="modal-title me-2" id="editAtteModalLabel">Edit Attestation <span class="fs-6" v-if="instCap !== null">for PY: {{ instCap.start_date }} to {{ instCap.end_date }}</span></h5>
                             <strong>Issued by: {{ editRow.issued_by_name }}</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>

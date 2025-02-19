@@ -40,23 +40,43 @@
                         <div class="card-header">
                             Available Attestations
                         </div>
-                        <div class="card-body display-5 py-5">{{ capTotal - issued }}</div>
+                        <div class="card-body display-5 py-5">{{ totalRemaining }}</div>
                     </div>
                 </div>
                 <div class="col d-flex">
                     <div class="card text-center h-100 w-100">
                         <div class="card-header">
-                            Issued Grad. Attestations
+                            Grad. Attestations
                         </div>
-                        <div class="card-body display-5 py-5">{{ issuedResGrad }}</div>
+                        <div class="card-body display-5 py-3">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="fs-3">Issued</span><br>{{ issuedGrad }}
+                                </div>
+                                <div class="col-6">
+                                    <span class="fs-3">Declined</span><br>{{ declinedGrad }}
+                                </div>
+                            </div>
+                            <div class="row"><div class="col-12"><span class="fs-6">* For more information on Declined PALs see FAQ</span></div></div>
+                        </div>
                     </div>
                 </div>
                 <div class="col d-flex">
                     <div class="card text-center h-100 w-100">
                         <div class="card-header">
-                            Issued Undergrad. Attestations
+                            Undergrad. Attestations
                         </div>
-                        <div class="card-body display-5 py-5">{{ issuedUndegrad }}</div>
+                        <div class="card-body display-5 py-3">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="fs-3">Issued</span><br>{{ issued }}
+                                </div>
+                                <div class="col-6">
+                                    <span class="fs-3">Declined</span><br>{{ declined }}
+                                </div>
+                            </div>
+                            <div class="row"><div class="col-12"><span class="fs-6">* For more information on Declined PALs see FAQ</span></div></div>
+                        </div>
                     </div>
                 </div>
                 <div class="col d-flex">
@@ -104,9 +124,11 @@ export default {
         capTotal: Object | Number | null,
         resGraduateCapTotal: Number | null,
         issued: Object | Number | null,
-        issuedUndegrad: Number | null,
+        declined: Object | Number | null,
         undergradRemaining: Number | null,
-        issuedResGrad: Number | null
+        totalRemaining: Number | null,
+        issuedGrad: Number | null,
+        declinedGrad: Number | null
     },
     data() {
         return {}

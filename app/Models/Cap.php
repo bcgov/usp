@@ -100,7 +100,7 @@ class Cap extends Model
 
     public function getInstActiveCapStatAttribute()
     {
-        $issuedInstAttestations = Attestation::where('status', 'Issued')
+        $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $this->institution_guid)
             ->where('fed_cap_guid', $this->fed_cap_guid)
             ->count();
@@ -114,7 +114,7 @@ class Cap extends Model
 
     public function getInstActiveResGradCapStatAttribute()
     {
-        $issuedInstResGradAttestations = Attestation::where('status', 'Issued')
+        $issuedInstResGradAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $this->institution_guid)
             ->where('fed_cap_guid', $this->fed_cap_guid)
             ->whereHas('program', function ($query) {

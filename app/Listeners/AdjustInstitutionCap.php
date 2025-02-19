@@ -23,7 +23,7 @@ class AdjustInstitutionCap
 
         \Log::info('Cap Listeners started');
         // Get the federal cap and check if we have hit the cap for issued attestations
-        $issuedAttestations = Attestation::where('status', 'Issued')
+        $issuedAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $cap->fed_cap_guid)
             ->count();
@@ -73,7 +73,7 @@ class AdjustInstitutionCap
 
                 // Get the inst cap and check if we have hit the cap for issued attestations
                 // This is going to be all attes. under this inst. and are using the same fed cap as this.
-                $issuedAttestations = Attestation::where('status', 'Issued')
+                $issuedAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
                     ->where('institution_guid', $institution->guid)
                     ->where('fed_cap_guid', $cap->fed_cap_guid)
                     ->count();
@@ -97,14 +97,14 @@ class AdjustInstitutionCap
         }
 
         // Same process but for the Reserved Graduate Attestations
-        $issuedResGradAttestations = Attestation::where('status', 'Issued')
+        $issuedGradAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $institution->guid)
             ->where('fed_cap_guid', $cap->fed_cap_guid)
             ->whereHas('program', function ($query) {
                 $query->where('program_graduate', true);
             })
             ->count();
-        \Log::info('9 $issuedResGradAttestations: '.$issuedResGradAttestations);
+        \Log::info('9 $issuedGradAttestations: '.$issuedGradAttestations);
 
         // The new value for Total Reserved Graduate Attest. Allowed can't be higher than the value for Total Attest. Allowed
         if ($cap->total_reserved_graduate_attestations > $cap->total_attestations) {
@@ -112,12 +112,12 @@ class AdjustInstitutionCap
             $cap->total_reserved_graduate_attestations = $cap->total_attestations;
         }
         // The new value for Total Reserved Graduate Attest. Allowed can't be lower than the total of grad. attestations already issues
-        elseif ($cap->total_reserved_graduate_attestations < $issuedResGradAttestations) {
-            \Log::info('10.2 $cap->total_reserved_graduate_attestations < $issuedResGradAttestations: '.$cap->total_reserved_graduate_attestations.'<'.$issuedResGradAttestations);
-            $cap->total_reserved_graduate_attestations = $issuedResGradAttestations;
+        elseif ($cap->total_reserved_graduate_attestations < $issuedGradAttestations) {
+            \Log::info('10.2 $cap->total_reserved_graduate_attestations < $issuedGradAttestations: '.$cap->total_reserved_graduate_attestations.'<'.$issuedGradAttestations);
+            $cap->total_reserved_graduate_attestations = $issuedGradAttestations;
         }
 
-        $issuedUndergradAttestations = $issuedAttestations - $issuedResGradAttestations;
+        $issuedUndergradAttestations = $issuedAttestations - $issuedGradAttestations;
         $maxResGradAttestations = $cap->total_attestations - $issuedUndergradAttestations;
         // Last chek, making sure that the new value for the Total Reserved Graduate Attest. doesn't go over the remaining number of Grad. Attes.
         if ($cap->total_reserved_graduate_attestations > $maxResGradAttestations) {
