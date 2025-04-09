@@ -101,8 +101,20 @@ class UserController extends Controller
                 // We got an access token, let's now get the user's details
                 $provider_user = $provider->getResourceOwner($token);
                 $provider_user = $provider_user->toArray();
+//                \Log::info('We got a token: '.$token);
+//                \Log::info('$provider_user: '.json_encode($provider_user));
+                $tokenValues = $token->getValues();
+                if (isset($tokenValues['id_token'])) {
+                    $idToken = $tokenValues['id_token'];
+                    $returnUrl = env('KEYCLOAK_LOGOUT_URL1') . '?retnow=1&returl=' . urlencode(env('KEYCLOAK_LOGOUT_URL2').'?id_token_hint=' . $idToken . '&post_logout_redirect_uri=' . env('KEYCLOAK_LOGOUT_URL3'));
+                    $request->session()->put('kc_logout_uri', $returnUrl);
+                }
+                \Log::info('KC Logout : '.$provider->getLogoutUrl(['access_token' => $token]));
+//                \Log::info('idToken: ');
+//                \Log::info($token->getValues());
                 \Log::info('We got a token: '.$token);
                 \Log::info('$provider_user: '.json_encode($provider_user));
+
             } catch (\Exception $e) {
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
