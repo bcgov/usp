@@ -223,14 +223,51 @@ class AttestationController extends Controller
         $trimHTML = trim($loadHTML);
         $pdf->loadHTML($trimHTML);
         $pdf->render();
-        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+        //$pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
         // Clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
 
-        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+//        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+        // Get the binary output of the PDF
+        $pdfOutput = $pdf->output();
+        //file_put_contents('/tmp/test.pdf', $pdfOutput);
+
+        // Convert PDF to JPEG using Imagick
+        try {
+            $imagick = new \Imagick();
+            // Setting the resolution (density) is important for image quality.
+            // For letter-size at 300 DPI, you can do:
+            $imagick->setResolution(300, 300);
+            // Read the PDF from the binary blob
+            $imagick->readImageBlob($pdfOutput);
+            // Set the background color to white and flatten any transparency
+            $imagick->setImageBackgroundColor(new \ImagickPixel('white'));
+            $imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
+
+            // Set the image format to jpeg
+            $imagick->setImageFormat('jpeg');
+            // Optionally set the compression quality (0-100)
+            $imagick->setImageCompressionQuality(90);
+
+            // If multiple pages, choose the first page (page 0). Otherwise, get the image blob.
+            // If your PDF is one page, this returns that page.
+            $jpegOutput = $imagick->getImageBlob();
+
+            // Clean up Imagick resources
+            $imagick->clear();
+            $imagick->destroy();
+        } catch (\Exception $e) {
+            return response("Image conversion error: " . $e->getMessage(), 500);
+        }
+
+        // Return the JPEG as a download
+        return response($jpegOutput, 200)
+            ->header('Content-Type', 'image/jpeg')
+            ->header('Content-Disposition', 'attachment; filename="' .
+                $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.jpeg"');
     }
 
     private function paginateAtte()
