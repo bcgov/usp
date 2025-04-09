@@ -94,7 +94,7 @@ RUN a2enmod remoteip \
 
 
 # Install imagick via PECL
-RUN pecl install imagick
+RUN pecl install imagick && docker-php-ext-enable imagick
 # To prevent: Image conversion error: attempt to perform an operation not allowed by the security policy `PDF' @ error/constitute.c/IsCoderAuthorized/426
 RUN sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/' /etc/ImageMagick-6/policy.xml
 
