@@ -321,15 +321,13 @@ class MaintenanceController extends Controller
             $request->type .= '-' . date('y-m-d');
             $activeFedCap = FedCap::active()->select('start_date', 'end_date')->first();
             $rows = Attestation::select(
-                'attestations.id_number',
+                'attestations.fed_guid',
                 'attestations.issue_date',
                 'attestations.expiry_date',
                 'attestations.last_name',
                 'attestations.first_name',
                 'attestations.dob',
             )
-                ->join('institutions', 'institutions.guid', '=', 'attestations.institution_guid')
-                ->join('programs', 'programs.guid', '=', 'attestations.program_guid')
                 ->whereBetween('attestations.created_at', [$activeFedCap->start_date, $activeFedCap->end_date])
                 ->where('attestations.status', 'Issued')
                 ->get();
