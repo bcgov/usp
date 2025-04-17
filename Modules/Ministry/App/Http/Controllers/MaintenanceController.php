@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
 use Illuminate\Support\Str;
+use Auth;
 
 class MaintenanceController extends Controller
 {
@@ -319,7 +320,6 @@ class MaintenanceController extends Controller
 
         if($type === 'bi-weekly'){
             $request->type .= '-' . date('y-m-d');
-            $activeFedCap = FedCap::active()->select('start_date', 'end_date')->first();
             $rows = Attestation::select(
                 'attestations.fed_guid',
                 'attestations.issue_date',
@@ -328,7 +328,7 @@ class MaintenanceController extends Controller
                 'attestations.first_name',
                 'attestations.dob',
             )
-                ->whereBetween('attestations.created_at', [$activeFedCap->start_date, $activeFedCap->end_date])
+                ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
                 ->where('attestations.status', 'Issued')
                 ->get();
         }
