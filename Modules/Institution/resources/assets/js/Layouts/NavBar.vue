@@ -3,7 +3,7 @@ nav.navbar {
     background-color: #003366;
     border: none;
     border-bottom: 2px solid #fcba19;
-    z-index: 99;
+    z-index: 999;
 }
 nav.navbar .form-select {
     width: 12%;

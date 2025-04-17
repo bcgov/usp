@@ -24,6 +24,7 @@
                         <ReportsSummary v-if="page === 'summary'"></ReportsSummary>
                         <ReportsDetail v-if="page === 'detail'" :results="results"></ReportsDetail>
                         <ReportSources v-if="page === 'sources'"></ReportSources>
+                        <ReportExtended v-if="page === 'extended'" :results="results"></ReportExtended>
                     </div>
                 </div>
             </div>
@@ -37,10 +38,12 @@ import ReportsMenu from "../Components/ReportsMenu";
 import ReportsSummary from "../Components/ReportsSummary";
 import ReportsDetail from "../Components/ReportsDetail";
 import ReportSources from "../Components/ReportSources";
+import ReportExtended from "../Components/ReportExtended";
 
 export default {
     name: 'Reports',
     components: {
+        ReportExtended,
         ReportsSummary,
         ReportsDetail,
         ReportSources,
