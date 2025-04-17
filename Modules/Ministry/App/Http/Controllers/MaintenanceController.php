@@ -318,6 +318,7 @@ class MaintenanceController extends Controller
         }
 
         if($type === 'bi-weekly'){
+            $request->type .= '-' . date('y-m-d');
             $activeFedCap = FedCap::active()->select('start_date', 'end_date')->first();
             $rows = Attestation::select(
                 'attestations.id_number',
