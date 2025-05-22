@@ -131,9 +131,28 @@ class AttestationController extends Controller
             ->first();
 
         if (is_null($check1)) {
-            $attestation = Attestation::create($request->validated());
-            $this->authorize('download', $attestation);
-            event(new AttestationIssued($attestation->cap, $attestation, $request->status));
+
+            //2. check for duplicate attestations
+            try {
+                $attestation = Attestation::create($request->validated());
+            } catch (\Exception $e) {
+                // If fed_guid unique constraint fails, try to get a new fed_guid and guid and retry
+                if (str_contains($e->getMessage(), 'fed_guid')) {
+                    $error = 'Unable to generate a new Attestation ID. Please try again.';
+                } else {
+                    $error = $e->getMessage();
+                }
+            }
+
+            if (!isset($attestation) || is_null($attestation)) {
+                $error = $error ?? 'Failed to create attestation.';
+            } else {
+                $this->authorize('download', $attestation);
+                event(new AttestationIssued($attestation->cap, $attestation, $request->status));
+            }
+
+            // $this->authorize('download', $attestation);
+            // event(new AttestationIssued($attestation->cap, $attestation, $request->status));
         } else {
             $error = "This user has already been issued an attestation.";
         }
@@ -223,50 +242,15 @@ class AttestationController extends Controller
         $trimHTML = trim($loadHTML);
         $pdf->loadHTML($trimHTML);
         $pdf->render();
-        //$pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
+        $pdf->getCanvas()->get_cpdf()->setEncryption('', env('PDF_KEY'), ['print']);
 
         // Clear any output buffers.
         if (ob_get_length()) {
             ob_clean();
         }
 
-//        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
-        // Get the binary output of the PDF
-        $pdfOutput = $pdf->output();
-
-        // Convert PDF to JPEG using Imagick
-        try {
-            $imagick = new \Imagick();
-            // Setting the resolution (density) is important for image quality.
-            // For letter-size at 300 DPI, you can do:
-            $imagick->setResolution(300, 300);
-            // Read the PDF from the binary blob
-            $imagick->readImageBlob($pdfOutput);
-            // Set the background color to white and flatten any transparency
-            $imagick->setImageBackgroundColor(new \ImagickPixel('white'));
-            $imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
-
-            // Set the image format to jpeg
-            $imagick->setImageFormat('jpeg');
-            // Optionally set the compression quality (0-100)
-            $imagick->setImageCompressionQuality(90);
-
-            // If multiple pages, choose the first page (page 0). Otherwise, get the image blob.
-            // If your PDF is one page, this returns that page.
-            $jpegOutput = $imagick->getImageBlob();
-
-            // Clean up Imagick resources
-            $imagick->clear();
-            $imagick->destroy();
-        } catch (\Exception $e) {
-            return response("Image conversion error: " . $e->getMessage(), 500);
-        }
-
-        // Return the JPEG as a download
-        return response($jpegOutput, 200)
-            ->header('Content-Type', 'image/jpeg')
-            ->header('Content-Disposition', 'attachment; filename="' .
-                $attestation->last_name . '-' . $attestation->fed_guid . '-attestation.jpeg"');
+       return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+    
     }
 
     public function exportCsv()
