@@ -89,6 +89,9 @@ Route::prefix('ministry')->group(function () {
             Route::get('/reports/sources', [MaintenanceController::class, 'reportSources'])->name('reports.sources');
             Route::get('/reports/sources-download/{from}/{to}/{type}', [MaintenanceController::class, 'reportSourcesFetch'])->name('reports.sources.fetch');
 
+            Route::get('/reports/extended', [MaintenanceController::class, 'extendedReports'])->name('reports.extendedReports');
+            Route::post('/reports/generate', [MaintenanceController::class, 'extendedReportsGenerate'])->name('reports.generate');
+
         });
     });
 });

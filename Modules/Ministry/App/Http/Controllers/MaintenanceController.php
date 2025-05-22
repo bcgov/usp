@@ -11,6 +11,7 @@ use App\Http\Requests\UtilStoreRequest;
 use App\Models\Attestation;
 use App\Models\Cap;
 use App\Models\Faq;
+use App\Models\FedCap;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\Role;
@@ -21,9 +22,12 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
+use Illuminate\Support\Str;
+use Auth;
 
 class MaintenanceController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -314,6 +318,21 @@ class MaintenanceController extends Controller
                 ->get();
         }
 
+        if($type === 'bi-weekly'){
+            $request->type .= '-' . date('y-m-d');
+            $rows = Attestation::select(
+                'attestations.fed_guid',
+                'attestations.issue_date',
+                'attestations.expiry_date',
+                'attestations.last_name',
+                'attestations.first_name',
+                'attestations.dob',
+            )
+                ->where('fed_cap_guid', Cache::get('global_fed_caps_' . Auth::id())['default'])
+                ->where('attestations.status', 'Issued')
+                ->get();
+        }
+
         $csvData = [];
         $csvDataHeader = [];
         if($rows->isEmpty()) return "No results for the date range selected.";
@@ -497,6 +516,113 @@ class MaintenanceController extends Controller
                 'privateReport' => $privateReport
             ]
         ]);
+    }
+
+    public function extendedReports()
+    {
+        $reportConfig = config('reports');
+        return Inertia::render('Ministry::Reports', ['page' => 'extended',
+            'results' => [
+                'models' => array_keys($reportConfig),
+                'config' => collect($reportConfig)
+                    ->map(fn($cfg) => [
+                        'fillables' => $cfg['fillables'],
+                        'includes'  => $cfg['includes'],
+                    ])
+                    ->all(),
+            ]
+        ]);
+    }
+
+    public function extendedReportsGenerate(Request $request)
+    {
+        try {
+            $reportConfig = config('reports');
+
+            $models = array_keys($reportConfig);
+
+            $request->validate([
+                'model'     => ['required', 'in:'.implode(',', $models)],
+                'filters'   => ['nullable','array'],
+                'includes'  => ['nullable','array'],
+                'includes.*'=> ['in:'.implode(',', $reportConfig[$request->model]['includes'])],
+            ]);
+
+            $cfg        = $reportConfig[$request->model];
+            $modelClass = $cfg['class'];
+            $query      = $modelClass::query();
+
+            foreach ($request->input('filters', []) as $col => $val) {
+                if (in_array($col, $cfg['fillables'], true) && $val !== null && $val !== '') {
+                    $query->where($col, $val);
+                }
+            }
+
+            if ($rels = $request->input('includes')) {
+                $query->with($rels);
+            }
+
+            $rows = $query->get();
+
+            $flattened = $rows->map(function ($item) {
+                return $this->flattenObject($item->toArray());
+            });
+
+            $firstRow = $flattened->first() ?? [];
+
+            return [
+                'columns' => collect(array_keys($firstRow))
+                    ->map(fn($col) => [
+                        'field' => $col,
+                        'title' => $this->beautifyColumnName($col),
+                    ])
+                    ->toArray(),
+                'rows' => $flattened,
+            ];
+
+        } catch (\Throwable $e) {
+            \Log::error('Report generation error: '.$e->getMessage(), ['exception' => $e]);
+            return response()->json(['message' => 'Server Error, please try again later.'], 500);
+        }
+
+    }
+
+
+    private function flattenObject(array $array, string $prefix = '', int $staffLimit = 3): array
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            $newKey = $prefix ? "{$prefix}_{$key}" : $key;
+
+            if (is_array($value) && !empty($value)) {
+                if (array_is_list($value)) {
+                    // Limit number of elements flattened for lists (e.g., staff)
+                    foreach (array_slice($value, 0, $staffLimit) as $index => $subValue) {
+                        if (is_array($subValue)) {
+                            $result = array_merge($result, $this->flattenObject($subValue, "{$newKey}_{$index}"));
+                        } else {
+                            $result["{$newKey}_{$index}"] = $subValue;
+                        }
+                    }
+                } else {
+                    $result = array_merge($result, $this->flattenObject($value, $newKey));
+                }
+            } else {
+                $result[$newKey] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+
+    private function beautifyColumnName(string $column): string
+    {
+        $column = str_replace('_', ' ', $column);        // snake_case → spaces
+        $column = preg_replace('/\s+/', ' ', $column);    // collapse double spaces
+        $column = ucwords($column);                      // capitalize each word
+        return $column;
     }
 
 }

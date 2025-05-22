@@ -131,9 +131,28 @@ class AttestationController extends Controller
             ->first();
 
         if (is_null($check1)) {
-            $attestation = Attestation::create($request->validated());
-            $this->authorize('download', $attestation);
-            event(new AttestationIssued($attestation->cap, $attestation, $request->status));
+
+            //2. check for duplicate attestations
+            try {
+                $attestation = Attestation::create($request->validated());
+            } catch (\Exception $e) {
+                // If fed_guid unique constraint fails, try to get a new fed_guid and guid and retry
+                if (str_contains($e->getMessage(), 'fed_guid')) {
+                    $error = 'Unable to generate a new Attestation ID. Please try again.';
+                } else {
+                    $error = $e->getMessage();
+                }
+            }
+
+            if (!isset($attestation) || is_null($attestation)) {
+                $error = $error ?? 'Failed to create attestation.';
+            } else {
+                $this->authorize('download', $attestation);
+                event(new AttestationIssued($attestation->cap, $attestation, $request->status));
+            }
+
+            // $this->authorize('download', $attestation);
+            // event(new AttestationIssued($attestation->cap, $attestation, $request->status));
         } else {
             $error = "This user has already been issued an attestation.";
         }
@@ -230,7 +249,8 @@ class AttestationController extends Controller
             ob_clean();
         }
 
-        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+       return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+    
     }
 
     public function exportCsv()

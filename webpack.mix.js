@@ -33,7 +33,9 @@ mix.js('resources/js/app.js', 'public/js')
     .copyDirectory('resources/fonts', 'public/fonts')
 
     .vue()
-    .postCss('resources/css/app.css', 'public/css', [require('tailwindcss'), require('autoprefixer')])
+    .postCss('resources/css/app.css', 'public/css', [
+        require('postcss-nesting'),
+        require('tailwindcss'), require('autoprefixer')])
         //
     .alias({
         '@': 'resources/js',

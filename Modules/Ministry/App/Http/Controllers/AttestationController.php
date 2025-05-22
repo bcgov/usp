@@ -230,7 +230,7 @@ class AttestationController extends Controller
             ob_clean();
         }
 
-        return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
+       return $pdf->download($attestation->last_name.'-'.$attestation->fed_guid.'-attestation.pdf');
     }
 
     private function paginateAtte()

@@ -90,7 +90,6 @@ RUN a2enmod remoteip \
   && a2enmod rewrite headers
 
 
-
 # Install NPM
 RUN apt-get install -y ca-certificates gnupg \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
