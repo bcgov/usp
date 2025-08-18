@@ -22,3 +22,5 @@ Route::get('/login', [App\Http\Controllers\UserController::class, 'login'])->nam
 Route::get('/applogin', [App\Http\Controllers\UserController::class, 'appLogin'])->name('app-login');
 Route::get('/bceid-login', [App\Http\Controllers\UserController::class, 'bceidLogin'])->name('bceid-login');
 Route::middleware(['auth'])->get('/home', [App\Http\Controllers\UserController::class, 'home'])->name('home');
+
+Route::post('/pdex-login', [App\Http\Controllers\UserController::class, 'pdexLogin'])->name('pdex-login');
