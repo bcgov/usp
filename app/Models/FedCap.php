@@ -22,6 +22,7 @@ class FedCap extends Model {
         'end_date',
         'total_attestations',
         'total_reserved_graduate_attestations',
+        'over_allocation_percentage',
         'status',
         'comment',
         'last_touch_by_user_guid',
