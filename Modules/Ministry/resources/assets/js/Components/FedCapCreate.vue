@@ -26,6 +26,17 @@
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
+                    <Label for="inputOverAllocationPercentage" class="form-label" value="Over Allocation Percentage"/>
+                    <Select class="form-select" id="inputOverAllocationPercentage" v-model="newFedCapForm.over_allocation_percentage">
+                        <option value="0">0%</option>
+                        <option value="0.01">1%</option>
+                        <option value="0.02">2%</option>
+                        <option value="0.03">3%</option>
+                        <option value="0.04">4%</option>
+                        <option value="0.05">5%</option>
+                    </Select>
+                </div>
+                <div class="col-md-6">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="newFedCapForm.status">
                         <option value=""></option>
@@ -88,6 +99,7 @@ export default {
                 end_date: "",
                 total_attestations: "",
                 total_reserved_graduate_attestations: "",
+                over_allocation_percentage: "0",
                 status: "",
                 comment: "",
             },
