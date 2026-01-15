@@ -29,16 +29,19 @@ class AdjustInstitutionCap
             ->count();
         \Log::info('0 $issuedAttestations: '.$issuedAttestations);
 
+        // Calculate the total federal cap limit including over allocation
+        $totalFedCapWithOverAllocation = (int) floor($cap->fedCap->total_attestations * (1 + $cap->fedCap->over_allocation_percentage));
+
         // If we hit or acceded the fed cap limit for issued attestations
-        if ($issuedAttestations >= $cap->fedCap->total_attestations) {
-            \Log::info('1 $issuedAttestations >= $cap->fedCap->total_attestations: '.$issuedAttestations.'>='.$cap->fedCap->total_attestations);
+        if ($issuedAttestations >= $totalFedCapWithOverAllocation) {
+            \Log::info('1 $issuedAttestations >= $totalFedCapWithOverAllocation: '.$issuedAttestations.'>='.$totalFedCapWithOverAllocation);
             $cap->total_attestations = 0;
         }
 
         // The fed cap is not reached
         else {
             // How much of the fed cap is left
-            $remainderFedCap = $cap->fedCap->total_attestations - $issuedAttestations;
+            $remainderFedCap = $totalFedCapWithOverAllocation - $issuedAttestations;
             \Log::info('2 $remainderFedCap: '.$remainderFedCap);
 
             // If the new cap is gt $remainderFedCap then set it to match

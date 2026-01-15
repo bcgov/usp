@@ -25,6 +25,17 @@
                     <Label for="inputTotalResGradAtte" class="form-label" value="Total Reserved Graduate Attest. Allowed"/>
                     <Input type="number" class="form-control" id="inputTotalResGradAtte" v-model="editForm.total_reserved_graduate_attestations"/>
                 </div>
+                <div class="col-md-3">
+                    <Label for="inputOverAllocationPercentage" class="form-label" value="Over Allocation Percentage"/>
+                    <Select class="form-select" id="inputOverAllocationPercentage" v-model="editForm.over_allocation_percentage">
+                        <option value="0">0%</option>
+                        <option value="0.01">1%</option>
+                        <option value="0.02">2%</option>
+                        <option value="0.03">3%</option>
+                        <option value="0.04">4%</option>
+                        <option value="0.05">5%</option>
+                    </Select>
+                </div>
                 <div class="col-md-2">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editForm.status">

@@ -74,8 +74,8 @@ class CapStoreRequest extends FormRequest
             'institution_guid' => $institution->guid,
             'guid' => Str::orderedUuid()->getHex(),
             'last_touch_by_user_guid' => $this->user()->guid,
-            'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
-                $fedCap->total_attestations : $this->total_attestations),
+            'total_attestations' => ($this->total_attestations > (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) ?
+                (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) : $this->total_attestations),
             'total_reserved_graduate_attestations' => ($this->total_reserved_graduate_attestations > $this->total_attestations ?
                 $this->total_attestations : $this->total_reserved_graduate_attestations),
             'issued_attestations' => 0,
