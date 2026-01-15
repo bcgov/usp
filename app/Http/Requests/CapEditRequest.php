@@ -104,8 +104,8 @@ class CapEditRequest extends FormRequest
             'fed_cap_guid' => $fedCap->guid,
             'institution_guid' => $institution->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
-            'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
-                $fedCap->total_attestations : $this->total_attestations),
+            'total_attestations' => ($this->total_attestations > (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) ?
+                (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) : $this->total_attestations),
             'active_status' => $this->toBoolean($this->active_status),
             'confirmed' => $this->toBoolean($this->confirmed),
         ]);

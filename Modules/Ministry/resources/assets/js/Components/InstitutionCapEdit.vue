@@ -24,7 +24,7 @@
                     <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="editInstitutionCapForm.total_attestations"/>
-                        <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
+                        <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ remainingCap }}</span>
                     </div>
                 </div>
 
@@ -117,11 +117,22 @@ export default {
             allowProgramCap: false
         }
     },
+    computed: {
+        remainingCap() {
+            if (this.selectedFedCap !== '') {
+                let overAllocationPercentage = parseFloat(this.selectedFedCap.over_allocation_percentage);
+                let remainingCap = Math.floor(this.selectedFedCap.remaining_cap + (this.selectedFedCap.total_attestations * overAllocationPercentage));
+                return remainingCap;
+            }
+            return '';
+        },
+    },
     methods: {
         validateTotal: function (){
             if(this.selectedFedCap !== ''){
-                if(parseInt(this.editInstitutionCapForm.total_attestations) > this.selectedFedCap.remaining_cap){
-                    this.editInstitutionCapForm.total_attestations = this.selectedFedCap.remaining_cap;
+                let maxAllowedRemainingCap = this.remainingCap;
+                if(parseInt(this.editInstitutionCapForm.total_attestations) > maxAllowedRemainingCap){
+                    this.editInstitutionCapForm.total_attestations = maxAllowedCap;
                 }
             }
         },
