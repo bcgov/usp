@@ -7,25 +7,25 @@
         <form class="card-body" @submit.prevent="submitForm">
             <div class="row g-3">
 
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <Label for="inputSd" class="form-label" value="Start Date"/>
                     <Input type="date" min="2019-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputSd" v-model="editForm.start_date"/>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <Label for="inputEd" class="form-label" value="End Date"/>
                     <Input type="date" min="2019-01-01" max="2040-12-31" placeholder="YYYY-MM-DD"
                            class="form-control" id="inputEd" v-model="editForm.end_date"/>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
                     <Input type="number" class="form-control" id="inputTotalAtte" v-model="editForm.total_attestations"/>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputTotalResGradAtte" class="form-label" value="Total Reserved Graduate Attest. Allowed"/>
                     <Input type="number" class="form-control" id="inputTotalResGradAtte" v-model="editForm.total_reserved_graduate_attestations"/>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <Label for="inputOverAllocationPercentage" class="form-label" value="Over Allocation Percentage"/>
                     <Select class="form-select" id="inputOverAllocationPercentage" v-model="editForm.over_allocation_percentage">
                         <option value="0">0%</option>
@@ -34,9 +34,14 @@
                         <option value="0.03">3%</option>
                         <option value="0.04">4%</option>
                         <option value="0.05">5%</option>
+                        <option value="0.06">6%</option>
+                        <option value="0.07">7%</option>
+                        <option value="0.08">8%</option>
+                        <option value="0.09">9%</option>
+                        <option value="0.10">10%</option>
                     </Select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editForm.status">
                         <option value=""></option>

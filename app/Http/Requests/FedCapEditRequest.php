@@ -35,7 +35,7 @@ class FedCapEditRequest extends FormRequest
             'status' => 'required|in:Active,Completed,Cancelled',
             'total_attestations' => 'required|numeric|gte:'.$totalAttestations,
             'total_reserved_graduate_attestations' => 'required|numeric|gte:'.$totalGradAttestations,
-            'over_allocation_percentage' => 'numeric|min:0.0|max:0.05',
+            'over_allocation_percentage' => 'numeric|min:0.0|max:0.10',
             'comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
