@@ -34,6 +34,11 @@
                         <option value="0.03">3%</option>
                         <option value="0.04">4%</option>
                         <option value="0.05">5%</option>
+                        <option value="0.06">6%</option>
+                        <option value="0.07">7%</option>
+                        <option value="0.08">8%</option>
+                        <option value="0.09">9%</option>
+                        <option value="0.10">10%</option>
                     </Select>
                 </div>
                 <div class="col-md-6">

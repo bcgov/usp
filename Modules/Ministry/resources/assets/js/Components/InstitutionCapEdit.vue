@@ -26,6 +26,7 @@
                         <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="editInstitutionCapForm.total_attestations"/>
                         <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ remainingCap }}</span>
                     </div>
+                    <div v-if="validationError" class="text-danger mt-1">{{ validationError }}</div>
                 </div>
 
                 <div class="col-md-4">
@@ -129,10 +130,24 @@ export default {
     },
     methods: {
         validateTotal: function (){
+            this.validationError = null;
             if(this.selectedFedCap !== ''){
                 let maxAllowedRemainingCap = this.remainingCap;
                 if(parseInt(this.editInstitutionCapForm.total_attestations) > maxAllowedRemainingCap){
-                    this.editInstitutionCapForm.total_attestations = maxAllowedCap;
+                    this.editInstitutionCapForm.total_attestations = maxAllowedRemainingCap;
+                }
+
+                // Ensure the input value not below issued/declined institution cap
+                if (this.activeInstCap && this.selectedFedCap && this.activeInstCap.fed_cap_guid === this.selectedFedCap.guid) {
+                    let minAllowedCap = parseInt(
+                        (this.activeInstCap.inst_active_cap_stat && this.activeInstCap.inst_active_cap_stat.issued !== undefined)
+                            ? this.activeInstCap.inst_active_cap_stat.issued
+                            : (this.activeInstCap.issued_attestations || 0)
+                        );
+
+                    if (parseInt(this.editInstitutionCapForm.total_attestations) < minAllowedCap) {
+                        this.validationError = 'Minimum Total Attest. Allowed is ' + minAllowedCap + '. (Total Issued + Declined Attestations)';
+                    }
                 }
             }
         },
