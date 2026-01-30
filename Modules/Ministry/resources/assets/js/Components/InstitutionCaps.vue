@@ -127,9 +127,23 @@ export default {
     },
     methods: {
         openNewForm: function () {
-            setTimeout(function () {
-                $("#newInstCapModal").modal('show');
-            }, 10);
+            let vm = this;
+            // Fetch latest cap stats before opening form
+            this.fetchCapStats().then(() => {
+                if (vm.capStat && vm.capStat.instCap) {
+                    // Update activeInstCap data from the API response
+                    if (vm.activeInstCap && vm.activeInstCap.id === vm.capStat.instCap.id) {
+                        vm.activeInstCap.inst_active_cap_stat = vm.capStat.instCap.inst_active_cap_stat;
+                        vm.activeInstCap.issued_attestations = vm.capStat.instCap.issued_attestations;
+                    } else if (!vm.activeInstCap) {
+                        vm.activeInstCap = vm.capStat.instCap;
+                    }
+                }
+
+                setTimeout(function () {
+                    $("#newInstCapModal").modal('show');
+                }, 10);
+            });
         },
 
         openEditForm: function (cap) {
@@ -155,9 +169,10 @@ export default {
             let data = {
                 institution_guid: this.results.guid,
             }
-            axios.post('/ministry/api/fetch/capStats', data)
+            return axios.post('/ministry/api/fetch/capStats', data)
                 .then(function (response) {
                     vm.capStat = response.data.body;
+                    return response;
                 })
                 .catch(function (error) {
                     // handle error
