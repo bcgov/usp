@@ -34,7 +34,7 @@ class CapStoreRequest extends FormRequest
             'parent_cap_guid' => 'nullable|exists:caps,guid',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
-            'active_status' => 'required|boolean',
+            // 'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric',
             'total_reserved_graduate_attestations' => 'required|numeric|lte:total_attestations',
             'issued_attestations' => 'required|numeric',
@@ -82,7 +82,7 @@ class CapStoreRequest extends FormRequest
             'draft_attestations' => 0,
             'issued_reserved_graduate_attestations' => 0,
             'draft_reserved_graduate_attestations' => 0,
-            'active_status' => $this->toBoolean($this->active_status),
+            // 'active_status' => $this->toBoolean($this->active_status),
             'confirmed' => $this->toBoolean($this->confirmed),
         ]);
     }

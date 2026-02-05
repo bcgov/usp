@@ -11,14 +11,14 @@
                 </div>
             </div>
             <div class="row g-3 mb-3">
-                <div class="col-md-4">
+                <!-- <div class="col-md-4">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editInstitutionCapForm.active_status">
                         <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
-                </div>
+                </div> -->
 
                 <div class="col-md-4">
                     <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
@@ -110,7 +110,7 @@ export default {
                 program_guid: "",
                 total_attestations: "",
                 total_reserved_graduate_attestations: "",
-                active_status: "",
+                // active_status: "",
                 comment: "",
                 external_comment: "",
             },
