@@ -78,7 +78,7 @@ class VerifyUpdatedAttestation
 
             // If we hit or acceded the inst cap limit for issued attestations
             if ($issuedUnderAttestations + $declinedUnderAttestations > $instCap->total_attestations) {
-                \Log::info('1 $issuedAttestations >= $instCap->total_attestations: '.$issuedUnderAttestations.' >= '.$instCap->total_attestations);
+                \Log::info('1 $issuedAttestations + $declinedUnderAttestations > $instCap->total_attestations: '.$issuedUnderAttestations + $declinedUnderAttestations.' > '.$instCap->total_attestations);
                 $valid = false;
             }
 
