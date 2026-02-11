@@ -21,17 +21,22 @@ nav.navbar .form-select {
     </div>
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow">
         <div class="container-fluid">
-            <Link class="navbar-brand" href="/institution/dashboard">
-                <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-xl-inline fw-light">BCSPA - BC Study Permit Attestation</span>
-            </Link>
-            <template v-if="activeFedCapList.length > 1">
-                <select @change="updateFedCap" class="form-select form-select-sm" aria-label="Default federal cap">
-                    <option value="">Select Federal Cap</option>
-                    <option v-for="(cap, i) in activeFedCapList" :value="cap.guid" :selected="selectedFedCapGuid === cap.guid">{{ cap.start_date }} - {{ cap.end_date }}</option>
-                </select>
-            </template>
-
+            <div class="d-flex">
+                <Link class="navbar-brand" href="/institution/dashboard">
+                    <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
+                </Link>
+                <div class="d-flex flex-column">
+                    <Link class="navbar-brand" href="/institution/dashboard">
+                        <span class="d-none d-xl-inline fw-light">BCSPA - BC Study Permit Attestation</span>
+                    </Link>
+                    <template v-if="activeFedCapList.length > 1">
+                        <select @change="updateFedCap" class="form-select form-select-sm" aria-label="Default federal cap">
+                            <option value="">Select Federal Cap</option>
+                            <option v-for="(cap, i) in activeFedCapList" :value="cap.guid" :selected="selectedFedCapGuid === cap.guid">{{ cap.start_date }} - {{ cap.end_date }}</option>
+                        </select>
+                    </template>
+                </div>
+            </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                     aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
