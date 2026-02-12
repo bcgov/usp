@@ -1,7 +1,12 @@
 <template>
     <div class="card mb-3">
         <div class="card-header">
-            <div>Federal Cap Institutions <strong v-if="fedcap != ''">{{fedcap.start_date}} - {{fedcap.end_date}}</strong>. Cap size: {{ fedcap.total_attestations }}</div>
+            <div>Federal Cap Institutions <strong v-if="fedcap != ''">{{fedcap.start_date}} - {{fedcap.end_date}}</strong>.
+                Cap size: {{ fedcap.total_attestations }}
+                <span v-if="fedcap.over_allocation_percentage > 0">
+                    Total Cap (including over allocation): {{ fedcap.total_attestations_with_over_allocation }}
+                </span>
+            </div>
         </div>
 
         <div class="card-body">

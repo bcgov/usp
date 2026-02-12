@@ -84,7 +84,7 @@ class AttestationDuplicateRequest extends BaseFormRequest
                     'guid' => Str::orderedUuid()->getHex(),
                     'fed_guid' => $fedGuid,
                     'institution_guid' => $oldAtte->institution_guid,
-                    'cap_guid' => $oldAtte->cap_guid,
+                    'cap_guid' => $cap->guid,
                     'fed_cap_guid' => $oldAtte->fed_cap_guid,
                     'program_guid' => $oldAtte->program_guid,
                     'program_name' => $oldAtte->program_name,

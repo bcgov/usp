@@ -95,6 +95,10 @@ class AttestationStoreRequest extends BaseFormRequest
         //get the next fed_guid
         $fedGuid = $this->getFedGuid($cap);
 
+        //add handling for slashes
+        $first_name = str_replace(['\\', '/'], '', $this->first_name);
+        $last_name = str_replace(['\\', '/'], '', $this->last_name);
+
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
             'fed_guid' => $fedGuid,
@@ -106,8 +110,8 @@ class AttestationStoreRequest extends BaseFormRequest
             'id_number' => Str::upper($this->id_number),
             'student_number' => Str::upper($this->student_number),
             'student_confirmation' => $this->toBoolean($this->student_confirmation),
-            'first_name' => Str::upper($this->first_name),
-            'last_name' => Str::upper($this->last_name),
+            'first_name' => Str::upper($first_name),
+            'last_name' => Str::upper($last_name),
             'email' => Str::lower($this->email),
             'city' => Str::title($this->city),
             'country' => Str::title($this->country),

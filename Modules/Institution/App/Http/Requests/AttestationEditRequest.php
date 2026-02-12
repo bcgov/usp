@@ -83,6 +83,10 @@ class AttestationEditRequest extends BaseFormRequest
             $cap = $progCap;
         }
 
+        //add handling for slashes
+        $first_name = str_replace(['\\', '/'], '', $this->first_name);
+        $last_name = str_replace(['\\', '/'], '', $this->last_name);
+
         $this->merge([
             'institution_guid' => $user->institution->guid,
             'cap_guid' => $cap->guid,
@@ -92,8 +96,8 @@ class AttestationEditRequest extends BaseFormRequest
             'id_number' => Str::upper($this->id_number),
             'student_number' => Str::upper($this->student_number),
             'student_confirmation' => $this->toBoolean($this->student_confirmation),
-            'first_name' => Str::upper($this->first_name),
-            'last_name' => Str::upper($this->last_name),
+            'first_name' => Str::upper($first_name),
+            'last_name' => Str::upper($last_name),
             'email' => Str::lower($this->email),
             'city' => Str::title($this->city),
             'country' => Str::title($this->country),
