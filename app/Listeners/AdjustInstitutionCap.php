@@ -30,7 +30,7 @@ class AdjustInstitutionCap
         \Log::info('0 $issuedAttestations: '.$issuedAttestations);
 
         // Calculate the total federal cap limit including over allocation
-        $totalFedCapWithOverAllocation = (int) floor($cap->fedCap->total_attestations * (1 + $cap->fedCap->over_allocation_percentage));
+        $totalFedCapWithOverAllocation = $cap->fedCap->total_attestations_with_over_allocation;
 
         // If we hit or acceded the fed cap limit for issued attestations
         if ($issuedAttestations >= $totalFedCapWithOverAllocation) {

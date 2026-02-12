@@ -9,16 +9,16 @@
                         <option v-for="f in fedCaps" :value="f.id">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <!-- <div class="col-lg-3 col-md-6">
                     <Label for="inputStatus" class="form-label" value="Active?"/>
                     <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.active_status">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <Label for="inputStatus" class="form-label" value="Confirmed?"/>
-                    <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.confirmed">
+                </div> -->
+                <div class="col-lg-6 col-md-12">
+                    <Label for="inputConfirmed" class="form-label" value="Confirmed?"/>
+                    <Select class="form-select" id="inputConfirmed" v-model="newInstitutionCapForm.confirmed">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
@@ -113,7 +113,7 @@ export default {
                 program_id: "",
                 total_attestations: "",
                 total_reserved_graduate_attestations: "",
-                active_status: "",
+                // active_status: "",
                 comment: "",
                 external_comment: "",
                 confirmed: ""

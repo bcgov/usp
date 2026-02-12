@@ -9,7 +9,7 @@ class FedCap extends Model {
 
     use SoftDeletes;
 
-    protected $appends = ['remaining_cap', 'remaining_undergraduate_cap'];
+    protected $appends = ['remaining_cap', 'remaining_undergraduate_cap', 'total_attestations_with_over_allocation'];
 
     /**
      * The attributes that are mass assignable.
@@ -59,6 +59,10 @@ class FedCap extends Model {
         $totalGrad = $this->caps->sum('total_reserved_graduate_attestations');
 
         return $total - $totalGrad;
+    }
+
+    public function getTotalAttestationsWithOverallocationAttribute() {
+        return (int) floor($this->total_attestations * (1 + $this->over_allocation_percentage));
     }
 
     /**
