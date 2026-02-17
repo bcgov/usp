@@ -30,6 +30,7 @@ class FedCapStoreRequest extends FormRequest
             'status' => 'required|in:Active,Completed,Cancelled',
             'total_attestations' => 'required|numeric',
             'total_reserved_graduate_attestations' => 'required|numeric|lte:total_attestations',
+            'over_allocation_percentage' => 'numeric|min:0.0|max:0.10',
             'comment' => 'nullable',
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
@@ -45,6 +46,7 @@ class FedCapStoreRequest extends FormRequest
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
             'last_touch_by_user_guid' => $this->user()->guid,
+            'over_allocation_percentage' => $this->over_allocation_percentage ?? 0,
         ]);
     }
 }

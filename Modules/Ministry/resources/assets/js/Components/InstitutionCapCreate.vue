@@ -9,16 +9,16 @@
                         <option v-for="f in fedCaps" :value="f.id">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <!-- <div class="col-lg-3 col-md-6">
                     <Label for="inputStatus" class="form-label" value="Active?"/>
                     <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.active_status">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <Label for="inputStatus" class="form-label" value="Confirmed?"/>
-                    <Select class="form-select" id="inputStatus" v-model="newInstitutionCapForm.confirmed">
+                </div> -->
+                <div class="col-lg-6 col-md-12">
+                    <Label for="inputConfirmed" class="form-label" value="Confirmed?"/>
+                    <Select class="form-select" id="inputConfirmed" v-model="newInstitutionCapForm.confirmed">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
@@ -29,8 +29,9 @@
                     <Label for="inputTotalAtte" class="form-label" value="Total Attest. Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="number" class="form-control" id="inputTotalAtte" aria-describedby="basic-inputTotalAtte" @keyup="validateTotal" v-model="newInstitutionCapForm.total_attestations"/>
-                        <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ selectedFedCap.remaining_cap }}</span>
+                        <span v-if="selectedFedCap != ''" class="input-group-text" id="basic-inputTotalAtte">/{{ remainingCap }}</span>
                     </div>
+                    <div v-if="validationError" class="text-danger mt-1">{{ validationError }}</div>
                 </div>
                 <div class="col-md-6">
                     <Label for="inputTotalResGradAtte" class="form-label" value="Total Reserved Graduate Attest. Allowed"/>
@@ -112,20 +113,56 @@ export default {
                 program_id: "",
                 total_attestations: "",
                 total_reserved_graduate_attestations: "",
-                active_status: "",
+                // active_status: "",
                 comment: "",
                 external_comment: "",
                 confirmed: ""
             },
             selectedFedCap: '',
+            validationError: '',
             allowProgramCap: false
         }
     },
+    computed: {
+        remainingCap() {
+            if (this.selectedFedCap !== '') {
+                let overAllocationPercentage = parseFloat(this.selectedFedCap.over_allocation_percentage);
+                let remainingCap = Math.floor(this.selectedFedCap.remaining_cap + (this.selectedFedCap.total_attestations * overAllocationPercentage));
+
+                // Add back institution cap
+                if (this.isSameActiveInstCap()) {
+                    remainingCap += parseInt(this.activeInstCap.total_attestations);
+                }
+                return remainingCap;
+            }
+            return '';
+        },
+    },
     methods: {
+        isSameActiveInstCap: function(){
+            return this.activeInstCap && this.selectedFedCap && this.activeInstCap.fed_cap_guid === this.selectedFedCap.guid;
+        },
         validateTotal: function (){
-            if(this.selectedFedCap !== ''){
-                if(parseInt(this.newInstitutionCapForm.total_attestations) > this.selectedFedCap.remaining_cap){
-                    this.newInstitutionCapForm.total_attestations = this.selectedFedCap.remaining_cap;
+            this.validationError = null;
+            if(this.selectedFedCap !== '') {
+                let maxAllowedRemainingCap = this.remainingCap;
+                let inputValue = parseInt(this.newInstitutionCapForm.total_attestations);
+
+                // Ensure the input value not below issued/declined institution cap
+                if (this.isSameActiveInstCap()) {
+                    let minAllowedCap = parseInt(
+                        (this.activeInstCap.inst_active_cap_stat && this.activeInstCap.inst_active_cap_stat.issued !== undefined)
+                            ? this.activeInstCap.inst_active_cap_stat.issued
+                            : (this.activeInstCap.issued_attestations || 0)
+                        );
+
+                    if (inputValue < minAllowedCap) {
+                        this.validationError = 'Minimum Total Attest. Allowed is ' + minAllowedCap + '. (Total Issued + Declined Attestations)';
+                    }
+                }
+
+                if(inputValue > maxAllowedRemainingCap) {
+                    this.newInstitutionCapForm.total_attestations = maxAllowedRemainingCap;
                 }
             }
         },
@@ -146,6 +183,9 @@ export default {
             }
         },
         submitForm: function () {
+            if (this.validationError) {
+                return false;
+            }
             let check = confirm('You are about to create a new Institution Cap. The new amount will override the previous cap and disable the old active Institution Cap. Are you sure you want to continue?');
             if(!check){
                 return false;

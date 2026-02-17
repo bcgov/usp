@@ -27,7 +27,7 @@ class Cap extends Model
         'end_date',
         'total_attestations',
         'total_reserved_graduate_attestations',
-        'status',
+        'active_status',
         'comment',
         'external_comment',
         'last_touch_by_user_guid',

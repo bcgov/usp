@@ -34,7 +34,7 @@ class CapStoreRequest extends FormRequest
             'parent_cap_guid' => 'nullable|exists:caps,guid',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
-            'active_status' => 'required|boolean',
+            // 'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric',
             'total_reserved_graduate_attestations' => 'required|numeric|lte:total_attestations',
             'issued_attestations' => 'required|numeric',
@@ -74,15 +74,15 @@ class CapStoreRequest extends FormRequest
             'institution_guid' => $institution->guid,
             'guid' => Str::orderedUuid()->getHex(),
             'last_touch_by_user_guid' => $this->user()->guid,
-            'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
-                $fedCap->total_attestations : $this->total_attestations),
+            'total_attestations' => ($this->total_attestations > (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) ?
+                (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) : $this->total_attestations),
             'total_reserved_graduate_attestations' => ($this->total_reserved_graduate_attestations > $this->total_attestations ?
                 $this->total_attestations : $this->total_reserved_graduate_attestations),
             'issued_attestations' => 0,
             'draft_attestations' => 0,
             'issued_reserved_graduate_attestations' => 0,
             'draft_reserved_graduate_attestations' => 0,
-            'active_status' => $this->toBoolean($this->active_status),
+            // 'active_status' => $this->toBoolean($this->active_status),
             'confirmed' => $this->toBoolean($this->confirmed),
         ]);
     }

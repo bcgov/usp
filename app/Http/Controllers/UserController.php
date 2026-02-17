@@ -382,4 +382,181 @@ class UserController extends Controller
 
         return false;
     }
+
+    // This function will attempt to login the user coming from PDEX
+    public function pdexLogin(Request $request)
+    {
+
+        //if any of the formData keys are missing don't login the user
+        $token = $request->input('token');
+        $refreshToken = $request->input('refresh_token');
+        $userType = $request->input('user_type');
+        $userId = $request->input('ud');
+        $logoutUrl = $request->input('logoutUrl');
+        \Log::info('pdexLogin called with userType: ' . $userType . ', userId: ' . $userId . ', logoutUrl: ' . $logoutUrl);
+        \Log::info('Received request: ' . json_encode($request->all()));
+
+        if (empty($token) || empty($userType) || empty($userId) || empty($logoutUrl)) {
+            return response()->json(['error' => 'Missing data 2239'], 400);
+        }
+        switch($userType) {
+            case 'idir':
+                $type = Role::Ministry_GUEST;
+                break;
+            case 'bceid':
+                $type = Role::Institution_GUEST;
+                break;
+            default:
+                $type = null;
+        }
+
+        // Proceed with the login logic using the validated formData
+        $decodedToken = $this->decodeJWT($token);
+        if (isset($decodedToken['error'])) {
+            return response()->json(['error' => $decodedToken['error']], 400);
+        }
+        if (empty($decodedToken['payload']['sub'])) {
+            return response()->json(['error' => 'Missing data 2242'], 400);
+        }
+        if($decodedToken['payload']['aud'] !== env('PDEX_JWT_AUDIENCE')) {
+            \Log::error('Invalid audience: ' . $decodedToken['payload']['aud']);
+            return response()->json(['error' => 'Missing data 2243'], 400);
+        }
+        \Log::info('Decoded JWT Token: ' . json_encode($decodedToken));
+
+        $request->session()->put('kc_logout_uri', $logoutUrl);
+        $user = null;
+        $failMsg = null;
+        if ($type === Role::Ministry_GUEST) {
+            $user = User::where('idir_user_guid', 'ilike', $decodedToken['payload']['idir_user_guid'])->first();
+            $failMsg = 'Welcome back! Please contact Ministry Admin to grant you access.';
+        }
+        if ($type === Role::Institution_GUEST) {
+            $user = User::where('bceid_user_guid', 'ilike', $decodedToken['payload']['bceid_user_guid'])->first();
+            $failMsg = 'Welcome back! Please contact Institution Admin to grant you access.';
+        }
+
+        //if it is a new IDIR or BCeID user, register the user first
+        if (is_null($user)) {
+            $valid = $this->newUser($decodedToken['payload'], $type);
+            if ($valid == '200') {
+                return Inertia::render('Auth/LoginPdex', [
+                    'pdexLoginUrl' => env('PDEX_LOGIN_URL'),
+                    'loginAttempt' => true,
+                    'hasAccess' => false,
+                    'status' => 'Please contact Admin to grant you access.',
+                ]);
+            } else {
+                return Inertia::render('Auth/LoginPdex', [
+                    'loginAttempt' => true,
+                    'hasAccess' => false,
+                    'status' => $valid,
+                ]);
+            }
+
+            //if the user has been disabled
+        } elseif (!is_null($user) && $user->disabled === true) {
+            return Inertia::render('Auth/LoginPdex', [
+                'pdexLoginUrl' => env('PDEX_LOGIN_URL'),
+                'loginAttempt' => true,
+                'hasAccess' => false,
+                'status' => 'Access denied. Please contact Admin.',
+            ]);
+        }
+
+
+        $user->name = $decodedToken['payload']['name'];
+        $user->save();
+        \Log::info('We got a name: '.$decodedToken['payload']['name']);
+
+        //else the user has access
+        if ($type === Role::Ministry_GUEST) {
+            //check if the user is a guest
+            $rolesToCheck = [Role::Ministry_GUEST];
+            if ($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()) {
+                return Inertia::render('Auth/LoginPdex', [
+                    'pdexLoginUrl' => env('PDEX_LOGIN_URL'),
+                    'loginAttempt' => true,
+                    'hasAccess' => false,
+                    'status' => $failMsg,
+                ]);
+            }
+
+            Auth::login($user);
+
+            // Set default Fed Cap
+            $this->setDefaultFedCap();
+
+            return Redirect::route('ministry.home');
+        }
+
+        if ($type === Role::Institution_GUEST) {
+            //check if the user is a guest
+            $rolesToCheck = [Role::Institution_GUEST];
+            if ($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()) {
+                return Inertia::render('Auth/LoginPdex', [
+                    'pdexLoginUrl' => env('PDEX_LOGIN_URL'),
+                    'loginAttempt' => true,
+                    'hasAccess' => false,
+                    'status' => $failMsg,
+                ]);
+            }
+
+            // Set default Fed Cap
+            $this->setDefaultFedCap();
+
+            Auth::login($user);
+
+            return Redirect::route('institution.dashboard');
+        }
+
+        // Set default Fed Cap
+        $this->setDefaultFedCap();
+
+        return Inertia::render('Auth/LoginPdex', [
+            'pdexLoginUrl' => env('PDEX_LOGIN_URL'),
+            'loginAttempt' => true,
+            'hasAccess' => false,
+            'status' => "Login failed. Please try again.",
+        ]);
+
+    }
+
+    // Decode JWT token to see its contents (without verification for debugging)
+    private function decodeJWT($token)
+    {
+        $tokenParts = explode('.', $token);
+        if (count($tokenParts) === 3) {
+            try {
+                // Decode the payload (second part)
+                $payload = json_decode(base64_decode(str_pad(strtr($tokenParts[1], '-_', '+/'), strlen($tokenParts[1]) % 4, '=', STR_PAD_RIGHT)), true);
+                
+                // Decode the header (first part)
+                $header = json_decode(base64_decode(str_pad(strtr($tokenParts[0], '-_', '+/'), strlen($tokenParts[0]) % 4, '=', STR_PAD_RIGHT)), true);
+                
+                $tokenInfo = [
+                    'header' => $header,
+                    'payload' => $payload,
+                    'raw_token_length' => strlen($token),
+                    'token_parts_count' => count($tokenParts)
+                ];
+            } catch (\Exception $e) {
+                \Log::error('Failed to decode JWT token: ' . $e->getMessage());
+                $tokenInfo = [
+                    'error' => 'Missing data 2240',
+                    'raw_token_length' => strlen($token)
+                ];
+            }
+        } else {
+            \Log::error('Invalid JWT format');
+            $tokenInfo = [
+                'error' => 'Missing data 2241',
+                'token_parts_count' => count($tokenParts),
+                'raw_token_length' => strlen($token)
+            ];
+        }
+
+        return $tokenInfo;
+    }
+
 }

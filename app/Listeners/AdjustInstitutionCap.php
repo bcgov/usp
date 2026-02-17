@@ -29,23 +29,38 @@ class AdjustInstitutionCap
             ->count();
         \Log::info('0 $issuedAttestations: '.$issuedAttestations);
 
+        // Calculate the total federal cap limit including over allocation
+        $totalFedCapWithOverAllocation = $cap->fedCap->total_attestations_with_over_allocation;
+
         // If we hit or acceded the fed cap limit for issued attestations
-        if ($issuedAttestations >= $cap->fedCap->total_attestations) {
-            \Log::info('1 $issuedAttestations >= $cap->fedCap->total_attestations: '.$issuedAttestations.'>='.$cap->fedCap->total_attestations);
+        if ($issuedAttestations >= $totalFedCapWithOverAllocation) {
+            \Log::info('1 $issuedAttestations >= $totalFedCapWithOverAllocation: '.$issuedAttestations.'>='.$totalFedCapWithOverAllocation);
             $cap->total_attestations = 0;
         }
 
         // The fed cap is not reached
         else {
             // How much of the fed cap is left
-            $remainderFedCap = $cap->fedCap->total_attestations - $issuedAttestations;
+            $remainderFedCap = $totalFedCapWithOverAllocation - $issuedAttestations;
             \Log::info('2 $remainderFedCap: '.$remainderFedCap);
 
             // If the new cap is gt $remainderFedCap then set it to match
-            if ($cap->total_attestations >= $remainderFedCap) {
-                \Log::info('3.0 $cap->total_attestations >= $remainderFedCap: '.$cap->total_attestations.'>='.$remainderFedCap);
-                \Log::info('3.1 $cap->total_attestations >= $remainderFedCap: $cap->total_attestations='.$cap->total_attestations);
-                $cap->total_attestations = $remainderFedCap;
+            // if ($cap->total_attestations >= $remainderFedCap) {
+            //     \Log::info('3.0 $cap->total_attestations >= $remainderFedCap: '.$cap->total_attestations.'>='.$remainderFedCap);
+            //     \Log::info('3.1 $cap->total_attestations >= $remainderFedCap: $cap->total_attestations='.$cap->total_attestations);
+            //     $cap->total_attestations = $remainderFedCap;
+            // }
+
+            // 1. Ensure the Institution Cap does not exceed the Total Federal Cap
+            if ($cap->total_attestations > $totalFedCapWithOverAllocation) {
+                \Log::info('3.0 $cap->total_attestations > $totalFedCapWithOverAllocation: ' . $cap->total_attestations . '>' . $totalFedCapWithOverAllocation);
+                $cap->total_attestations = $totalFedCapWithOverAllocation;
+            }
+
+            // 2. Ensure the Institution Cap does not drop below what has already been issued/declined.
+            if ($cap->total_attestations < $issuedAttestations) {
+                \Log::info('3.1 Safeguard triggered: $cap->total_attestations < $issuedAttestations. Force set to usage.');
+                $cap->total_attestations = $issuedAttestations;
             }
         }
 

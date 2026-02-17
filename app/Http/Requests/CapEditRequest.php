@@ -69,7 +69,7 @@ class CapEditRequest extends FormRequest
             'program_guid' => 'nullable|exists:programs,guid',
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
-            'active_status' => 'required|boolean',
+            // 'active_status' => 'required|boolean',
             'total_attestations' => 'required|numeric|gte:'.$noAttes,
             'total_reserved_graduate_attestations' => 'required|numeric|gte:'.$noResGradAttes,
             'comment' => 'nullable',
@@ -104,9 +104,9 @@ class CapEditRequest extends FormRequest
             'fed_cap_guid' => $fedCap->guid,
             'institution_guid' => $institution->guid,
             'last_touch_by_user_guid' => $this->user()->guid,
-            'total_attestations' => ($this->total_attestations > $fedCap->total_attestations ?
-                $fedCap->total_attestations : $this->total_attestations),
-            'active_status' => $this->toBoolean($this->active_status),
+            'total_attestations' => ($this->total_attestations > (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) ?
+                (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage)) : $this->total_attestations),
+            // 'active_status' => $this->toBoolean($this->active_status),
             'confirmed' => $this->toBoolean($this->confirmed),
         ]);
     }

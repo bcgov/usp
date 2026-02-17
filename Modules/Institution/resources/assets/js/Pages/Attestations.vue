@@ -182,8 +182,15 @@ export default {
 
     methods: {
         duplicate: function () {
-            let check = confirm('Are you sure you want to replicate and issue this attestation? This will result in ' +
-                'changing the status of the existing one to DECLINED and to use your available CAP to issue the new one if possible.');
+            let msg = 'Are you sure you want to replicate and issue this attestation? This will result in ' +
+                'changing the status of the existing one to DECLINED and to use your available CAP to issue the new one if possible.';
+
+            // if no remaining PAL, show warning that the current PAL will be declined but the new one will be saved as draft
+            if (this.capStat.totalRemaining == 0) {
+                msg = 'Your institution has reached its cap limit. Are you sure you want to replicate and issue this attestation?' +
+                ' If you continue, the current PAL will be DECLINED and the new PAL will be saved as DRAFT.';
+            }
+            let check = confirm(msg);
             if (check) {
                 let duplicateForm = useForm({
                     formState: null,
