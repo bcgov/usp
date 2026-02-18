@@ -85,9 +85,9 @@ class AttestationStoreRequest extends FormRequest
         //get the next fed_guid
         $fedGuid = $this->getFedGuid($cap);
 
-        //add handling for slashes
-        $first_name = str_replace(['\\', '/'], '', $this->first_name);
-        $last_name = str_replace(['\\', '/'], '', $this->last_name);
+        //normalize name fields
+        $first_name = $this->normalizeName($this->first_name);
+        $last_name = $this->normalizeName($this->last_name);
 
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
@@ -173,5 +173,19 @@ class AttestationStoreRequest extends FormRequest
         } while ($exists);
 
         return $fed_guid;
+    }
+
+    /**
+     * Normalize name fields, replacing 'n/a' or 'n\a' with '-' and removing slashes.
+     *
+     * @param string $name
+     * @return string
+     */
+    private function normalizeName($name)
+    {
+        if (in_array(Str::lower($name), ['n/a', 'n\a'])) {
+            return '-';
+        }
+        return str_replace(['\\', '/'], '', $name);
     }
 }
