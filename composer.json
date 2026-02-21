@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "barryvdh/laravel-dompdf": "^v3.1.0",
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^1.0",
@@ -14,8 +14,9 @@
         "laravel/tinker": "^2.8",
         "league/csv": "^9.20",
         "nwidart/laravel-modules": "^12.0",
-        "stevenmaguire/oauth2-keycloak": "^5.0",
-        "tightenco/ziggy": "^1.0"
+        "stevenmaguire/oauth2-keycloak": "dev-master@dev",
+        "tightenco/ziggy": "^1.0",
+        "firebase/php-jwt": "^7.0.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",
@@ -75,5 +76,11 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/cracksalad/oauth2-keycloak"
+        }
+    ]
 }
