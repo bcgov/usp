@@ -109,7 +109,7 @@ export default {
             });
 
             router.get('/institution/' + this.path, data, {
-                preserveState: true
+                // preserveState: true
             });
 
         },

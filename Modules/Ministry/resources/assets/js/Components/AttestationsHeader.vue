@@ -112,7 +112,7 @@ export default {
             });
 
             router.get('/ministry/' + this.path, data, {
-                preserveState: true
+                // preserveState: true
             });
 
         },
