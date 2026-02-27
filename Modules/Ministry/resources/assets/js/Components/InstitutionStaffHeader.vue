@@ -23,7 +23,7 @@
 </template>
 <script>
 
-import {Inertia} from "@inertiajs/inertia";
+import { router } from '@inertiajs/vue3';
 
 export default {
     name: 'InstitutionStaffHeader',

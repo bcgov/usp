@@ -54,7 +54,7 @@
 </template>
 <script>
 
-import {Inertia} from "@inertiajs/inertia";
+import { router } from '@inertiajs/vue3';
 
 export default {
     name: 'AttestationsHeader',
@@ -108,8 +108,8 @@ export default {
                 }
             });
 
-            Inertia.get('/institution/' + this.path, data, {
-                preserveState: true
+            router.get('/institution/' + this.path, data, {
+                // preserveState: true
             });
 
         },
