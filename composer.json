@@ -8,14 +8,14 @@
         "php": "^8.3",
         "barryvdh/laravel-dompdf": "^v3.1.0",
         "guzzlehttp/guzzle": "^7.2",
-        "inertiajs/inertia-laravel": "^1.0",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
         "league/csv": "^9.20",
         "nwidart/laravel-modules": "^12.0",
         "stevenmaguire/oauth2-keycloak": "dev-master@dev",
-        "tightenco/ziggy": "^1.0",
+        "tightenco/ziggy": "^2.0",
         "firebase/php-jwt": "^7.0.2"
     },
     "require-dev": {
