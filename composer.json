@@ -14,7 +14,7 @@
         "laravel/tinker": "^2.8",
         "league/csv": "^9.20",
         "nwidart/laravel-modules": "^12.0",
-        "stevenmaguire/oauth2-keycloak": "dev-master@dev",
+        "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "tightenco/ziggy": "^2.0",
         "firebase/php-jwt": "^7.0.2"
     },
@@ -76,11 +76,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/cracksalad/oauth2-keycloak"
-        }
-    ]
+    "prefer-stable": true
 }
