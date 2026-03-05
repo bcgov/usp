@@ -18,7 +18,7 @@
             <a href="#" @click="switchSort('id_number')">
                 <span>Student Number</span>
                 <em v-if="sortClmn === 'id_number' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-up"></em>
+                <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
         <th scope="col" style="min-width: 100px;">
@@ -41,7 +41,7 @@
         <th scope="col" style="min-width: 115px;">
             <a href="#" @click="switchSort('issue_date')">
                 <span>Issue Date</span>
-                <em v-if="sortClmn === 'created_at' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
+                <em v-if="sortClmn === 'issue_date' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi-sort-numeric-down"></em>
             </a>
         </th>
@@ -57,7 +57,7 @@
 </template>
 <script>
 
-import {Inertia} from "@inertiajs/inertia";
+import { router } from '@inertiajs/vue3';
 
 export default {
     name: 'AttestationsHeader',
@@ -111,8 +111,8 @@ export default {
                 }
             });
 
-            Inertia.get('/ministry/' + this.path, data, {
-                preserveState: true
+            router.get('/ministry/' + this.path, data, {
+                // preserveState: true
             });
 
         },

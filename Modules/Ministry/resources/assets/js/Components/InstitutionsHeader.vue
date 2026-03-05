@@ -43,7 +43,7 @@
 </template>
 <script>
 
-import {Inertia} from "@inertiajs/inertia";
+import { router } from '@inertiajs/vue3';
 
 export default {
     name: 'InstitutionsHeader',
@@ -97,7 +97,7 @@ export default {
                 }
             });
 
-            Inertia.get('/ministry/' + this.path, data, {
+            router.get('/ministry/' + this.path, data, {
                 preserveState: true
             });
 

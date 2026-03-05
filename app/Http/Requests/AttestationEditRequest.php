@@ -85,9 +85,9 @@ class AttestationEditRequest extends FormRequest
             $cap = $progCap;
         }
 
-        //add handling for slashes
-        $first_name = str_replace(['\\', '/'], '', $this->first_name);
-        $last_name = str_replace(['\\', '/'], '', $this->last_name);
+        //normalize name fields
+        $first_name = $this->normalizeName($this->first_name);
+        $last_name = $this->normalizeName($this->last_name);
 
         $this->merge([
             'last_touch_by_user_guid' => $this->user()->guid,
@@ -117,5 +117,19 @@ class AttestationEditRequest extends FormRequest
     private function toBoolean($booleable)
     {
         return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    }
+
+    /**
+     * Normalize name fields, replacing 'n/a' or 'n\a' with '-' and removing slashes.
+     *
+     * @param string $name
+     * @return string
+     */
+    private function normalizeName($name)
+    {
+        if (in_array(Str::lower($name), ['n/a', 'n\a'])) {
+            return '-';
+        }
+        return str_replace(['\\', '/'], '', $name);
     }
 }

@@ -94,7 +94,6 @@
 </template>
 
 <script>
-import { Inertia } from '@inertiajs/inertia';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import Handsontable from 'handsontable';
