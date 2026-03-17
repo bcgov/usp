@@ -15,7 +15,7 @@
                     </Select>
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputProgramGraduate" class="form-label" value="Grad./Undergrad. Program" />
+                    <Label for="inputProgramGraduate" class="form-label" value="PAL Type" />
                     <Select class="form-select" id="inputProgramGraduate" v-model="editForm.program_graduate">
                         <option :value="true">Graduate</option>
                         <option :value="false">Undergraduate</option>
