@@ -162,7 +162,7 @@ USER ${USER_ID}
 #rm -rf vendor
 #rm -f composer.lock
 #composer install
-RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ prod
+RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ build
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
