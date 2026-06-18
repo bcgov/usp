@@ -18,7 +18,7 @@ class InstitutionStaff extends Model
      * @var array<int, string>
      */
     protected $fillable = ['guid', 'user_guid', 'institution_guid', 'bceid_business_guid', 'bceid_user_guid', 'bceid_user_id',
-        'bceid_user_name', 'bceid_user_email', 'status', 'last_touch_by_user_guid', ];
+        'bceid_user_name', 'bceid_user_email', 'status', 'comment', 'last_touch_by_user_guid', ];
 
     /**
      * The attributes that should be hidden for serialization.

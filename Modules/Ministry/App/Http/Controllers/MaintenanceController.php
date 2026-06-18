@@ -17,8 +17,10 @@ use App\Models\InstitutionStaff;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Util;
+use App\Events\InstitutionCapCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
@@ -184,6 +186,122 @@ class MaintenanceController extends Controller
         Faq::create($request->validated());
 
         return Redirect::route('ministry.maintenance.faqs.list');
+    }
+
+
+    /**
+     * Display the bulk institution-cap creation form.
+     *
+     * @return \Inertia\Response::render
+     */
+    public function bulkCaps(Request $request): \Inertia\Response
+    {
+        $this->authorize('create', Cap::class);
+
+        $fedCaps = FedCap::active()->orderBy('id')->get();
+        $institutions = Institution::active()
+            ->select('id', 'guid', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return Inertia::render('Ministry::Maintenance', [
+            'status' => true,
+            'page' => 'bulk-caps',
+            'fedCaps' => $fedCaps,
+            'institutions' => $institutions,
+        ]);
+    }
+
+    /**
+     * Create institution caps in bulk for a single federal cap.
+     *
+     * Mirrors the single-cap creation flow (CapController@store): when an active
+     * institution-level cap already exists for the institution/federal cap it is
+     * deactivated and a replacement is created, carrying forward a summary comment.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function bulkCapsStore(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $this->authorize('create', Cap::class);
+
+        $request->merge([
+            'confirmed' => filter_var($request->input('confirmed'), FILTER_VALIDATE_BOOLEAN),
+        ]);
+
+        $validated = $request->validate([
+            'fed_cap_id' => 'required|exists:fed_caps,id',
+            'confirmed' => 'required|boolean',
+            'rows' => 'required|array|min:1',
+            'rows.*.institution_id' => 'required|exists:institutions,id',
+            'rows.*.total_attestations' => 'required|numeric|min:0',
+            'rows.*.total_reserved_graduate_attestations' => 'nullable|numeric|min:0',
+        ]);
+
+        $fedCap = FedCap::findOrFail($validated['fed_cap_id']);
+        $maxAllowed = (int) floor($fedCap->total_attestations * (1 + $fedCap->over_allocation_percentage));
+        $confirmed = $validated['confirmed'];
+        $userGuid = $request->user()->guid;
+
+        DB::transaction(function () use ($validated, $fedCap, $maxAllowed, $confirmed, $userGuid) {
+            $remaining = $maxAllowed;
+
+            foreach ($validated['rows'] as $row) {
+                $institution = Institution::findOrFail($row['institution_id']);
+
+                $total = min((int) $row['total_attestations'], max($remaining, 0));
+                $remaining -= $total;
+
+                $grad = (int) ($row['total_reserved_graduate_attestations'] ?? 0);
+                if ($grad > $total) {
+                    $grad = $total;
+                }
+
+                $existing = Cap::where('active_status', true)
+                    ->where('fed_cap_guid', $fedCap->guid)
+                    ->where('institution_guid', $institution->guid)
+                    ->whereNull('program_guid')
+                    ->first();
+
+                $data = [
+                    'guid' => Str::orderedUuid()->getHex(),
+                    'fed_cap_guid' => $fedCap->guid,
+                    'institution_guid' => $institution->guid,
+                    'program_guid' => null,
+                    'parent_cap_guid' => $existing?->guid,
+                    'start_date' => $fedCap->start_date,
+                    'end_date' => $fedCap->end_date,
+                    'active_status' => true,
+                    'total_attestations' => $total,
+                    'total_reserved_graduate_attestations' => $grad,
+                    'issued_attestations' => 0,
+                    'issued_reserved_graduate_attestations' => 0,
+                    'draft_attestations' => 0,
+                    'draft_reserved_graduate_attestations' => 0,
+                    'confirmed' => $confirmed,
+                    'last_touch_by_user_guid' => $userGuid,
+                ];
+
+                if (is_null($existing)) {
+                    $cap = Cap::create($data);
+                } else {
+                    $existing->active_status = false;
+                    $existing->save();
+
+                    $comment = 'Previous cap Start Date: '.$existing->start_date.', End Date: '.$existing->end_date.
+                        ', Total: '.$existing->total_attestations.', Issued Attestations: '.$existing->issued_attestations;
+
+                    $cap = Cap::create($data);
+                    $cap->comment = is_null($existing->comment) ? $comment : $existing->comment.'. '.$comment;
+                    $cap->save();
+                }
+
+                event(new InstitutionCapCreated($cap));
+            }
+        });
+
+        return Redirect::route('ministry.maintenance.bulk-caps')
+            ->with('success', count($validated['rows']).' institution cap(s) created successfully.');
     }
 
 

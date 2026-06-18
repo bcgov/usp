@@ -14,6 +14,18 @@ class Cap extends Model
     protected $appends = ['inst_active_cap_stat', 'inst_active_res_grad_cap_stat'];
 
     /**
+     * Optional pre-computed cap statistics. When set (e.g. by a controller that
+     * has already aggregated these counts in a single query), the accessors
+     * return these values instead of running their own per-cap COUNT queries.
+     * This avoids the N+1 query pattern when serializing many caps at once.
+     *
+     * @var array<string, mixed>|null
+     */
+    public $presetInstActiveCapStat = null;
+
+    public $presetInstActiveResGradCapStat = null;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -100,6 +112,10 @@ class Cap extends Model
 
     public function getInstActiveCapStatAttribute()
     {
+        if ($this->presetInstActiveCapStat !== null) {
+            return $this->presetInstActiveCapStat;
+        }
+
         $issuedInstAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $this->institution_guid)
             ->where('fed_cap_guid', $this->fed_cap_guid)
@@ -114,6 +130,10 @@ class Cap extends Model
 
     public function getInstActiveResGradCapStatAttribute()
     {
+        if ($this->presetInstActiveResGradCapStat !== null) {
+            return $this->presetInstActiveResGradCapStat;
+        }
+
         $issuedInstResGradAttestations = Attestation::whereIn('status', ['Issued', 'Declined'])
             ->where('institution_guid', $this->institution_guid)
             ->where('fed_cap_guid', $this->fed_cap_guid)

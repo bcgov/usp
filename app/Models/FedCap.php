@@ -35,6 +35,13 @@ class FedCap extends Model {
      */
     protected $hidden = ['last_touch_by_user_guid'];
 
+    /**
+     * Per-instance memoization for caps column sums (see sumCapsColumn()).
+     *
+     * @var array<string, int>
+     */
+    protected $capsSumCache = [];
+
     public function caps() {
         return $this->hasMany(Cap::class, 'fed_cap_guid', 'guid')->active();
     }
@@ -49,16 +56,29 @@ class FedCap extends Model {
     }
 
     public function getRemainingCapAttribute() {
-        $total = $this->caps->sum('total_attestations');
-
-        return $this->total_attestations - $total;
+        return $this->total_attestations - $this->sumCapsColumn('total_attestations');
     }
 
     public function getRemainingUndergraduateCapAttribute() {
-        $total = $this->caps->sum('total_attestations');
-        $totalGrad = $this->caps->sum('total_reserved_graduate_attestations');
+        return $this->sumCapsColumn('total_attestations') - $this->sumCapsColumn('total_reserved_graduate_attestations');
+    }
 
-        return $total - $totalGrad;
+    /**
+     * Sum a column across this fed cap's active caps.
+     *
+     * Uses the already-loaded relation when present; otherwise aggregates in SQL
+     * without hydrating (and therefore without serializing) the caps. This avoids
+     * an N+1 where serializing the lazily-loaded caps would trigger the Cap
+     * model's per-cap COUNT accessors. Results are memoized per instance.
+     */
+    private function sumCapsColumn(string $column): int {
+        if (! array_key_exists($column, $this->capsSumCache)) {
+            $this->capsSumCache[$column] = $this->relationLoaded('caps')
+                ? (int) $this->caps->sum($column)
+                : (int) $this->caps()->sum($column);
+        }
+
+        return $this->capsSumCache[$column];
     }
 
     public function getTotalAttestationsWithOverallocationAttribute() {

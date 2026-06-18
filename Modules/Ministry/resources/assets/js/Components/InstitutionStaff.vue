@@ -12,7 +12,14 @@
                     </thead>
                     <tbody>
                     <tr v-for="(row, i) in editFrom.staff">
-                        <td>{{ row.bceid_user_name}}</td>
+                        <td>
+                            {{ row.bceid_user_name}}
+                            <button v-if="row.comment" type="button"
+                                    class="btn btn-link p-0 ms-1 align-baseline text-danger fw-bold"
+                                    style="text-decoration: none;"
+                                    title="This account was updated. Click to view change history."
+                                    @click="showComment(row)">!</button>
+                        </td>
                         <td>{{ row.bceid_user_email}}</td>
                         <td>{{ row.bceid_user_id }}</td>
                         <td>{{ row.bceid_user_guid }}</td>
@@ -54,6 +61,25 @@
         </div>
 
     </div>
+
+    <!-- Change history modal -->
+    <div class="modal fade" id="staffCommentModal" tabindex="-1" aria-labelledby="staffCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staffCommentModalLabel">Change History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p v-if="activeCommentName" class="fw-bold mb-2">{{ activeCommentName }}</p>
+                    <pre class="mb-0" style="white-space: pre-wrap; word-break: break-word; font-family: inherit;">{{ activeComment }}</pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
 import {Link, useForm} from '@inertiajs/vue3';
@@ -73,10 +99,17 @@ export default {
             editFrom: '',
             editStaffForm: '',
             editStaff: '',
-            roleForm: ''
+            roleForm: '',
+            activeComment: '',
+            activeCommentName: ''
         }
     },
     methods: {
+        showComment: function (staff) {
+            this.activeComment = staff.comment;
+            this.activeCommentName = staff.bceid_user_name;
+            $('#staffCommentModal').modal('show');
+        },
         isAdmin: function (roles){
             const role = roles.find(role => role.name === "Institution Admin");
             return !!role;

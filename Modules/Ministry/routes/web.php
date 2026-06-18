@@ -79,6 +79,9 @@ Route::prefix('ministry')->group(function () {
                 Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.list');
                 Route::put('/faqs/{faq}', [MaintenanceController::class, 'faqUpdate'])->name('faqs.update');
                 Route::post('/faqs', [MaintenanceController::class, 'faqStore'])->name('faqs.store');
+
+                Route::get('/bulk-caps', [MaintenanceController::class, 'bulkCaps'])->name('bulk-caps');
+                Route::post('/bulk-caps', [MaintenanceController::class, 'bulkCapsStore'])->name('bulk-caps.store');
             });
 
             Route::get('/reports/summary', [MaintenanceController::class, 'reportsSummary'])->name('reports.summary');
