@@ -24,7 +24,9 @@ class InstitutionController extends Controller
     {
         $issuedUnderAttestations = 0;
         $issuedGradAttestations = 0;
+
         $user = User::find(Auth::user()->id);
+
         $institution = $user->institution;
 
         $instCap = Cap::where('institution_guid', $institution->guid)
@@ -48,6 +50,7 @@ class InstitutionController extends Controller
                 ->where('attestations.institution_guid', $institution->guid)
                 ->where('attestations.fed_cap_guid', $instCap->fed_cap_guid)
                 ->first();
+
             $issuedUnderAttestations       = $counts->issued_undergrad_attestations;
             $declinedUnderAttestations     = $counts->declined_undergrad_attestations;
             $issuedGradAttestations = $counts->issued_grad_attestations;

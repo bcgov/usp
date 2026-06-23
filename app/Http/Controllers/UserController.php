@@ -170,6 +170,13 @@ class UserController extends Controller
             $user->save();
             \Log::info('We got a name: '.$provider_user['name']);
 
+            // For BCeID accounts, keep the institution staff record in sync with the
+            // values coming from the SSO (User ID, Email, Name). The GUID fields
+            // (bceid_user_guid, bceid_business_guid) are never updated.
+            if ($type === Role::Institution_GUEST) {
+                $this->syncBceidStaffDetails($user, $provider_user);
+            }
+
             //else the user has access
             if ($type === Role::Ministry_GUEST) {
                 //check if the user is a guest
@@ -352,6 +359,52 @@ class UserController extends Controller
         if (is_null($user->roles()->first())) {
             $role = Role::where('name', $type)->first();
             $user->roles()->attach($role);
+        }
+    }
+
+    /**
+     * Keep the institution staff (BCeID account) record in sync with the SSO.
+     * Only the User ID, Email and Name are updated when they differ. The GUID
+     * fields (bceid_user_guid, bceid_business_guid) are never modified. Any change
+     * is appended to the comment column to keep a traceable history.
+     */
+    private function syncBceidStaffDetails($user, $provider_user)
+    {
+        $staffRecords = InstitutionStaff::where('user_guid', $user->guid)->get();
+        if ($staffRecords->isEmpty()) {
+            return;
+        }
+
+        $incoming = [
+            'bceid_user_id' => isset($provider_user['bceid_username']) ? Str::upper($provider_user['bceid_username']) : null,
+            'bceid_user_name' => isset($provider_user['name']) ? Str::title($provider_user['name']) : null,
+            'bceid_user_email' => isset($provider_user['email']) ? Str::lower($provider_user['email']) : null,
+        ];
+
+        $labels = [
+            'bceid_user_id' => 'User ID',
+            'bceid_user_name' => 'Name',
+            'bceid_user_email' => 'Email',
+        ];
+
+        foreach ($staffRecords as $staff) {
+            $changes = [];
+            foreach ($incoming as $field => $newValue) {
+                if (is_null($newValue)) {
+                    continue;
+                }
+                if ((string) $staff->{$field} !== (string) $newValue) {
+                    $changes[] = $labels[$field].": '".$staff->{$field}."' -> '".$newValue."'";
+                    $staff->{$field} = $newValue;
+                }
+            }
+
+            if (! empty($changes)) {
+                $entry = '['.now()->toDateTimeString().'] Updated via BCeID login: '.implode('; ', $changes).'.';
+                $staff->comment = is_null($staff->comment) ? $entry : $staff->comment."\n".$entry;
+                $staff->save();
+                \Log::info('Synced BCeID staff details for staff guid '.$staff->guid.': '.implode('; ', $changes));
+            }
         }
     }
 

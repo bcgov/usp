@@ -25,6 +25,7 @@
                         <MaintenanceStaffEdit v-if="page === 'staff-edit'" :results="results"></MaintenanceStaffEdit>
                         <MaintenanceUtils v-if="page === 'utils'" :results="results" :categories="categories"></MaintenanceUtils>
                         <MaintenanceFaq v-if="page === 'faqs'" :results="results"></MaintenanceFaq>
+                        <MaintenanceBulkCaps v-if="page === 'bulk-caps'" :fed-caps="fedCaps" :institutions="institutions"></MaintenanceBulkCaps>
                     </div>
                 </div>
             </div>
@@ -39,6 +40,7 @@ import MaintenanceStaff from "../Components/MaintenanceStaff";
 import MaintenanceStaffEdit from "../Components/MaintenanceStaffEdit";
 import MaintenanceUtils from "../Components/MaintenanceUtils";
 import MaintenanceFaq from "../Components/MaintenanceFaq";
+import MaintenanceBulkCaps from "../Components/MaintenanceBulkCaps";
 
 export default {
     name: 'Maintenance',
@@ -46,11 +48,14 @@ export default {
         MaintenanceFaq,
         MaintenanceUtils,
         MaintenanceMenu,
+        MaintenanceBulkCaps,
         BreezeAuthenticatedLayout, Head, Link, MaintenanceStaff, MaintenanceStaffEdit
     },
     props: {
         results: Object,
         categories: Object|null,
+        fedCaps: Object|null,
+        institutions: Object|null,
         page: String,
     },
     data() {
