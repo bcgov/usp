@@ -14,42 +14,32 @@ objects:
           protocol: TCP
           targetPort: 8443
       selector:
-        deploymentconfig: ${NAME}
+        deployment: ${NAME}
       sessionAffinity: None
     metadata:
       name: ${NAME}
       labels:
-        deploymentconfig: ${NAME}
-  - apiVersion: apps.openshift.io/v1
-    kind: DeploymentConfig
+        deployment: ${NAME}
+  - apiVersion: apps/v1
+    kind: Deployment
     metadata:
       name: ${NAME}
       labels:
-        deploymentconfig: ${NAME}
+        deployment: ${NAME}
         app.kubernetes.io/part-of: ${LABEL_NAME}
 
     spec:
-      triggers:
-        - type: "ConfigChange"
-        - type: "ImageChange"
-          imageChangeParams:
-            automatic: true
-            from:
-              kind: "ImageStreamTag"
-              name: ${NAME}:${IMAGE_TAG}
-              namespace: ${BUILD_NAMESPACE}
-            containerNames:
-              - ${NAME}
       replicas: ${{MIN_REPLICAS}}
       revisionHistoryLimit: 5
       selector:
-        deploymentconfig: ${NAME}
+        matchLabels:
+          deployment: ${NAME}
       strategy:
-        type: Rolling
+        type: RollingUpdate
       template:
         metadata:
           labels:
-            deploymentconfig: ${NAME}
+            deployment: ${NAME}
             deploy-branch: ${REPO_BRANCH}
           annotations:
             vault.hashicorp.com/agent-inject: 'true'
@@ -72,7 +62,7 @@ objects:
                 name: subpath-env
           containers:
             - image: >-
-                image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
+                image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}:${IMAGE_TAG}
               volumeMounts:
                 - name: site-data-volume
                   mountPath: /var/site_data
@@ -130,30 +120,30 @@ objects:
     metadata:
       name: ${NAME}
       labels:
-        deploymentconfig: ${NAME}
+        deployment: ${NAME}
   - apiVersion: autoscaling.k8s.io/v1
     kind: VerticalPodAutoscaler
     metadata:
       name: ${NAME}
       labels:
-        deploymentconfig: ${NAME}
+        deployment: ${NAME}
     spec:
       targetRef:
-        kind: DeploymentConfig
+        kind: Deployment
         name: ${NAME}
-        apiVersion: apps.openshift.io/v1
+        apiVersion: apps/v1
       updatePolicy:
         updateMode: "Off"
   - apiVersion: autoscaling/v1
     kind: HorizontalPodAutoscaler
     metadata:
       labels:
-        deploymentconfig: ${NAME}
+        deployment: ${NAME}
       name: ${NAME}
     spec:
       scaleTargetRef:
-        apiVersion: apps.openshift.io/v1
-        kind: DeploymentConfig
+        apiVersion: apps/v1
+        kind: Deployment
         name: ${NAME}
       minReplicas: ${{MIN_REPLICAS}}
       maxReplicas: ${{MAX_REPLICAS}}
@@ -169,20 +159,20 @@ objects:
     kind: NetworkPolicy
     metadata:
       name: ${NAME}-allow-external
-      spec:
-        podSelector:
-          matchLabels:
-            deploymentconfig: ${NAME}
-        ingress:
-          - ports:
-            - protocol: TCP
-              port: 8080
-            - protocol: TCP
-              port: 80
-            - protocol: TCP
-              port: 443
-        policyTypes:
-          - Ingress
+    spec:
+      podSelector:
+        matchLabels:
+          deployment: ${NAME}
+      ingress:
+        - ports:
+          - protocol: TCP
+            port: 8080
+          - protocol: TCP
+            port: 80
+          - protocol: TCP
+            port: 443
+      policyTypes:
+        - Ingress
 parameters:
   - name: OC_USER_ID
     required: false
