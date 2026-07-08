@@ -94,8 +94,8 @@ objects:
       ftp-password: ${FTP_PASSWORD}
       ftp-url-host: ${FTP_URL_HOST}
 
-  - kind: DeploymentConfig
-    apiVersion: v1
+  - kind: Deployment
+    apiVersion: apps/v1
     metadata:
       name: ${BACKUP_POSTGRESQL_APP_NAME}
       labels:
@@ -107,20 +107,10 @@ objects:
     spec:
       strategy:
         type: Recreate
-      triggers:
-        - type: ConfigChange
-        - type: ImageChange
-          imageChangeParams:
-            automatic: true
-            containerNames:
-              - ${BACKUP_POSTGRESQL_APP_NAME}
-            from:
-              kind: ImageStreamTag
-              namespace: ${IMAGE_NAMESPACE}
-              name: ${SOURCE_IMAGE_NAME}:${TAG_NAME}
       replicas: 1
       selector:
-        name: ${BACKUP_POSTGRESQL_APP_NAME}
+        matchLabels:
+          name: ${BACKUP_POSTGRESQL_APP_NAME}
       template:
         metadata:
           name: ${BACKUP_POSTGRESQL_APP_NAME}
@@ -145,7 +135,9 @@ objects:
                     path: ${CONFIG_FILE_NAME}
           containers:
             - name: ${BACKUP_POSTGRESQL_APP_NAME}
-              image: ""
+              image: >-
+                image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${SOURCE_IMAGE_NAME}:${TAG_NAME}
+              imagePullPolicy: Always
               ports: []
               env:
                 - name: BACKUP_STRATEGY
