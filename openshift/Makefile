@@ -148,7 +148,7 @@ db-backup-deploy-postgresql:
 	test -n "$(NAMESPACE)"
 	test -n "$(BUILD_NAMESPACE)"
 	test -n "$(BACKUP_POSTGRESQL_APP_NAME)"
-	@echo "+\n++ Creating deploy config resoures for database backups on $(NAMESPACE)\n+"
+	@echo "+\n++ Creating deployment resources for database backups on $(NAMESPACE)\n+"
 	oc -n $(NAMESPACE) process -f backup-deploy.yaml \
   	-p BACKUP_POSTGRESQL_APP_NAME=$(BACKUP_POSTGRESQL_APP_NAME) \
   	-p IMAGE_NAMESPACE=$(BUILD_NAMESPACE) \
@@ -167,3 +167,5 @@ db-backup-deploy-postgresql:
 		-p DATABASE_SECRET_PASSWORD_KEY_NAME=superuser-password \
   	-p ENVIRONMENT_FRIENDLY_NAME='$(NAMESPACE) POSTGRESQL DB Backups' \
 		| oc -n $(NAMESPACE) apply -f -
+	@oc -n $(NAMESPACE) rollout restart deployment/$(BACKUP_POSTGRESQL_APP_NAME)
+	$(call rollout_and_wait,deployment/$(BACKUP_POSTGRESQL_APP_NAME))
