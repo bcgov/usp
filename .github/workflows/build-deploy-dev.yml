@@ -1,5 +1,7 @@
 name: Build and Deploy USP in DEV
 
+permissions:
+  contents: read
 on:
   push:
     branches:
