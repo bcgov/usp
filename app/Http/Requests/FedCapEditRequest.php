@@ -24,8 +24,9 @@ class FedCapEditRequest extends FormRequest
      */
     public function rules(): array
     {
-        $totalAttestations = array_sum(array_column($this->caps, 'issued_attestations'));
-        $totalGradAttestations = array_sum(array_column($this->caps, 'issued_reserved_graduate_attestations'));
+        $fedCap = FedCap::find($this->id);
+        $totalAttestations = array_sum(array_column($fedCap->caps->toArray(), 'issued_attestations'));
+        $totalGradAttestations = array_sum(array_column($fedCap->caps->toArray(), 'issued_reserved_graduate_attestations'));
 
         return [
             'id' => 'required',
