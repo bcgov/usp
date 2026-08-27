@@ -1,5 +1,7 @@
 name: Build and Deploy USP in TEST
 
+permissions:
+  contents: read
 on:
   pull_request:
     branches: [ test ]
