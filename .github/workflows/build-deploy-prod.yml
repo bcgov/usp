@@ -1,5 +1,7 @@
 name: Build and Deploy USP in PROD
 
+permissions:
+  contents: read
 on:
   pull_request:
     branches: [ main ]

@@ -234,7 +234,7 @@ export default {
                 // Iterate through table cells
                 for (let j = 0; j < row.cells.length; j++) {
                     // Append cell value to CSV string
-                    const cellValue = this.cleanCellValue(row.cells[j].innerHTML);
+                    const cellValue = this.cleanCellValue(row.cells[j]);
                     csv += '"' + cellValue.replace(/"/g, '""') + '",';
                 }
 
@@ -246,8 +246,8 @@ export default {
             this.downloadCSV(csv, "table_data.csv");
         },
         cleanCellValue: function(value) {
-            // Remove HTML tags and entities using regular expression
-            return value.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, '').trim();
+            // Use textContent to get the text without HTML tags and trim whitespace
+            return (value.textContent || '').trim();
         },
         downloadCSV: function(csv, filename) {
             const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
