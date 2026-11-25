@@ -1,6 +1,5 @@
 <br/>
 <p align="center">
-Ministry of Post-Secondary Education and Future Skills<br/> 
 Student Services Division<br/><br/>
 USPA - Undergraduate Study Permit Attestation
 <br/>
