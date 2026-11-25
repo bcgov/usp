@@ -180,7 +180,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" v-model="editAtteForm.student_confirmation" id="studentConfirmationCheckbox">
                             <label class="form-check-label" for="studentConfirmationCheckbox">
-                                We confirm that the applicant has been informed that the personal information contained in this application will be shared with Immigration, Refugee and Citizenship Canada and British Columbia’s Ministry of Post-Secondary Education and Future Skills for operational and program evaluation purposes.
+                                We confirm that the applicant has been informed that the personal information contained in this application will be shared with Immigration, Refugee and Citizenship Canada and British Columbia’s {{ $getMinistryName() }} for operational and program evaluation purposes.
                             </label>
                         </div>
                     </div>
