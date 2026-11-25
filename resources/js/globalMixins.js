@@ -19,6 +19,9 @@ export const globalMixins = {
         },
         $getYesNo(value) {
             return value == true ? 'Yes' : 'No';
+        },
+        $getMinistryName() {
+            return this.$page?.props?.utils?.['Ministry Name']?.[0]?.field_name;
         }
 
     }
